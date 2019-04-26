@@ -4,25 +4,40 @@ using UnityEngine;
 
 using System.Windows.Forms; //OpenFileDialog用に使う
 using System.IO;
+using UnityEngine.Networking;
+
 
 public class test : MonoBehaviour
 {
-	public string input_field_path_;
-	AudioSource audio;
-	public AudioClipMaker m_ClipMaker;
-	private WavFileInfo m_WavInfo = new WavFileInfo();
-	public AudioClip m_audioClip;
+	private AudioSource audioSource;
+	private AudioClip m_audioClip = null;
+	private string m_filePuth = null;
 
 
 	// Use this for initialization
 	void Start()
 	{
-		audio = gameObject.AddComponent<AudioSource>();
+		audioSource = gameObject.GetComponent<AudioSource>();
 	}
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space)) if (!audio.isPlaying) audio.Play();
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+			if (!audioSource.isPlaying)
+			{
+				audioSource.Play();
+				Debug.Log("name" + m_audioClip.name);
+				Debug.Log("channel ID" + m_audioClip.channels);
+				float[] data = new float[m_audioClip.samples * m_audioClip.channels];
+				m_audioClip.GetData(data, 0);
+				Debug.Log("length Samples" + data.Length);
+				Debug.Log("frequency" + m_audioClip.frequency);
+			}
+		}
+
+		// コルーチンのスタート
+		if ((m_filePuth != null) && (m_audioClip == null)) Debug.Log(StartCoroutine("Load", m_filePuth));
 	}
 
 	public void OpenExistFile()
@@ -36,44 +51,17 @@ public class test : MonoBehaviour
 		//ダイアログを開く
 		open_file_dialog.ShowDialog();
 
-		//取得したファイル名をInputFieldに代入する
-		input_field_path_ = open_file_dialog.FileName;
-
-		Debug.Log(input_field_path_);
-
-		Copy(input_field_path_);
-
-		Load(input_field_path_);
-
+		//取得したファイル名を代入する
+		m_filePuth = open_file_dialog.FileName;
 	}
 
-	private static void Copy(string file)
+
+	IEnumerator Load(string file)
 	{
-		string[] arr = file.Split('\\');
-		File.Copy(file, UnityEngine.Application.dataPath + "\\Resources\\Audio\\" + arr[arr.Length - 1], true);
-	}
-
-	private void Load(string file)
-	{
-		string[] arr = file.Split('\\');
-		string path = UnityEngine.Application.dataPath + "\\Resources\\Audio\\" + arr[arr.Length - 1];
-		byte[] buf = File.ReadAllBytes(path.Replace('\\', '/'));
-
-		// analyze wav file
-		m_WavInfo.Analyze(buf);
-
-		// create audio clip
-		audio.clip = m_ClipMaker.Create(
-			arr[arr.Length - 1],
-			buf,
-			m_WavInfo.TrueWavBufIdx,
-			m_WavInfo.BitPerSample,
-			m_WavInfo.TrueSamples,
-			m_WavInfo.Channels,
-			m_WavInfo.Frequency,
-			false,
-			true
-		);
-
+		var www = UnityWebRequestMultimedia.GetAudioClip("file://" + file, AudioType.WAV);
+		yield return www.SendWebRequest();
+		m_audioClip = GetComponent<AudioSource>().clip = DownloadHandlerAudioClip.GetContent(www);
+		string[] str = file.Split('\\');
+		m_audioClip.name = str[str.Length - 1];
 	}
 }
