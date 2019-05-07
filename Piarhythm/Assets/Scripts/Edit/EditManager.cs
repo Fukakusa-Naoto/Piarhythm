@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Windows.Forms; //OpenFileDialog用に使う
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.IO;
+using UnityEngine.SceneManagement;
 
 public class EditManager : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class EditManager : MonoBehaviour
 	private string m_filePuth = null;
 	public Text m_maxTime;
 	public Text m_nowTime;
+	public Dropdown m_dropdown;
+	public Transform[] m_layers;
 
 
 	// Use this for initialization
@@ -25,17 +29,24 @@ public class EditManager : MonoBehaviour
 		// 再生時間の更新
 		if(m_audioClip) m_nowTime.text = m_audioSource.time.ToString();
 
+		// レイヤーの変更
+		m_layers[m_dropdown.value].SetAsLastSibling();
+
 		// コルーチンのスタート
 		if ((m_filePuth != null) && (m_audioClip == null)) StartCoroutine("Load", m_filePuth);
+
+		if (Input.GetKey(KeyCode.Space)) SceneManager.LoadScene("Scenes/PlayScene");
 	}
 
 	public void OpenExistFile()
 	{
 
-		OpenFileDialog open_file_dialog = new OpenFileDialog();
+		OpenFileDialog open_file_dialog = new OpenFileDialog
+		{
 
-		//ファイルが実在しない場合は警告を出す(true)、警告を出さない(false)
-		open_file_dialog.CheckFileExists = false;
+			//ファイルが実在しない場合は警告を出す(true)、警告を出さない(false)
+			CheckFileExists = false
+		};
 
 		//ダイアログを開く
 		open_file_dialog.ShowDialog();
@@ -80,7 +91,7 @@ public class EditManager : MonoBehaviour
 
 	public void OnSaveButton()
 	{
-
+		File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name);
 	}
 
 
