@@ -16,6 +16,7 @@ public class EditManager : MonoBehaviour
 	public Text m_nowTime;
 	public Dropdown m_dropdown;
 	public Transform[] m_layers;
+	public MusicalScoreController m_musicalScore;
 
 
 	// Use this for initialization
@@ -27,7 +28,12 @@ public class EditManager : MonoBehaviour
 	void Update()
 	{
 		// 再生時間の更新
-		if(m_audioClip) m_nowTime.text = m_audioSource.time.ToString();
+		if (m_audioClip)
+		{
+			// 再生終了
+			if (Mathf.Approximately(m_audioSource.time, m_audioClip.length)) m_musicalScore.Stop();
+			m_nowTime.text = m_audioSource.time.ToString();
+		}
 
 		// レイヤーの変更
 		m_layers[m_dropdown.value].SetAsLastSibling();
@@ -73,12 +79,14 @@ public class EditManager : MonoBehaviour
 	public void OnPlayButton()
 	{
 		if (!m_audioSource.isPlaying) m_audioSource.Play();
+		m_musicalScore.Play();
 	}
 
 
 	public void OnPauseButton()
 	{
 		m_audioSource.Pause();
+		m_musicalScore.Pause();
 	}
 
 
@@ -86,6 +94,7 @@ public class EditManager : MonoBehaviour
 	public void OnStopButton()
 	{
 		if (m_audioSource.isPlaying) m_audioSource.Stop();
+		m_musicalScore.Stop();
 	}
 
 
