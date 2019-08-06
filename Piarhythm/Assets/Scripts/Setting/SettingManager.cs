@@ -28,39 +28,62 @@ public struct SystemData
 public class SettingManager : MonoBehaviour
 {
 	// <メンバ変数>
+	private SystemData m_systemData;
 	public Text m_speedText;
 	public Text m_keyText;
 
 
 	// メンバ関数の定義 =====================================================
-	//--------------------------------------------------------------------
+	//-----------------------------------------------------------------
 	//! @summary   初期化処理
 	//!
 	//! @parameter [void] なし
 	//!
 	//! @return    なし
-	//--------------------------------------------------------------------
+	//-----------------------------------------------------------------
 	private void Start()
 	{
 		string dataFilePass = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
-		SystemData systemData = new SystemData();
+		m_systemData = new SystemData();
 
 		// ファイルの有無を調べる
 		if (File.Exists(dataFilePass))
 		{
 			// ファイルを読み込む
 			string json = File.ReadAllText(dataFilePass);
-			JsonUtility.FromJsonOverwrite(json, systemData);
+			JsonUtility.FromJsonOverwrite(json, m_systemData);
 		}
 		else
 		{
 			// 初期化
-			systemData.speed = 1.0f;
-			systemData.keyNumber = 88;
+			m_systemData.speed = 1.0f;
+			m_systemData.keyNumber = 88;
 		}
 
 		// UIのテキストに反映
-		m_speedText.text = systemData.speed.ToString("F1");
-		m_keyText.text = systemData.keyNumber.ToString() + "鍵盤";
+		m_speedText.text = m_systemData.speed.ToString("F1");
+		m_keyText.text = m_systemData.keyNumber.ToString() + "鍵盤";
 	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツ速度の上昇
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpSpeed()
+	{
+		// スピードを上げる
+		m_systemData.speed += 0.1f;
+		// 最大最小を超えないように制限をかける
+		m_systemData.speed = Mathf.Clamp(m_systemData.speed, 1.0f, 10.0f);
+		// UIに反映する
+		m_speedText.text = m_systemData.speed.ToString("F1");
+	}
+
+
+
 }
