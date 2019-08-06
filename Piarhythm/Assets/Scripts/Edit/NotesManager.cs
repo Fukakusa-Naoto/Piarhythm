@@ -12,36 +12,44 @@ public class NotesManager : MonoBehaviour
 	public GameObject m_note;
 	public GameObject m_notePrefab;
 	public GameObject m_musicalScore;
+	private List<GameObject> m_nodeList;
 
-	// Start is called before the first frame update
-	void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-	}
-
-	public void SelectNote(GameObject note)
+	private void Start()
 	{
-		if(note)
-		{
-			m_note = note;
-		}
-		else
-		{
-			m_musicalScale.transform.GetChild(0).GetComponent<Text>().text = "";
-			m_notesStart.transform.GetChild(0).GetComponent<Text>().text = "0.0";
-			m_notesEnd.transform.GetChild(0).GetComponent<Text>().text = "0.0";
-		}
+		m_nodeList = new List<GameObject>();
 	}
+
+
+
+	private void Update()
+	{
+		// 左クリックされる
+		if (Input.GetMouseButtonDown(0))
+		{
+			foreach (var n in m_nodeList)
+			{
+				m_note = n.GetComponent<NoteEdit>().OnCollision();
+				if (m_note) break;
+			}
+		}
+		else if (Input.GetMouseButtonUp(0)) m_note = null;
+
+		if(Input.GetMouseButton(0))
+		{
+			// m_nodeのm_isMoveをtrueにする
+			if (m_note) m_note.GetComponent<NoteEdit>().OnMove();
+		}
+
+	}
+
 
 	public void OnNewNoteButton()
 	{
 		m_note = Instantiate(m_notePrefab);
 		m_note.transform.SetParent(m_musicalScore.transform);
-		m_note.GetComponent<RectTransform>().localPosition = new Vector3(-29.2f, -210 - m_musicalScore.GetComponent<RectTransform>().localPosition.y, 0.0f);
+		m_note.GetComponent<RectTransform>().localPosition =
+			new Vector3(-24.0f, -119 - m_musicalScore.GetComponent<RectTransform>().localPosition.y, 0.0f);
+		m_nodeList.Add(m_note);
 	}
 }
