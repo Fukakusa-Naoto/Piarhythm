@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
@@ -76,7 +77,7 @@ public class SettingManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void UpSpeed()
+	public void OnUpSpeedButton()
 	{
 		// スピードを上げる
 		m_systemData.speed += 0.1f;
@@ -95,7 +96,7 @@ public class SettingManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void DownSpeed()
+	public void OnDownSpeedButton()
 	{
 		// スピードを下げる
 		m_systemData.speed -= 0.1f;
@@ -114,7 +115,7 @@ public class SettingManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void UpKeyNumber()
+	public void OnUpKeyNumberButton()
 	{
 		// 鍵盤数を上げる
 		switch(m_systemData.keyNumber)
@@ -139,7 +140,7 @@ public class SettingManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void DownKeyNumber()
+	public void OnDownKeyNumberButton()
 	{
 		// 鍵盤数を下げる
 		switch(m_systemData.keyNumber)
@@ -164,7 +165,7 @@ public class SettingManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void RevertSettingScene()
+	public void OnRevertButton()
 	{
 		// json文字列に変換する
 		string json = JsonUtility.ToJson(m_systemData);
@@ -174,6 +175,6 @@ public class SettingManager : MonoBehaviour
 		File.WriteAllText(dataFilePath, json);
 
 		// 前のシーンに戻る
-
+		SceneManager.UnloadSceneAsync((int)ScenenID.SCENE_SETTING);
 	}
 }

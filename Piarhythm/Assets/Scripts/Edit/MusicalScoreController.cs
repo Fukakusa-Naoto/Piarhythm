@@ -7,6 +7,7 @@ public class MusicalScoreController : MonoBehaviour
 	private bool m_isPlaying;
 	private Vector3 m_startPosition;
 	private float m_time;
+	public EditManager m_editManager;
 
 
     // Start is called before the first frame update
@@ -21,9 +22,8 @@ public class MusicalScoreController : MonoBehaviour
     {
 		if(m_isPlaying)
 		{
-			GetComponent<RectTransform>().localPosition += new Vector3(0.0f, -Time.deltaTime*10, 0.0f);
+			GetComponent<RectTransform>().localPosition += new Vector3(0.0f, -Time.deltaTime * m_editManager.GetNotesSpeed(), 0.0f);
 		}
-
 		m_time = GetComponent<RectTransform>().localPosition.y - m_startPosition.y;
 	}
 

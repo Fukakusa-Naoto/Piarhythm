@@ -1,4 +1,15 @@
-﻿using System.Collections;
+﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+//! @file		EditManager.cs
+//!
+//! @summary	エディットシーンの管理に関するC#スクリプト
+//!
+//! @date		2019.08.08
+//!
+//! @author		深草直斗
+//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+
+// 名前空間の省略 ===========================================================
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Windows.Forms; //OpenFileDialog用に使う
@@ -7,8 +18,11 @@ using UnityEngine.UI;
 using System.IO;
 using UnityEngine.SceneManagement;
 
+
+// クラスの定義 =============================================================
 public class EditManager : MonoBehaviour
 {
+	// <メンバ変数>
 	private AudioSource m_audioSource;
 	private AudioClip m_audioClip = null;
 	private string m_filePuth = null;
@@ -17,14 +31,49 @@ public class EditManager : MonoBehaviour
 	public Dropdown m_dropdown;
 	public Transform[] m_layers;
 	public MusicalScoreController m_musicalScore;
+	private SystemData m_systemData;
 
 
-	// Use this for initialization
+
+	// メンバ関数の定義 =====================================================
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	void Start()
 	{
 		m_audioSource = gameObject.GetComponent<AudioSource>();
+
+		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		m_systemData = new SystemData();
+
+		// ファイルの有無を調べる
+		if (File.Exists(dataFilePath))
+		{
+			// ファイルを読み込む
+			string json = File.ReadAllText(dataFilePath);
+			m_systemData = JsonUtility.FromJson<SystemData>(json); ;
+		}
+		else
+		{
+			// 初期化
+			m_systemData.speed = 1.0f;
+			m_systemData.keyNumber = 88;
+		}
 	}
 
+
+
+	//-----------------------------------------------------------------
+	//! @summary   更新処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	void Update()
 	{
 		// 再生時間の更新
@@ -44,6 +93,15 @@ public class EditManager : MonoBehaviour
 		if (Input.GetKey(KeyCode.Space)) SceneManager.LoadScene("Scenes/PlayScene");
 	}
 
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ファイルの読み込み処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OpenExistFile()
 	{
 
@@ -64,6 +122,14 @@ public class EditManager : MonoBehaviour
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   読み込んだファイルをAudioCripに変換する
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	IEnumerator Load(string file)
 	{
 		var www = UnityWebRequestMultimedia.GetAudioClip("file://" + file, AudioType.WAV);
@@ -76,6 +142,14 @@ public class EditManager : MonoBehaviour
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   再生ボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnPlayButton()
 	{
 		if (!m_audioSource.isPlaying) m_audioSource.Play();
@@ -83,6 +157,14 @@ public class EditManager : MonoBehaviour
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   一時停止ボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnPauseButton()
 	{
 		m_audioSource.Pause();
@@ -91,6 +173,13 @@ public class EditManager : MonoBehaviour
 
 
 
+	//-----------------------------------------------------------------
+	//! @summary   停止ボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnStopButton()
 	{
 		if (m_audioSource.isPlaying) m_audioSource.Stop();
@@ -98,14 +187,59 @@ public class EditManager : MonoBehaviour
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   セーブボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnSaveButton()
 	{
 		File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name);
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   ロードボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnLoadButton()
 	{
 
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   設定シーンを閉じる
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnRevertButton()
+	{
+		// タイトルシーンに遷移する
+		SceneManager.LoadScene((int)ScenenID.SCENE_TITLE);
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの移動速度の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    ノーツの移動速度
+	//-----------------------------------------------------------------
+	public float GetNotesSpeed()
+	{
+		return m_systemData.speed;
 	}
 }

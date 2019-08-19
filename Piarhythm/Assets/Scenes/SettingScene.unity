@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 493402689}
   - component: {fileID: 493402688}
   m_Layer: 5
-  m_Name: KeyDown
+  m_Name: KeyDownButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -352,7 +352,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 650170755}
-        m_MethodName: DownKeyNumber
+        m_MethodName: OnDownKeyNumberButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -414,7 +414,7 @@ GameObject:
   - component: {fileID: 502874703}
   - component: {fileID: 502874702}
   m_Layer: 5
-  m_Name: SpeedUp
+  m_Name: SpeedUpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -480,7 +480,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 650170755}
-        m_MethodName: UpSpeed
+        m_MethodName: OnUpSpeedButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 566085024}
   - component: {fileID: 566085023}
   m_Layer: 5
-  m_Name: SpeedDown
+  m_Name: SpeedDownButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -687,7 +687,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 650170755}
-        m_MethodName: DownSpeed
+        m_MethodName: OnDownSpeedButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -968,7 +968,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 650170755}
-        m_MethodName: RevertSettingScene
+        m_MethodName: OnRevertButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1030,7 +1030,7 @@ GameObject:
   - component: {fileID: 1434368798}
   - component: {fileID: 1434368797}
   m_Layer: 5
-  m_Name: KeyUp
+  m_Name: KeyUpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1096,7 +1096,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 650170755}
-        m_MethodName: UpKeyNumber
+        m_MethodName: OnUpKeyNumberButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
