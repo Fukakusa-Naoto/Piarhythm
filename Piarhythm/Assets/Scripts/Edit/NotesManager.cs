@@ -1,10 +1,37 @@
-﻿using System.Collections;
+﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+//! @file		NotesManager.cs
+//!
+//! @summary	ノーツの管理に関するC#スクリプト
+//!
+//! @date		2019.08.21
+//!
+//! @author		深草直斗
+//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+
+// 名前空間の省略 ===========================================================
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// クラスの定義 =============================================================
+[System.Serializable]
+public struct NodeData
+{
+	// 音階
+	public string scale;
+	// 開始時間
+	public float startTime;
+	// 終了時間
+	public float endTime;
+}
+
+
+
 public class NotesManager : MonoBehaviour
 {
+	// <メンバ変数>
 	public GameObject m_musicalScale;
 	public GameObject m_notesStart;
 	public GameObject m_notesEnd;
@@ -15,6 +42,14 @@ public class NotesManager : MonoBehaviour
 	private List<GameObject> m_nodeList;
 
 
+	// メンバ関数の定義 =====================================================
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	private void Start()
 	{
 		m_nodeList = new List<GameObject>();
@@ -22,6 +57,13 @@ public class NotesManager : MonoBehaviour
 
 
 
+	//-----------------------------------------------------------------
+	//! @summary   更新処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	private void Update()
 	{
 		// 左クリックされる
@@ -40,10 +82,17 @@ public class NotesManager : MonoBehaviour
 			// m_nodeのm_isMoveをtrueにする
 			if (m_note) m_note.GetComponent<NoteEdit>().OnMove();
 		}
-
 	}
 
 
+
+	//-----------------------------------------------------------------
+	//! @summary   新たにノードを作成する
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
 	public void OnNewNoteButton()
 	{
 		m_note = Instantiate(m_notePrefab);

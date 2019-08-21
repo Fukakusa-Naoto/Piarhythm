@@ -20,7 +20,10 @@ public class NoteEdit : MonoBehaviour
 		m_keyPositionArray = new float[key.transform.childCount];
 		for (int i = 0; i < key.transform.childCount; ++i)
 		{
-			m_keyPositionArray[i] = key.transform.GetChild(i).GetComponent<RectTransform>().localPosition.x;
+			// キーのローカル座標 + キーボードのローカル座標
+			m_keyPositionArray[i] =
+				key.transform.GetChild(i).GetComponent<RectTransform>().localPosition.x
+				+ key.GetComponent<RectTransform>().localPosition.x;
 		}
 	}
 
@@ -40,7 +43,7 @@ public class NoteEdit : MonoBehaviour
 				if ((localpoint.x > n - 5.0f) && (localpoint.x < n + 5.0f))
 				{
 					localpoint.x = n;
-					this.GetComponent<RectTransform>().localPosition = localpoint;
+					GetComponent<RectTransform>().localPosition = localpoint;
 					break;
 				}
 				else
