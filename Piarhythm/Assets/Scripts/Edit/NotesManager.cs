@@ -17,7 +17,7 @@ using UnityEngine.UI;
 
 // クラスの定義 =============================================================
 [System.Serializable]
-public struct NodeData
+public struct NoteData
 {
 	// 音階
 	public string scale;
@@ -36,10 +36,11 @@ public class NotesManager : MonoBehaviour
 	public GameObject m_notesStart;
 	public GameObject m_notesEnd;
 	public GameObject m_color;
-	public GameObject m_note;
+	public GameObject m_moveNote;
+	public GameObject m_selectNote;
 	public GameObject m_notePrefab;
 	public GameObject m_musicalScore;
-	private List<GameObject> m_nodeList;
+	private List<GameObject> m_noteList;
 
 
 	// メンバ関数の定義 =====================================================
@@ -52,7 +53,8 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Start()
 	{
-		m_nodeList = new List<GameObject>();
+		m_noteList = new List<GameObject>();
+		m_selectNote = null;
 	}
 
 
@@ -69,18 +71,35 @@ public class NotesManager : MonoBehaviour
 		// 左クリックされる
 		if (Input.GetMouseButtonDown(0))
 		{
-			foreach (var n in m_nodeList)
+			foreach (var n in m_noteList)
 			{
-				m_note = n.GetComponent<NoteEdit>().OnCollision();
-				if (m_note) break;
+				var note = n.GetComponent<NoteEdit>().OnCollision();
+				if (note)
+				{
+					m_moveNote = m_selectNote = note;
+					break;
+				}
 			}
 		}
-		else if (Input.GetMouseButtonUp(0)) m_note = null;
+		else if (Input.GetMouseButtonUp(0)) m_moveNote = null;
 
 		if(Input.GetMouseButton(0))
 		{
-			// m_nodeのm_isMoveをtrueにする
-			if (m_note) m_note.GetComponent<NoteEdit>().OnMove();
+			if (m_moveNote) m_moveNote.GetComponent<NoteEdit>().OnMove();
+		}
+
+		if (m_selectNote)
+		{
+			NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+			m_musicalScale.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.scale;
+			m_notesStart.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.startTime.ToString();
+			m_notesEnd.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.endTime.ToString();
+		}
+		else
+		{
+			m_musicalScale.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
+			m_notesStart.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
+			m_notesEnd.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
 		}
 	}
 
@@ -95,10 +114,8 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnNewNoteButton()
 	{
-		m_note = Instantiate(m_notePrefab);
-		m_note.transform.SetParent(m_musicalScore.transform);
-		m_note.GetComponent<RectTransform>().localPosition =
-			new Vector3(-24.0f, -119 - m_musicalScore.GetComponent<RectTransform>().localPosition.y, 0.0f);
-		m_nodeList.Add(m_note);
+		m_selectNote = Instantiate(m_notePrefab);
+		m_selectNote.transform.SetParent(m_musicalScore.transform);
+		m_noteList.Add(m_selectNote);
 	}
 }
