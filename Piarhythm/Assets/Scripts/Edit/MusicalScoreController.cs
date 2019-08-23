@@ -22,7 +22,7 @@ public class MusicalScoreController : MonoBehaviour
     {
 		if(m_isPlaying)
 		{
-			GetComponent<RectTransform>().localPosition += new Vector3(0.0f, -Time.deltaTime * m_editManager.GetNotesSpeed(), 0.0f);
+			GetComponent<RectTransform>().localPosition += new Vector3(0.0f, -m_editManager.GetNotesSpeed(), 0.0f);
 		}
 		m_time = GetComponent<RectTransform>().localPosition.y - m_startPosition.y;
 	}

@@ -118,4 +118,66 @@ public class NotesManager : MonoBehaviour
 		m_selectNote.transform.SetParent(m_musicalScore.transform);
 		m_noteList.Add(m_selectNote);
 	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   音階の入力情報の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnMusicalScaleInputField()
+	{
+		InputField inputField = m_musicalScale.GetComponent<InputField>();
+		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetMusicScale(inputField.text);
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始時間の入力情報の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnStartTimeInputField()
+	{
+		// 文字列を数値に変換
+		InputField inputField = m_notesStart.GetComponent<InputField>();
+		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetStartTime(float.Parse(inputField.text));
+
+		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+		Debug.Log("start:" + nodeData.startTime);
+		Debug.Log("end:" + nodeData.endTime);
+
+		m_notesEnd.GetComponent<InputField>().text = nodeData.endTime.ToString();
+		m_notesEnd.transform.GetChild(2).GetComponent<Text>().text = nodeData.endTime.ToString();
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの終了時間の入力情報の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnEndTimeInputField()
+	{
+		// 文字列を数値に変換
+		InputField inputField = m_notesEnd.GetComponent<InputField>();
+		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetEndTime(float.Parse(inputField.text));
+
+		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+		Debug.Log("start:" + nodeData.startTime);
+		Debug.Log("end:" + nodeData.endTime);
+
+		m_notesStart.GetComponent<InputField>().text = nodeData.startTime.ToString();
+		m_notesStart.transform.GetChild(2).GetComponent<Text>().text = nodeData.startTime.ToString();
+	}
+
 }

@@ -24,6 +24,7 @@ public class NoteEdit : MonoBehaviour
 	private bool m_isMove;
 	private Dictionary<string, float> m_keyPositionDictionary;
 	private NoteData m_noteData;
+	private EditManager m_editManager;
 
 
 	// メンバ関数の定義 =====================================================
@@ -36,6 +37,7 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
 	{
+		m_editManager = GameObject.Find("EditManager").GetComponent<EditManager>();
 		m_noteData = new NoteData();
 		m_noteData.scale = "C4";
 		m_isMove = false;
@@ -54,8 +56,8 @@ public class NoteEdit : MonoBehaviour
 		GetComponent<RectTransform>().localPosition =
 			new Vector3(m_keyPositionDictionary["C4"], -120 - transform.parent.GetComponent<RectTransform>().localPosition.y, 0.0f);
 
-		m_noteData.startTime = GetComponent<RectTransform>().offsetMin.y;
-		m_noteData.endTime = GetComponent<RectTransform>().offsetMax.y;
+		m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
+		m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
 	}
 
 
@@ -89,8 +91,9 @@ public class NoteEdit : MonoBehaviour
 				else
 				{
 					GetComponent<RectTransform>().localPosition = new Vector3(this.GetComponent<RectTransform>().localPosition.x, localpoint.y, this.GetComponent<RectTransform>().localPosition.z);
-					m_noteData.startTime = GetComponent<RectTransform>().offsetMin.y;
-					m_noteData.endTime = GetComponent<RectTransform>().offsetMax.y;
+
+					m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
+					m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
 				}
 			}
 
@@ -137,6 +140,132 @@ public class NoteEdit : MonoBehaviour
 		}
 
 		return null;
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの音階を設定する
+	//!
+	//! @parameter [scale] 音階の文字列
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetMusicScale(string scale)
+	{
+		m_noteData.scale = scale;
+		GetComponent<RectTransform>().localPosition =
+			new Vector3(m_keyPositionDictionary[scale], GetComponent<RectTransform>().localPosition.y, 0.0f);
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始時間を設定する
+	//!
+	//! @parameter [startTime] 開始時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetStartTime(float startTime)
+	{
+		// ノーツの開始時間が終了時間を超えた場合
+		if (m_noteData.endTime < startTime)
+		{
+			// 新しい終了時間を計算する
+			float difference = startTime - m_noteData.startTime;
+			float newEndTime = m_noteData.endTime + difference;
+
+			// ノーツ全体を移動させる
+			Vector2 offsetMin = GetComponent<RectTransform>().offsetMin;
+			offsetMin.y = ConvertTimeToDistance(startTime);
+			GetComponent<RectTransform>().offsetMin = offsetMin;
+
+			Vector2 offsetMax = GetComponent<RectTransform>().offsetMax;
+			offsetMax.y = ConvertTimeToDistance(newEndTime);
+			GetComponent<RectTransform>().offsetMax = offsetMax;
+		}
+		else
+		{
+			// 開始位置だけを移動させる
+			Vector2 offsetMin = GetComponent<RectTransform>().offsetMin;
+			offsetMin.y = ConvertTimeToDistance(startTime);
+			GetComponent<RectTransform>().offsetMin = offsetMin;
+		}
+
+		// データを更新する
+		m_noteData.startTime = startTime;
+		m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの終了時間を設定する
+	//!
+	//! @parameter [endTime] 終了時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetEndTime(float endTime)
+	{
+		// ノーツの終了時間が開始時間より速かった場合
+		if (m_noteData.startTime > endTime)
+		{
+			// 新しい開始時間を計算する
+			float difference = m_noteData.endTime - endTime;
+			float newStartTime = m_noteData.startTime + difference;
+
+			// ノーツ全体を移動させる
+			Vector2 offsetMin = GetComponent<RectTransform>().offsetMin;
+			offsetMin.y = ConvertTimeToDistance(newStartTime);
+			GetComponent<RectTransform>().offsetMin = offsetMin;
+
+			Vector2 offsetMax = GetComponent<RectTransform>().offsetMax;
+			offsetMax.y = ConvertTimeToDistance(endTime);
+			GetComponent<RectTransform>().offsetMax = offsetMax;
+		}
+		else
+		{
+			// 終了位置だけを移動させる
+			Vector2 offsetMax = GetComponent<RectTransform>().offsetMax;
+			offsetMax.y = ConvertTimeToDistance(endTime);
+			GetComponent<RectTransform>().offsetMax = offsetMax;
+		}
+
+		// データを更新する
+		m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
+		m_noteData.endTime = endTime;
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   距離から時間に変換する
+	//!
+	//! @parameter [distance] 距離
+	//!
+	//! @return    時間
+	//-----------------------------------------------------------------
+	private float ConvertDistanceToTime(float distance)
+	{
+		float fps = 1.0f / Time.deltaTime;
+		return distance / (m_editManager.GetNotesSpeed() * fps);
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   時間から距離に変換する
+	//!
+	//! @parameter [time] 時間
+	//!
+	//! @return    距離
+	//-----------------------------------------------------------------
+	private float ConvertTimeToDistance(float time)
+	{
+		float fps = 1.0f / Time.deltaTime;
+		return time * (m_editManager.GetNotesSpeed() * fps);
 	}
 
 
