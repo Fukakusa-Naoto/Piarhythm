@@ -169,12 +169,14 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetStartTime(float startTime)
 	{
+		float newEndTime = m_noteData.endTime;
+
 		// ノーツの開始時間が終了時間を超えた場合
 		if (m_noteData.endTime < startTime)
 		{
 			// 新しい終了時間を計算する
 			float difference = startTime - m_noteData.startTime;
-			float newEndTime = m_noteData.endTime + difference;
+			newEndTime = m_noteData.endTime + difference;
 
 			// ノーツ全体を移動させる
 			Vector2 offsetMin = GetComponent<RectTransform>().offsetMin;
@@ -195,7 +197,7 @@ public class NoteEdit : MonoBehaviour
 
 		// データを更新する
 		m_noteData.startTime = startTime;
-		m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
+		m_noteData.endTime = newEndTime;
 	}
 
 
@@ -209,12 +211,14 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetEndTime(float endTime)
 	{
+		float newStartTime = m_noteData.startTime;
+
 		// ノーツの終了時間が開始時間より速かった場合
 		if (m_noteData.startTime > endTime)
 		{
 			// 新しい開始時間を計算する
 			float difference = m_noteData.endTime - endTime;
-			float newStartTime = m_noteData.startTime + difference;
+			newStartTime = m_noteData.startTime + difference;
 
 			// ノーツ全体を移動させる
 			Vector2 offsetMin = GetComponent<RectTransform>().offsetMin;
@@ -234,7 +238,7 @@ public class NoteEdit : MonoBehaviour
 		}
 
 		// データを更新する
-		m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
+		m_noteData.startTime = newStartTime; ;
 		m_noteData.endTime = endTime;
 	}
 
@@ -249,7 +253,7 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	private float ConvertDistanceToTime(float distance)
 	{
-		float fps = 1.0f / Time.deltaTime;
+		float fps = 60.0f;
 		return distance / (m_editManager.GetNotesSpeed() * fps);
 	}
 
@@ -264,7 +268,9 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	private float ConvertTimeToDistance(float time)
 	{
-		float fps = 1.0f / Time.deltaTime;
+		float fps = 60.0f;
+		Debug.Log("fps:" + fps);
+
 		return time * (m_editManager.GetNotesSpeed() * fps);
 	}
 

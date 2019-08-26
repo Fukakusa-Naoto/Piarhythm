@@ -150,9 +150,6 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetStartTime(float.Parse(inputField.text));
 
 		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
-		Debug.Log("start:" + nodeData.startTime);
-		Debug.Log("end:" + nodeData.endTime);
-
 		m_notesEnd.GetComponent<InputField>().text = nodeData.endTime.ToString();
 		m_notesEnd.transform.GetChild(2).GetComponent<Text>().text = nodeData.endTime.ToString();
 	}
@@ -173,9 +170,6 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetEndTime(float.Parse(inputField.text));
 
 		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
-		Debug.Log("start:" + nodeData.startTime);
-		Debug.Log("end:" + nodeData.endTime);
-
 		m_notesStart.GetComponent<InputField>().text = nodeData.startTime.ToString();
 		m_notesStart.transform.GetChild(2).GetComponent<Text>().text = nodeData.startTime.ToString();
 	}
