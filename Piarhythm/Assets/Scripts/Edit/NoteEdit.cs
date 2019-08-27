@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 // クラスの定義 =============================================================
@@ -86,6 +87,17 @@ public class NoteEdit : MonoBehaviour
 					localpoint.x = n.Value;
 					GetComponent<RectTransform>().localPosition = localpoint;
 					m_noteData.scale = n.Key;
+
+					if(n.Key.Contains("#"))
+					{
+						GetComponent<RectTransform>().localScale = new Vector3(0.1f, 1.0f, 1.0f);
+						GetComponent<Image>().color = new Color(64.0f / 256.0f, 103.0f / 256.0f, 38.0f / 256.0f);
+					}
+					else
+					{
+						GetComponent<RectTransform>().localScale = new Vector3(0.2f, 1.0f, 1.0f);
+						GetComponent<Image>().color = new Color(112.0f / 256.0f, 173.0f / 256.0f, 71.0f / 256.0f);
+					}
 					break;
 				}
 				else
@@ -156,6 +168,16 @@ public class NoteEdit : MonoBehaviour
 		m_noteData.scale = scale;
 		GetComponent<RectTransform>().localPosition =
 			new Vector3(m_keyPositionDictionary[scale], GetComponent<RectTransform>().localPosition.y, 0.0f);
+		if (scale.Contains("#"))
+		{
+			GetComponent<RectTransform>().localScale = new Vector3(0.1f, 1.0f, 1.0f);
+			GetComponent<Image>().color = new Color(64.0f / 256.0f, 103.0f / 256.0f, 38.0f / 256.0f);
+		}
+		else
+		{
+			GetComponent<RectTransform>().localScale = new Vector3(0.2f, 1.0f, 1.0f);
+			GetComponent<Image>().color = new Color(112.0f / 256.0f, 173.0f / 256.0f, 71.0f / 256.0f);
+		}
 	}
 
 
@@ -269,7 +291,6 @@ public class NoteEdit : MonoBehaviour
 	private float ConvertTimeToDistance(float time)
 	{
 		float fps = 60.0f;
-		Debug.Log("fps:" + fps);
 
 		return time * (m_editManager.GetNotesSpeed() * fps);
 	}
