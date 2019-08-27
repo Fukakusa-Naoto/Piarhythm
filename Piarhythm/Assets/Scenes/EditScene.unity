@@ -263,6 +263,7 @@ MonoBehaviour:
   m_startInputField: {fileID: 757533442}
   m_endInputField: {fileID: 2025385903}
   m_bgmText: {fileID: 481490392}
+  m_notesManager: {fileID: 941376370}
 --- !u!1 &30971844
 GameObject:
   m_ObjectHideFlags: 0

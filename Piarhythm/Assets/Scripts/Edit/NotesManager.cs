@@ -174,4 +174,22 @@ public class NotesManager : MonoBehaviour
 		m_notesStart.transform.GetChild(2).GetComponent<Text>().text = nodeData.startTime.ToString();
 	}
 
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツデータの取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public NoteData[] GetNoteDatas()
+	{
+		NoteData[] noteDatas = new NoteData[m_noteList.Count];
+		for(int i = 0; i < m_noteList.Count; ++i)
+		{
+			noteDatas[i] = m_noteList[i].GetComponent<NoteEdit>().GetNodeData();
+		}
+		return noteDatas;
+	}
 }

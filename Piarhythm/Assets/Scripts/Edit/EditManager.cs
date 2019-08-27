@@ -32,6 +32,17 @@ public struct BGMData
 }
 
 
+
+[System.Serializable]
+public struct MusicPieceData
+{
+	// BGM
+	public BGMData bgmData;
+	// ノーツ
+	public NoteData[] noteDatas;
+}
+
+
 public class EditManager : MonoBehaviour
 {
 	// <メンバ変数>
@@ -48,6 +59,7 @@ public class EditManager : MonoBehaviour
 	public GameObject m_endInputField;
 	public Text m_bgmText;
 	private BGMData m_bgmData;
+	public NotesManager m_notesManager;
 
 
 	// メンバ関数の定義 =====================================================
@@ -222,7 +234,20 @@ public class EditManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnSaveButton()
 	{
-		File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name);
+		// BGMファイルをコピーする
+		if (!File.Exists(UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name))
+			File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name);
+
+		// 楽曲データを構築する
+		MusicPieceData musicPieceData = new MusicPieceData();
+		musicPieceData.bgmData = m_bgmData;
+		musicPieceData.noteDatas = m_notesManager.GetNoteDatas();
+
+		// json文字列に変換する
+		string json = JsonUtility.ToJson(musicPieceData);
+		// ファイルに書き出し
+		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece/" + Path.GetFileNameWithoutExtension(m_audioClip.name) + ".json";
+		File.WriteAllText(dataFilePath, json);
 	}
 
 
