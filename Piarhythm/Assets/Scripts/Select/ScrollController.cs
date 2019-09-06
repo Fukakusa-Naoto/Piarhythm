@@ -1,24 +1,28 @@
 ﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
-//! @file		SelectManager.cs
+//! @file		ScrollController.cs
 //!
-//! @summary	楽曲選択シーンの管理に関するC#スクリプト
+//! @summary	楽曲タイルのスクロールに関するC#スクリプト
 //!
-//! @date		2019.08.29
+//! @date		2019.09.05
 //!
 //! @author		深草直斗
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
+
 // クラスの定義 =============================================================
-public class SelectManager : MonoBehaviour
+public class ScrollController : MonoBehaviour
 {
 	// <メンバ変数>
-	private string[] m_musicPieceArray;
+	// 楽曲タイルのプレハブ
+	public GameObject m_soundTilePrefab;
+	// 分割数
+	private int m_divNum = 20;
+	// 半径の距離
+	private float m_range = 400.0f;
 
 
 	// メンバ関数の定義 =====================================================
@@ -31,14 +35,33 @@ public class SelectManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
     {
-		// フォルダ内の全てのjsonファイルを取得する
-		m_musicPieceArray= System.IO.Directory.GetFiles(UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece", "*.json", System.IO.SearchOption.AllDirectories);
-	}
+		for(int i = 0; i < 5; ++i)
+		{
+			// 角度を求める
+			float deg = (360 / m_divNum) * i;
+			deg += (360 / m_divNum) * 13;
+			float rad = deg * Mathf.Deg2Rad;
+
+			// 座標を求める
+			float x = m_range * Mathf.Cos(rad);
+			float z = m_range * Mathf.Sin(rad);
+
+			// タイルを生成する
+			GameObject tile = Instantiate(m_soundTilePrefab);
+
+			// タイルを配置する
+			RectTransform transform = tile.GetComponent<RectTransform>();
+			transform.position = new Vector3(x, 0.0f, z) + this.transform.position;
+
+			// 子に設定する
+			transform.parent = this.transform;
+		}
+    }
 
 
 
 	//-----------------------------------------------------------------
-	//! @summary   更新処理
+	//! @summary   初期化処理
 	//!
 	//! @parameter [void] なし
 	//!
@@ -47,5 +70,5 @@ public class SelectManager : MonoBehaviour
 	void Update()
     {
 
-    }
+	}
 }
