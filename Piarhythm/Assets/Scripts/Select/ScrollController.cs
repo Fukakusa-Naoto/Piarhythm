@@ -10,6 +10,8 @@
 
 // 名前空間の省略 ===========================================================
 using UnityEngine;
+using System;
+using System.Collections;
 
 
 
@@ -23,6 +25,13 @@ public class ScrollController : MonoBehaviour
 	private int m_divNum = 20;
 	// 半径の距離
 	private float m_range = 400.0f;
+
+	// クリックされた時の最初のX座標
+	private float m_startXPosition;
+	// クリックされている間のX座標
+	private float m_nowXPosition;
+	// リックされた時の最初の角度
+	private Vector3 m_startRotation;
 
 
 	// メンバ関数の定義 =====================================================
@@ -69,6 +78,75 @@ public class ScrollController : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Update()
     {
+		// 左クリックがされた
+		if(Input.GetMouseButtonDown(0))
+		{
+			// 最初の座標と角度を記録
+			m_startXPosition = Input.mousePosition.x;
+			m_startRotation = transform.rotation.eulerAngles;
+		}
+		// マウスの左ボタンが押されている
+		else if(Input.GetMouseButton(0))
+		{
+			// 現在の座標を更新する
+			m_nowXPosition = Input.mousePosition.x;
 
+			// 移動量を計算する
+			float movement = m_nowXPosition - m_startXPosition;
+			movement *= 0.1f;
+
+			// 新しい角度を作成して代入する
+			int angle = (int)(movement / (360 / m_divNum));
+			Vector3 newRotation = new Vector3(0.0f, -angle * (360 / m_divNum), 0.0f);
+			transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
+		}
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   Z座標でソートする
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void ZSort()
+	{
+		// 子オブジェクトを取得する
+		Transform[] children = new Transform[transform.childCount];
+		for (int i = 0; i < transform.childCount; ++i) children[i] = transform.GetChild(i);
+
+
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   挿入ソート
+	//!
+	//! @parameter [array] ソート対象の配列
+	//! @parameter [first] ソート対象の先頭インデックス
+	//! @parameter [last] ソート対象の末尾インデックス
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	static void InsertSort<T>(T[] a, int first, int last)
+	  where T : IComparable<T>
+	{
+		for (int i = first + 1; i <= last; i++)
+			for (int j = i; j > first && a[j - 1].CompareTo(a[j]) > 0; --j)
+				Swap(ref a[j], ref a[j - 1]);
+	}
+
+
+
+	public static void Swap<T>(ref T a, ref T b)
+	{
+		T c;
+
+		c = a;
+		a = b;
+		b = c;
 	}
 }
