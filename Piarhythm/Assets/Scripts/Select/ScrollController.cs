@@ -33,6 +33,13 @@ public class ScrollController : MonoBehaviour
 	// リックされた時の最初の角度
 	private Vector3 m_startRotation;
 
+	private int m_currentTileNumber;
+	private int m_nextTileNumber;
+
+
+	// 描画順を管理する配列
+	private Transform[] m_drowingTransforms;
+
 
 	// メンバ関数の定義 =====================================================
 	//-----------------------------------------------------------------
@@ -59,18 +66,28 @@ public class ScrollController : MonoBehaviour
 			GameObject tile = Instantiate(m_soundTilePrefab);
 
 			// タイルを配置する
-			RectTransform transform = tile.GetComponent<RectTransform>();
-			transform.position = new Vector3(x, 0.0f, z) + this.transform.position;
+			RectTransform rectTransform = tile.GetComponent<RectTransform>();
+			rectTransform.position = new Vector3(x, 0.0f, z) + transform.position;
 
 			// 子に設定する
-			transform.parent = this.transform;
+			rectTransform.parent = transform;
 		}
-    }
+
+		m_currentTileNumber = m_nextTileNumber = 0;
+
+		// Z座標順に描画を変更する
+		ZSort();
+
+
+		// 子オブジェクトを取得する
+		m_drowingTransforms = new Transform[transform.childCount];
+		for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i] = transform.GetChild(i);
+	}
 
 
 
 	//-----------------------------------------------------------------
-	//! @summary   初期化処理
+	//! @summary   更新処理
 	//!
 	//! @parameter [void] なし
 	//!
@@ -96,9 +113,35 @@ public class ScrollController : MonoBehaviour
 			movement *= 0.1f;
 
 			// 新しい角度を作成して代入する
-			int angle = (int)(movement / (360 / m_divNum));
-			Vector3 newRotation = new Vector3(0.0f, -angle * (360 / m_divNum), 0.0f);
-			transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
+			m_nextTileNumber = (int)(movement / (360 / m_divNum));
+
+			if (m_currentTileNumber < m_nextTileNumber)
+			{
+				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
+				transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
+
+				m_currentTileNumber = m_nextTileNumber;
+
+
+				// 描画順を調整する
+				Swap(ref m_drowingTransforms[0], ref m_drowingTransforms[1]);
+
+
+				for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i].SetAsFirstSibling();
+			}
+			else if(m_currentTileNumber > m_nextTileNumber)
+			{
+				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
+				transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
+
+				m_currentTileNumber = m_nextTileNumber;
+
+
+				// 描画順を調整する
+
+
+				for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i].SetAsFirstSibling();
+			}
 		}
 	}
 
@@ -117,36 +160,76 @@ public class ScrollController : MonoBehaviour
 		Transform[] children = new Transform[transform.childCount];
 		for (int i = 0; i < transform.childCount; ++i) children[i] = transform.GetChild(i);
 
+		QuickSort(children, 0, children.Length - 1);
 
+		for (int i = 0; i < transform.childCount; ++i) children[i].SetAsFirstSibling();
 	}
 
 
 
-	//-----------------------------------------------------------------
-	//! @summary   挿入ソート
-	//!
-	//! @parameter [array] ソート対象の配列
-	//! @parameter [first] ソート対象の先頭インデックス
-	//! @parameter [last] ソート対象の末尾インデックス
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	static void InsertSort<T>(T[] a, int first, int last)
-	  where T : IComparable<T>
+	/*
+   * 軸要素の選択
+   * 順に見て、最初に見つかった異なる2つの要素のうち、
+   * 大きいほうの番号を返します。
+   * 全部同じ要素の場合は -1 を返します。
+   */
+	int Pivot(Transform[] a, int i, int j)
 	{
-		for (int i = first + 1; i <= last; i++)
-			for (int j = i; j > first && a[j - 1].CompareTo(a[j]) > 0; --j)
-				Swap(ref a[j], ref a[j - 1]);
+		int k = i + 1;
+		while (k <= j && a[i].position.z.Equals(a[k].position.z)) k++;
+		if (k > j) return -1;
+		if (a[i].position.z >= a[k].position.z) return i;
+		return k;
+	}
+
+	/*
+	 * パーティション分割
+	 * a[i]～a[j]の間で、x を軸として分割します。
+	 * x より小さい要素は前に、大きい要素はうしろに来ます。
+	 * 大きい要素の開始番号を返します。
+	 */
+	int Partition(Transform[] a, int i, int j, Transform x)
+	{
+		int l = i, r = j;
+
+		// 検索が交差するまで繰り返します
+		while (l <= r)
+		{
+			// 軸要素以上のデータを探します
+			while (l <= j && a[l].position.z < x.position.z) l++;
+
+			// 軸要素未満のデータを探します
+			while (r >= i && a[r].position.z >= x.position.z) r--;
+
+			if (l > r) break;
+			Swap(ref a[l], ref a[r]);
+			l++; r--;
+		}
+		return l;
+	}
+
+	/*
+	 * クイックソート（再帰用）
+	 * 配列aの、a[i]からa[j]を並べ替えます。
+	 */
+	public void QuickSort(Transform[] a, int i, int j)
+	{
+		if (i == j) return;
+		int p = Pivot(a, i, j);
+		if (p != -1)
+		{
+			int k = Partition(a, i, j, a[p]);
+			QuickSort(a, i, k - 1);
+			QuickSort(a, k, j);
+		}
 	}
 
 
-
-	public static void Swap<T>(ref T a, ref T b)
+	static void Swap<T>(ref T lhs, ref T rhs)
 	{
-		T c;
-
-		c = a;
-		a = b;
-		b = c;
+		T temp;
+		temp = lhs;
+		lhs = rhs;
+		rhs = temp;
 	}
 }
