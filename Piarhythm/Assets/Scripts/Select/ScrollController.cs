@@ -12,7 +12,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
-
+using UnityEngine.UI;
 
 
 // クラスの定義 =============================================================
@@ -36,9 +36,17 @@ public class ScrollController : MonoBehaviour
 	private int m_currentTileNumber;
 	private int m_nextTileNumber;
 
+	// タイルの順番を記憶しておく (0:左,4:右)
+	private Transform[] m_soundTiles;
 
-	// 描画順を管理する配列
-	private Transform[] m_drowingTransforms;
+	// 正面のタイルの番号
+	private int m_frontTileNumber;
+
+	// 楽曲名リスト
+	private string[] m_musicPieceList;
+
+	// 選択シーンマネージャー
+	public SelectManager m_selectManager;
 
 
 	// メンバ関数の定義 =====================================================
@@ -75,13 +83,24 @@ public class ScrollController : MonoBehaviour
 
 		m_currentTileNumber = m_nextTileNumber = 0;
 
+		// タイルの並び順を記憶しておく
+		m_soundTiles = new Transform[transform.childCount];
+		for (int i = 0; i < transform.childCount; ++i) m_soundTiles[i] = transform.GetChild(i);
+
+
 		// Z座標順に描画を変更する
 		ZSort();
 
+		m_frontTileNumber = 0;
 
-		// 子オブジェクトを取得する
-		m_drowingTransforms = new Transform[transform.childCount];
-		for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i] = transform.GetChild(i);
+		m_musicPieceList = m_selectManager.GetMusicPieceList();
+
+		// タイルに曲名を入れていく
+		for (int i = 0; i < m_soundTiles.Length; ++i)
+		{
+			m_soundTiles[i].GetChild(0).GetComponent<Text>().text =
+				m_musicPieceList[(m_musicPieceList.Length - i + m_frontTileNumber - 2) % m_musicPieceList.Length];
+		}
 	}
 
 
@@ -101,6 +120,7 @@ public class ScrollController : MonoBehaviour
 			// 最初の座標と角度を記録
 			m_startXPosition = Input.mousePosition.x;
 			m_startRotation = transform.rotation.eulerAngles;
+			m_currentTileNumber = 0;
 		}
 		// マウスの左ボタンが押されている
 		else if(Input.GetMouseButton(0))
@@ -110,37 +130,78 @@ public class ScrollController : MonoBehaviour
 
 			// 移動量を計算する
 			float movement = m_nowXPosition - m_startXPosition;
-			movement *= 0.1f;
 
 			// 新しい角度を作成して代入する
 			m_nextTileNumber = (int)(movement / (360 / m_divNum));
 
-			if (m_currentTileNumber < m_nextTileNumber)
+
+			if (m_currentTileNumber < m_nextTileNumber)		// 右回転
 			{
+				// 一番左のタイルの座標を記録する
+				Vector3 tmpPosition = m_soundTiles[0].GetComponent<RectTransform>().position;
+
+				// 1フレームのタイルの移動量に制限をかける
+				m_nextTileNumber = m_currentTileNumber + Mathf.Clamp(m_nextTileNumber - m_currentTileNumber, 0, 1);
+
+				// 正面のタイルを更新する
+				m_frontTileNumber += m_nextTileNumber;
+
+				// 全体を回転させる
 				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
 				transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
 
+				// 正面のタイルの値を更新する
 				m_currentTileNumber = m_nextTileNumber;
 
+				// 一番右のタイルを一番左に移動させる
+				m_soundTiles[m_soundTiles.Length - 1].GetComponent<RectTransform>().position = tmpPosition;
+
+				// タイルの順番を右にシフトさせる
+				ArrayRotate(ref m_soundTiles, 1);
 
 				// 描画順を調整する
-				Swap(ref m_drowingTransforms[0], ref m_drowingTransforms[1]);
+				ZSort();
 
-
-				for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i].SetAsFirstSibling();
+				// タイルに曲名を入れていく
+				for (int i = 0; i < m_soundTiles.Length; ++i)
+				{
+					m_soundTiles[i].GetChild(0).GetComponent<Text>().text =
+						m_musicPieceList[(m_musicPieceList.Length - i + m_frontTileNumber - 2) % m_musicPieceList.Length];
+				}
 			}
-			else if(m_currentTileNumber > m_nextTileNumber)
+			else if(m_currentTileNumber > m_nextTileNumber)		// 左回転
 			{
+				// 一番右のタイルの座標を記録する
+				Vector3 tmpPosition = m_soundTiles[m_soundTiles.Length - 1].GetComponent<RectTransform>().position;
+
+				// 1フレームのタイルの移動量に制限をかける
+				m_nextTileNumber = m_currentTileNumber + Mathf.Clamp(m_nextTileNumber - m_currentTileNumber, -1, 0);
+
+				// 正面のタイルを更新する
+				m_frontTileNumber += m_nextTileNumber;
+
+				// 全体を回転させる
 				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
 				transform.rotation = Quaternion.Euler(newRotation + m_startRotation);
 
+				// 正面のタイルの値を更新する
 				m_currentTileNumber = m_nextTileNumber;
 
+				// 一番左のタイルを一番右に移動させる
+				m_soundTiles[0].GetComponent<RectTransform>().position = tmpPosition;
+
+				// タイルの順番を左にシフトさせる
+				ArrayRotate(ref m_soundTiles, -1);
 
 				// 描画順を調整する
+				ZSort();
 
-
-				for (int i = 0; i < transform.childCount; ++i) m_drowingTransforms[i].SetAsFirstSibling();
+				// タイルに曲名を入れていく
+				for (int i = 0; i < m_soundTiles.Length; ++i)
+				{
+					int soundNumber = (m_musicPieceList.Length - i + m_frontTileNumber - 2) % m_musicPieceList.Length;
+					m_soundTiles[i].GetChild(0).GetComponent<Text>().text = m_musicPieceList[soundNumber];
+				}
 			}
 		}
 	}
@@ -231,5 +292,26 @@ public class ScrollController : MonoBehaviour
 		temp = lhs;
 		lhs = rhs;
 		rhs = temp;
+	}
+
+
+	//-----------------------------------------------------------------
+	//! @summary   配列をローテーションさせる
+	//!
+	//! @parameter [array] ローテーションさせる配列
+	//! @parameter [shiftCount] シフトさせる数
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public static void ArrayRotate<T>(ref T[] array, int shiftCount)
+	{
+		T[] backupArray = new T[array.Length];
+
+		for (int i = 0; i < array.Length; i++)
+		{
+			backupArray[(i + array.Length + shiftCount % array.Length) % array.Length] = array[i];
+		}
+
+		array = backupArray;
 	}
 }

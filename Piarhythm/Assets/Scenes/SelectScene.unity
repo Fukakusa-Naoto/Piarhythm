@@ -379,6 +379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_soundTilePrefab: {fileID: 6929114788468479855, guid: 389f925f128db79468bc0834cc5bf020,
     type: 3}
+  m_selectManager: {fileID: 806853351}
 --- !u!1 &1255101178
 GameObject:
   m_ObjectHideFlags: 0

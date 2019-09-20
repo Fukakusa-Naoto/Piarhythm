@@ -12,6 +12,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 
 // クラスの定義 =============================================================
@@ -32,7 +33,10 @@ public class SelectManager : MonoBehaviour
 	void Start()
     {
 		// フォルダ内の全てのjsonファイルを取得する
-		m_musicPieceArray= System.IO.Directory.GetFiles(UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece", "*.json", System.IO.SearchOption.AllDirectories);
+		m_musicPieceArray = System.IO.Directory.GetFiles(
+			UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece",
+			"*.json",
+			System.IO.SearchOption.AllDirectories);
 	}
 
 
@@ -48,4 +52,39 @@ public class SelectManager : MonoBehaviour
     {
 
     }
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   楽曲名リストの取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public string[] GetMusicPieceList()
+	{
+		string[] musicPieceList = new string[m_musicPieceArray.Length];
+
+		for (int i = 0; i < m_musicPieceArray.Length; ++i)
+		{
+			// 文字列を分割する
+			string[] str = m_musicPieceArray[i].Split('\\');
+
+			// 拡張子を調べる
+			string extension = Path.GetExtension(str[str.Length - 1]);
+
+			// 拡張子が無し
+			if (string.IsNullOrEmpty(extension))
+			{
+				// そのまま代入
+				musicPieceList[i] = str[str.Length - 1];
+			}
+
+			// 曲名だけ取得する
+			musicPieceList[i] = str[str.Length - 1].Replace(extension, string.Empty);
+		}
+
+		return musicPieceList;
+	}
 }
