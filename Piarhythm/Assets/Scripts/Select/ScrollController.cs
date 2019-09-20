@@ -130,6 +130,7 @@ public class ScrollController : MonoBehaviour
 
 			// 移動量を計算する
 			float movement = m_nowXPosition - m_startXPosition;
+			movement *= 0.1f;
 
 			// 新しい角度を作成して代入する
 			m_nextTileNumber = (int)(movement / (360 / m_divNum));
@@ -145,6 +146,8 @@ public class ScrollController : MonoBehaviour
 
 				// 正面のタイルを更新する
 				m_frontTileNumber += m_nextTileNumber;
+				if (m_frontTileNumber < 0) m_frontTileNumber = m_musicPieceList.Length - 1;
+				else if (m_frontTileNumber > m_musicPieceList.Length - 1) m_frontTileNumber = 0;
 
 				// 全体を回転させる
 				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
@@ -179,6 +182,8 @@ public class ScrollController : MonoBehaviour
 
 				// 正面のタイルを更新する
 				m_frontTileNumber += m_nextTileNumber;
+				if (m_frontTileNumber < 0) m_frontTileNumber = m_musicPieceList.Length - 1;
+				else if (m_frontTileNumber > m_musicPieceList.Length - 1) m_frontTileNumber = 0;
 
 				// 全体を回転させる
 				Vector3 newRotation = new Vector3(0.0f, -m_nextTileNumber * (360 / m_divNum), 0.0f);
@@ -199,9 +204,17 @@ public class ScrollController : MonoBehaviour
 				// タイルに曲名を入れていく
 				for (int i = 0; i < m_soundTiles.Length; ++i)
 				{
-					int soundNumber = (m_musicPieceList.Length - i + m_frontTileNumber - 2) % m_musicPieceList.Length;
-					m_soundTiles[i].GetChild(0).GetComponent<Text>().text = m_musicPieceList[soundNumber];
+					m_soundTiles[i].GetChild(0).GetComponent<Text>().text =
+						m_musicPieceList[(m_musicPieceList.Length - i + m_frontTileNumber - 2) % m_musicPieceList.Length];
 				}
+			}
+		}
+		else if(Input.GetMouseButtonUp(0))
+		{
+			if(m_startXPosition.Equals(m_nowXPosition))
+			{
+				// 楽曲が選択された
+
 			}
 		}
 	}
