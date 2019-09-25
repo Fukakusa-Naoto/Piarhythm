@@ -214,7 +214,7 @@ public class ScrollController : MonoBehaviour
 			if(m_startXPosition.Equals(m_nowXPosition))
 			{
 				// 楽曲が選択された
-
+				m_selectManager.OnSelectEnter(m_frontTileNumber);
 			}
 		}
 	}

@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
@@ -86,5 +87,23 @@ public class SelectManager : MonoBehaviour
 		}
 
 		return musicPieceList;
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   楽曲が選択された時の処理
+	//!
+	//! @parameter [soundNumber] 選択された楽曲の数字
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnSelectEnter(int soundNumber)
+	{
+		// プレイする楽曲のファイルを保存する
+		PlayerPrefs.SetString("Path", m_musicPieceArray[soundNumber]);
+
+		// プレイシーンに遷移する
+		SceneManager.LoadScene(0);
 	}
 }
