@@ -1437,7 +1437,7 @@ GameObject:
   - component: {fileID: 714625026}
   - component: {fileID: 714625027}
   m_Layer: 5
-  m_Name: Twinkle Twinkle Little Star
+  m_Name: MusicalScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

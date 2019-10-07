@@ -74,12 +74,6 @@ public class KeyboardManager : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
-	void Update()
-    {
-
-    }
-
 
 	// 押されている
 	void OnNoteOn(MidiMessage midi)
