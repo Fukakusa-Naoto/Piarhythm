@@ -15,6 +15,7 @@ using UnityEngine;
 using System.Windows.Forms; //OpenFileDialog用に使う
 using System.IO;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
@@ -24,6 +25,9 @@ public class PlayManager : MonoBehaviour
 	private AudioSource m_audioSource;
 	private AudioClip m_audioClip = null;
 	private MusicPieceData m_musicPieceData;
+	private float m_notesEndTime;
+	// 経過時間
+	private float m_elapsedTime = 0.0f;
 
 
 	// メンバ関数の定義 =====================================================
@@ -53,6 +57,17 @@ public class PlayManager : MonoBehaviour
 		if (m_audioClip == null)
 			//StartCoroutine("Load", m_musicPieceData.bgmData.path);
 			StartCoroutine(LoadToAudioClip(m_musicPieceData.bgmData.path));
+
+
+		// ノーツの終了時間の取得
+		m_notesEndTime = 0.0f;
+		foreach(NoteData n in m_musicPieceData.noteDatas)
+		{
+			if (m_notesEndTime < n.endTime)
+			{
+				m_notesEndTime = n.endTime;
+			}
+		}
 	}
 
 
@@ -66,7 +81,17 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Update()
 	{
+		// 時間のカウント
+		m_elapsedTime += Time.deltaTime;
+
+		// BGMの再生
 		if ((m_audioClip != null) && (!m_audioSource.isPlaying)) m_audioSource.Play();
+
+		// BGMの停止
+		if (m_audioSource.time >= m_musicPieceData.bgmData.endTime) m_audioSource.Stop();
+
+		// 楽曲の終了
+		if ((!m_audioSource.isPlaying) && (m_notesEndTime <= m_elapsedTime)) SceneManager.LoadScene(2);
 	}
 
 
@@ -74,34 +99,11 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   読み込み処理
 	//!
-	//! @parameter [void] なし
+	//! @parameter [path] ファイルパス
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	IEnumerator Load(string file)
-	{
-		//AudioType.MPEG
-		using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + file, AudioType.WAV))
-		{
-			yield return www.SendWebRequest();
-
-			if (www.isNetworkError)
-			{
-				Debug.Log(www.error);
-			}
-			else
-			{
-				m_audioClip = m_audioSource.clip = DownloadHandlerAudioClip.GetContent(www);
-				string[] str = file.Split('\\');
-				m_audioClip.name = str[str.Length - 1];
-				m_audioSource.time = m_musicPieceData.bgmData.startTime;
-			}
-		}
-	}
-
-
-
-	IEnumerator LoadToAudioClip(string path)
+	public IEnumerator LoadToAudioClip(string path)
 	{
 		if (m_audioSource == null || string.IsNullOrEmpty(path))
 			yield break;
@@ -113,7 +115,7 @@ public class PlayManager : MonoBehaviour
 			yield break;
 		}
 
-		using (WWW www = new WWW("file://" + path))  //※あくまでローカルファイルとする
+		using (WWW www = new WWW("file://" + path))
 		{
 			while (!www.isDone)
 				yield return null;
@@ -133,4 +135,18 @@ public class PlayManager : MonoBehaviour
 			m_audioSource.time = m_musicPieceData.bgmData.startTime;
 		}
 	}
+
+
+	//-----------------------------------------------------------------
+	//! @summary   経過時間の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    楽曲が再生されてからの経過時間
+	//-----------------------------------------------------------------
+	public float GetElapsedTime()
+	{
+		return m_elapsedTime;
+	}
+
 }

@@ -21,8 +21,7 @@ public class MusicController : MonoBehaviour
 	[SerializeField]
 	private int m_speed = 5;
 	private RectTransform m_transform;
-	// 経過時間
-	private float m_elapsedTime;
+	public PlayManager m_playManager;
 
 
 	// メンバ関数の定義 =====================================================
@@ -36,8 +35,6 @@ public class MusicController : MonoBehaviour
 	void Start()
     {
 		m_transform = GetComponent<RectTransform>();
-
-		m_elapsedTime = 0.0f;
 
 		// ノーツの生成
 		Create();
@@ -54,11 +51,8 @@ public class MusicController : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Update()
     {
-		// 時間のカウント
-		m_elapsedTime += Time.deltaTime;
-
 		// 譜面を流す
-		float pos = (m_speed * -100.0f) * m_elapsedTime;
+		float pos = (m_speed * -100.0f) * m_playManager.GetElapsedTime();
 		m_transform.localPosition = new Vector3(0, pos, 0);
     }
 
