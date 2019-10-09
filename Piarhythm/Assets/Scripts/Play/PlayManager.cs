@@ -28,6 +28,7 @@ public class PlayManager : MonoBehaviour
 	private float m_notesEndTime;
 	// 経過時間
 	private float m_elapsedTime = 0.0f;
+	private SystemData m_systemData;
 
 
 	// メンバ関数の定義 =====================================================
@@ -61,12 +62,30 @@ public class PlayManager : MonoBehaviour
 
 		// ノーツの終了時間の取得
 		m_notesEndTime = 0.0f;
-		foreach(NoteData n in m_musicPieceData.noteDatas)
+		foreach (NoteData n in m_musicPieceData.noteDatas)
 		{
 			if (m_notesEndTime < n.endTime)
 			{
 				m_notesEndTime = n.endTime;
 			}
+		}
+
+
+		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		m_systemData = new SystemData();
+
+		// ファイルの有無を調べる
+		if (File.Exists(dataFilePath))
+		{
+			// ファイルを読み込む
+			string json = File.ReadAllText(dataFilePath);
+			m_systemData = JsonUtility.FromJson<SystemData>(json); ;
+		}
+		else
+		{
+			// 初期化
+			m_systemData.speed = 1.0f;
+			m_systemData.keyNumber = 88;
 		}
 	}
 
@@ -149,4 +168,31 @@ public class PlayManager : MonoBehaviour
 		return m_elapsedTime;
 	}
 
+
+
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    ノーツの配列
+	//-----------------------------------------------------------------
+	public NoteData[] GetNoteDatas()
+	{
+		return m_musicPieceData.noteDatas;
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   再生速度の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    再生速度
+	//-----------------------------------------------------------------
+	public float GetPlaySpeed()
+	{
+		return m_systemData.speed;
+	}
 }
