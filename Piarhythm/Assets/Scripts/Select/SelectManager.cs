@@ -35,7 +35,7 @@ public class SelectManager : MonoBehaviour
     {
 		// フォルダ内の全てのjsonファイルを取得する
 		m_musicPieceArray = System.IO.Directory.GetFiles(
-			UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece",
+			UnityEngine.Application.dataPath + "/StreamingAssets/Data/MusicPiece",
 			"*.json",
 			System.IO.SearchOption.AllDirectories);
 	}

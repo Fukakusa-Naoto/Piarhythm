@@ -75,7 +75,7 @@ public class EditManager : MonoBehaviour
 		m_bgmData = new BGMData();
 		m_audioSource = gameObject.GetComponent<AudioSource>();
 
-		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
 		m_systemData = new SystemData();
 
 		// ファイルの有無を調べる
@@ -235,8 +235,8 @@ public class EditManager : MonoBehaviour
 	public void OnSaveButton()
 	{
 		// BGMファイルをコピーする
-		if (!File.Exists(UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name))
-			File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/Resources/BGM/" + m_audioClip.name);
+		if (!File.Exists(UnityEngine.Application.dataPath + "/StreamingAssets/BGM/" + m_audioClip.name))
+			File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/StreamingAssets/BGM/" + m_audioClip.name);
 
 		// 楽曲データを構築する
 		MusicPieceData musicPieceData = new MusicPieceData();
@@ -246,7 +246,7 @@ public class EditManager : MonoBehaviour
 		// json文字列に変換する
 		string json = JsonUtility.ToJson(musicPieceData);
 		// ファイルに書き出し
-		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/MusicPiece/" + Path.GetFileNameWithoutExtension(m_audioClip.name) + ".json";
+		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/MusicPiece/" + Path.GetFileNameWithoutExtension(m_audioClip.name) + ".json";
 		File.WriteAllText(dataFilePath, json);
 	}
 

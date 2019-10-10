@@ -18,11 +18,11 @@ using UnityEngine.SceneManagement;
 // 列挙型の定義 =============================================================
 enum ScenenID : int
 {
+	SCENE_TITLE,		// タイトル
 	SCENE_PLAY,			// プレイ
 	SCENE_EDIT,			// エディット
 	SCENE_SELECT,		// セレクト
 	SCENE_SETTING,		// 設定
-	SCENE_TITLE,		// タイトル
 }
 
 // クラスの定義 =============================================================

@@ -46,7 +46,7 @@ public class SettingManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Start()
 	{
-		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
 		m_systemData = new SystemData();
 
 		// ファイルの有無を調べる
@@ -171,7 +171,7 @@ public class SettingManager : MonoBehaviour
 		string json = JsonUtility.ToJson(m_systemData);
 
 		// ファイルに書き出し
-		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
 		File.WriteAllText(dataFilePath, json);
 
 		// 前のシーンに戻る

@@ -71,7 +71,7 @@ public class PlayManager : MonoBehaviour
 		}
 
 
-		string dataFilePath = UnityEngine.Application.dataPath + "/Resources/Data/System/SystemData.json";
+		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
 		m_systemData = new SystemData();
 
 		// ファイルの有無を調べる
