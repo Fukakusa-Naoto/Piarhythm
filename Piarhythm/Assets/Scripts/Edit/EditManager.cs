@@ -324,4 +324,21 @@ public class EditManager : MonoBehaviour
 		InputField inputField = m_endInputField.GetComponent<InputField>();
 		m_bgmData.endTime = float.Parse(inputField.text);
 	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   音楽データの取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    読み込んだ音楽データ
+	//-----------------------------------------------------------------
+	public float[] GetAudioData()
+	{
+		if (!m_audioClip) return null;
+		float[] samples = new float[m_audioClip.samples];
+		m_audioSource.clip.GetData(samples, m_audioSource.timeSamples);
+		return samples;
+	}
 }

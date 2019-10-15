@@ -17,7 +17,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
-// クラスの定義 =============================================================
+// 構造体の定義 =============================================================
 [System.Serializable]
 public struct SystemData
 {
@@ -28,6 +28,7 @@ public struct SystemData
 }
 
 
+// クラスの定義 =============================================================
 public class SettingManager : MonoBehaviour
 {
 	// <メンバ変数>

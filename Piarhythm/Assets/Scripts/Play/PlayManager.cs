@@ -56,7 +56,6 @@ public class PlayManager : MonoBehaviour
 
 		// BGMの読み込みコルーチンのスタート
 		if (m_audioClip == null)
-			//StartCoroutine("Load", m_musicPieceData.bgmData.path);
 			StartCoroutine(LoadToAudioClip(m_musicPieceData.bgmData.path));
 
 
