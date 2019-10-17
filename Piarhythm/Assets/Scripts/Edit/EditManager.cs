@@ -339,6 +339,7 @@ public class EditManager : MonoBehaviour
 		if (!m_audioClip) return null;
 		float[] samples = new float[m_audioClip.samples];
 		m_audioSource.clip.GetData(samples, m_audioSource.timeSamples);
+
 		return samples;
 	}
 }
