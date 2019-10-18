@@ -41,7 +41,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
     {
-		m_imageWidth = (int)GetComponent<RectTransform>().sizeDelta.x;
+		m_imageWidth = (int)Mathf.Pow(2.0f, 10.0f);
 		InitializeTexture();
     }
 
@@ -71,7 +71,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 	private void InitializeTexture()
 	{
 		m_texture = new Texture2D(m_imageWidth, 1);
-		m_texture.SetPixels(Enumerable.Range(0, m_imageWidth).Select(_ => Color.clear).ToArray());
+		m_texture.SetPixels(Enumerable.Range(0, m_imageWidth).Select(n => Color.clear).ToArray());
 		m_texture.Apply();
 		m_image.texture = m_texture;
 	}
@@ -91,14 +91,13 @@ public class NotesEditScrollbarController : MonoBehaviour
 		if (m_samples == null) return;
 
 		int textureX = 0;
-		int skipSamples = 200;
 		float maxSample = 0;
 
-		for (int i = 0, l = m_samples.Length; i < l && textureX < m_imageWidth; i++)
+		for (int i = 0, l = m_samples.Length; (i < l) && (textureX < m_imageWidth); ++i)
 		{
 			maxSample = Mathf.Max(maxSample, m_samples[i]);
 
-			if (i % skipSamples == 0)
+			if (i % (int)(m_samples.Length / m_imageWidth) == 0)
 			{
 				m_texture.SetPixel(textureX, 0, new Color(maxSample, 0, 0));
 				maxSample = 0;
