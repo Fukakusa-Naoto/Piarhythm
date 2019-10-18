@@ -22,8 +22,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 	// <メンバ変数>
 	[SerializeField]
 	private RawImage m_image;
-	[SerializeField]
-	private int m_imageWidth;
+	private int m_imageHeight;
 
 	private Texture2D m_texture;
 	private float[] m_samples;
@@ -41,7 +40,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
     {
-		m_imageWidth = (int)Mathf.Pow(2.0f, 10.0f);
+		m_imageHeight = (int)Mathf.Pow(2.0f, 14.0f);
 		InitializeTexture();
     }
 
@@ -56,7 +55,6 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Update()
     {
-		UpdateTexture();
     }
 
 
@@ -70,8 +68,8 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void InitializeTexture()
 	{
-		m_texture = new Texture2D(m_imageWidth, 1);
-		m_texture.SetPixels(Enumerable.Range(0, m_imageWidth).Select(n => Color.clear).ToArray());
+		m_texture = new Texture2D(1, m_imageHeight);
+		m_texture.SetPixels(Enumerable.Range(0, m_imageHeight).Select(n => Color.white).ToArray());
 		m_texture.Apply();
 		m_image.texture = m_texture;
 	}
@@ -85,23 +83,24 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void UpdateTexture()
+	public void UpdateTexture()
 	{
 		m_samples = m_editManager.GetAudioData();
 		if (m_samples == null) return;
 
-		int textureX = 0;
+		int textureY = 0;
 		float maxSample = 0;
 
-		for (int i = 0, l = m_samples.Length; (i < l) && (textureX < m_imageWidth); ++i)
+		for (int i = 0, l = m_samples.Length; (i < l) && (textureY < m_imageHeight); ++i)
 		{
 			maxSample = Mathf.Max(maxSample, m_samples[i]);
+			int denominator = (m_samples.Length < m_imageHeight) ? i : m_samples.Length / m_imageHeight;
 
-			if (i % (int)(m_samples.Length / m_imageWidth) == 0)
+			if (i % denominator == 0)
 			{
-				m_texture.SetPixel(textureX, 0, new Color(maxSample, 0, 0));
+				m_texture.SetPixel(0, textureY, new Color(maxSample, 0, 0));
 				maxSample = 0;
-				textureX++;
+				textureY++;
 			}
 		}
 

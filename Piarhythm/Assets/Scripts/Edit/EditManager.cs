@@ -60,6 +60,7 @@ public class EditManager : MonoBehaviour
 	public Text m_bgmText;
 	private BGMData m_bgmData;
 	public NotesManager m_notesManager;
+	public NotesEditScrollbarController m_notesEditScrollbarController;
 
 
 	// メンバ関数の定義 =====================================================
@@ -175,6 +176,9 @@ public class EditManager : MonoBehaviour
 		text.text = m_audioClip.length.ToString();
 		m_bgmData.startTime = 0.0f;
 		m_bgmData.endTime = m_audioClip.length;
+
+		// スクロールバーにグラフィックとして表示
+		m_notesEditScrollbarController.UpdateTexture();
 	}
 
 

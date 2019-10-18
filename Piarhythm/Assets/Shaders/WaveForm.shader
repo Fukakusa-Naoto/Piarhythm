@@ -33,13 +33,13 @@
 			}
 
 			fixed4 frag(v2f v) : SV_Target {
-				float volume = tex2D(_MainTex, v.uv.x).r * 0.5;
-				float uvY = v.uv.y - 0.5;
+				float volume = tex2D(_MainTex, v.uv.y).r * 0.5;
+				float uvX = v.uv.x - 0.5;
 
 				return lerp(
 					fixed4(0.1373, 0.1451, 0.13333, 0.0196),
 					fixed4(0, 0.6, 0, 0),
-					-volume < uvY && uvY < volume
+					-volume < uvX && uvX < volume
 				);
 			}
 
