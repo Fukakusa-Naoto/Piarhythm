@@ -179,6 +179,7 @@ public class EditManager : MonoBehaviour
 
 		// スクロールバーにグラフィックとして表示
 		m_notesEditScrollbarController.UpdateTexture();
+		m_musicalScore.SetMusicalScoreSize(m_bgmData.endTime - m_bgmData.startTime);
 	}
 
 

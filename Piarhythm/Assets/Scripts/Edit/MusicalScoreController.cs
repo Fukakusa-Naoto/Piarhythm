@@ -47,4 +47,11 @@ public class MusicalScoreController : MonoBehaviour
 	{
 		return m_time;
 	}
+
+
+	public void SetMusicalScoreSize(float height)
+	{
+		RectTransform rectTransform = GetComponent<RectTransform>();
+		rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height * 10.0f);
+	}
 }

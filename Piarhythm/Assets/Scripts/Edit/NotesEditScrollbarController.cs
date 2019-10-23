@@ -72,6 +72,13 @@ public class NotesEditScrollbarController : MonoBehaviour
 		m_texture.SetPixels(Enumerable.Range(0, m_imageHeight).Select(n => Color.white).ToArray());
 		m_texture.Apply();
 		m_image.texture = m_texture;
+
+		for (int i = 0; i < m_imageHeight; ++i)
+		{
+			m_texture.SetPixel(0, i, new Color(0.01f, 0, 0));
+		}
+
+		m_texture.Apply();
 	}
 
 
