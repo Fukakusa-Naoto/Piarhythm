@@ -39,7 +39,7 @@ public struct MusicPieceData
 	// BGM
 	public BGMData bgmData;
 	// ノーツ
-	public NoteData[] noteDatas;
+	public NotesData[] notesDataList;
 }
 
 
@@ -246,7 +246,7 @@ public class EditManager : MonoBehaviour
 		// 楽曲データを構築する
 		MusicPieceData musicPieceData = new MusicPieceData();
 		musicPieceData.bgmData = m_bgmData;
-		musicPieceData.noteDatas = m_notesManager.GetNoteDatas();
+		musicPieceData.notesDataList = m_notesManager.GetNotesDatas();
 
 		// json文字列に変換する
 		string json = JsonUtility.ToJson(musicPieceData);

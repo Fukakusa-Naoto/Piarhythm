@@ -80,9 +80,9 @@ public class MusicController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Create(NoteData[] noteDatas)
+	private void Create(NotesData[] noteDatas)
 	{
-		foreach(NoteData n in noteDatas)
+		foreach(NotesData n in noteDatas)
 		{
 			// オブジェクトを生成する
 			GameObject newNote = Instantiate(m_notePrefab);

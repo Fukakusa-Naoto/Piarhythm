@@ -24,7 +24,7 @@ public class NoteEdit : MonoBehaviour
 	public NotesManager m_notesManager;
 	private bool m_isMove;
 	private Dictionary<string, float> m_keyPositionDictionary;
-	private NoteData m_noteData;
+	private NotesData m_noteData;
 	private EditManager m_editManager;
 
 
@@ -39,7 +39,7 @@ public class NoteEdit : MonoBehaviour
 	void Start()
 	{
 		m_editManager = GameObject.Find("EditManager").GetComponent<EditManager>();
-		m_noteData = new NoteData();
+		m_noteData = new NotesData();
 		m_noteData.scale = "C4";
 		m_isMove = false;
 		m_notesManager = GameObject.Find("NotesManager").GetComponent<NotesManager>();
@@ -284,5 +284,5 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   ノードデータの取得
 	//-----------------------------------------------------------------
-	public NoteData GetNodeData() { return m_noteData; }
+	public NotesData GetNodeData() { return m_noteData; }
 }

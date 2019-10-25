@@ -61,7 +61,7 @@ public class PlayManager : MonoBehaviour
 
 		// ノーツの終了時間の取得
 		m_notesEndTime = 0.0f;
-		foreach (NoteData n in m_musicPieceData.noteDatas)
+		foreach (NotesData n in m_musicPieceData.notesDataList)
 		{
 			if (m_notesEndTime < n.endTime)
 			{
@@ -176,9 +176,9 @@ public class PlayManager : MonoBehaviour
 	//!
 	//! @return    ノーツの配列
 	//-----------------------------------------------------------------
-	public NoteData[] GetNoteDatas()
+	public NotesData[] GetNoteDatas()
 	{
-		return m_musicPieceData.noteDatas;
+		return m_musicPieceData.notesDataList;
 	}
 
 

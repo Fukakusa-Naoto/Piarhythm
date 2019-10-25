@@ -17,7 +17,7 @@ using UnityEngine.UI;
 
 // クラスの定義 =============================================================
 [System.Serializable]
-public struct NoteData
+public struct NotesData
 {
 	// 音階
 	public string scale;
@@ -25,6 +25,8 @@ public struct NoteData
 	public float startTime;
 	// 終了時間
 	public float endTime;
+	// 色
+	public Color color;
 }
 
 
@@ -90,7 +92,7 @@ public class NotesManager : MonoBehaviour
 
 		if (m_selectNote)
 		{
-			NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+			NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
 			m_musicalScale.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.scale;
 			m_notesStart.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.startTime.ToString();
 			m_notesEnd.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.endTime.ToString();
@@ -149,7 +151,7 @@ public class NotesManager : MonoBehaviour
 		InputField inputField = m_notesStart.GetComponent<InputField>();
 		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetStartTime(float.Parse(inputField.text));
 
-		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+		NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
 		m_notesEnd.GetComponent<InputField>().text = nodeData.endTime.ToString();
 		m_notesEnd.transform.GetChild(2).GetComponent<Text>().text = nodeData.endTime.ToString();
 	}
@@ -169,7 +171,7 @@ public class NotesManager : MonoBehaviour
 		InputField inputField = m_notesEnd.GetComponent<InputField>();
 		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetEndTime(float.Parse(inputField.text));
 
-		NoteData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
+		NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
 		m_notesStart.GetComponent<InputField>().text = nodeData.startTime.ToString();
 		m_notesStart.transform.GetChild(2).GetComponent<Text>().text = nodeData.startTime.ToString();
 	}
@@ -183,13 +185,13 @@ public class NotesManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public NoteData[] GetNoteDatas()
+	public NotesData[] GetNotesDatas()
 	{
-		NoteData[] noteDatas = new NoteData[m_noteList.Count];
+		NotesData[] notesDataList = new NotesData[m_noteList.Count];
 		for(int i = 0; i < m_noteList.Count; ++i)
 		{
-			noteDatas[i] = m_noteList[i].GetComponent<NoteEdit>().GetNodeData();
+			notesDataList[i] = m_noteList[i].GetComponent<NoteEdit>().GetNodeData();
 		}
-		return noteDatas;
+		return notesDataList;
 	}
 }
