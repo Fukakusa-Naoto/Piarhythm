@@ -23,7 +23,7 @@ public class EditNotesController : MonoBehaviour
 	private Image m_image;
 
 	// ノーツ情報
-	private NotesData m_notesData;
+	private Datas.NotesData m_notesData;
 
 
 	// メンバ関数の定義 =====================================================
@@ -85,7 +85,7 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @return    ノーツ情報
 	//-----------------------------------------------------------------
-	public NotesData GetNotesData()
+	public Datas.NotesData GetNotesData()
 	{
 		return m_notesData;
 	}

@@ -20,29 +20,6 @@ using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
-[System.Serializable]
-public struct BGMData
-{
-	// ファイルパス
-	public string path;
-	// 開始時間
-	public float startTime;
-	// 終了時間
-	public float endTime;
-}
-
-
-
-[System.Serializable]
-public struct MusicPieceData
-{
-	// BGM
-	public BGMData bgmData;
-	// ノーツ
-	public NotesData[] notesDataList;
-}
-
-
 public class EditManager : MonoBehaviour
 {
 	// <メンバ変数>
@@ -58,7 +35,7 @@ public class EditManager : MonoBehaviour
 	public GameObject m_startInputField;
 	public GameObject m_endInputField;
 	public Text m_bgmText;
-	private BGMData m_bgmData;
+	private Datas.BGMData m_bgmData;
 	public NotesManager m_notesManager;
 	public NotesEditScrollbarController m_notesEditScrollbarController;
 
@@ -73,7 +50,7 @@ public class EditManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
 	{
-		m_bgmData = new BGMData();
+		m_bgmData = new Datas.BGMData();
 		m_audioSource = gameObject.GetComponent<AudioSource>();
 
 		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
@@ -244,7 +221,7 @@ public class EditManager : MonoBehaviour
 			File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/StreamingAssets/BGM/" + m_audioClip.name);
 
 		// 楽曲データを構築する
-		MusicPieceData musicPieceData = new MusicPieceData();
+		Datas.MusicPieceData musicPieceData = new Datas.MusicPieceData();
 		musicPieceData.bgmData = m_bgmData;
 		musicPieceData.notesDataList = m_notesManager.GetNotesDatas();
 
