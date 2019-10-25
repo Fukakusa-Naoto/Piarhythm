@@ -64,58 +64,6 @@ public class NoteEdit : MonoBehaviour
 
 
 	//-----------------------------------------------------------------
-	//! @summary   更新処理
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	void Update()
-	{
-		if(m_isMove)
-		{
-			Vector2 localpoint;
-			Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-			RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
-
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, Input.mousePosition, canvas.worldCamera, out localpoint);
-
-			foreach(KeyValuePair<string, float> n in m_keyPositionDictionary)
-			{
-				if ((localpoint.x > n.Value - 5.0f) && (localpoint.x < n.Value + 5.0f))
-				{
-					localpoint.x = n.Value;
-					GetComponent<RectTransform>().localPosition = localpoint;
-					m_noteData.scale = n.Key;
-
-					if(n.Key.Contains("#"))
-					{
-						GetComponent<RectTransform>().localScale = new Vector3(0.1f, 1.0f, 1.0f);
-						GetComponent<Image>().color = new Color(64.0f / 256.0f, 103.0f / 256.0f, 38.0f / 256.0f);
-					}
-					else
-					{
-						GetComponent<RectTransform>().localScale = new Vector3(0.2f, 1.0f, 1.0f);
-						GetComponent<Image>().color = new Color(112.0f / 256.0f, 173.0f / 256.0f, 71.0f / 256.0f);
-					}
-					break;
-				}
-				else
-				{
-					GetComponent<RectTransform>().localPosition = new Vector3(this.GetComponent<RectTransform>().localPosition.x, localpoint.y, this.GetComponent<RectTransform>().localPosition.z);
-
-					m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
-					m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
-				}
-			}
-
-			m_isMove = false;
-		}
-	}
-
-
-
-	//-----------------------------------------------------------------
 	//! @summary   移動中のフラグを立てる
 	//!
 	//! @parameter [void] なし
@@ -124,7 +72,42 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnMove()
 	{
-		m_isMove = true;
+		Vector2 localpoint;
+		Canvas canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+		RectTransform parentRect = transform.parent.GetComponent<RectTransform>();
+
+		RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, Input.mousePosition, canvas.worldCamera, out localpoint);
+
+		foreach (KeyValuePair<string, float> n in m_keyPositionDictionary)
+		{
+			if ((localpoint.x > n.Value - 2.0f) && (localpoint.x < n.Value + 2.0f))
+			{
+				localpoint.x = n.Value;
+				GetComponent<RectTransform>().localPosition = localpoint;
+				m_noteData.scale = n.Key;
+
+				if (n.Key.Contains("#"))
+				{
+					//GetComponent<RectTransform>().localScale = new Vector3(0.1f, 1.0f, 1.0f);
+					GetComponent<Image>().color = new Color(64.0f / 256.0f, 103.0f / 256.0f, 38.0f / 256.0f);
+				}
+				else
+				{
+					//GetComponent<RectTransform>().localScale = new Vector3(0.2f, 1.0f, 1.0f);
+					GetComponent<Image>().color = new Color(112.0f / 256.0f, 173.0f / 256.0f, 71.0f / 256.0f);
+				}
+				break;
+			}
+			else
+			{
+				GetComponent<RectTransform>().localPosition = new Vector3(this.GetComponent<RectTransform>().localPosition.x, localpoint.y, this.GetComponent<RectTransform>().localPosition.z);
+
+				m_noteData.startTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMin.y);
+				m_noteData.endTime = ConvertDistanceToTime(GetComponent<RectTransform>().offsetMax.y);
+			}
+		}
+
+		Debug.Log(m_noteData.scale);
 	}
 
 
