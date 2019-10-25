@@ -21,7 +21,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 {
 	// <メンバ変数>
 	[SerializeField]
-	private RawImage m_image;
+	private RawImage m_image = null;
 	private int m_imageHeight;
 
 	private Texture2D m_texture;

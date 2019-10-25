@@ -223,7 +223,7 @@ public class EditManager : MonoBehaviour
 		// 楽曲データを構築する
 		Datas.MusicPieceData musicPieceData = new Datas.MusicPieceData();
 		musicPieceData.bgmData = m_bgmData;
-		musicPieceData.notesDataList = m_notesManager.GetNotesDatas();
+		//musicPieceData.notesDataList = m_notesManager.GetNotesDatas();
 
 		// json文字列に変換する
 		string json = JsonUtility.ToJson(musicPieceData);

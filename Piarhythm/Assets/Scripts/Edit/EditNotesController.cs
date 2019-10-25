@@ -19,8 +19,12 @@ using UnityEngine.UI;
 public class EditNotesController : MonoBehaviour
 {
 	// <メンバ変数>
+	// コンポーネント
 	private RectTransform m_transform;
 	private Image m_image;
+
+	// マネージャー
+	private NotesManager m_notesManager;
 
 	// ノーツ情報
 	private Datas.NotesData m_notesData;
@@ -39,6 +43,15 @@ public class EditNotesController : MonoBehaviour
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();
 		m_image = GetComponent<Image>();
+
+		// データの初期化
+		m_notesData = new Datas.NotesData();
+
+		// 音階の設定
+		m_notesData.scale = "C4";
+
+		// 座標の初期化
+
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
@@ -73,15 +86,13 @@ public class EditNotesController : MonoBehaviour
 	public void OnPointerDown()
 	{
 		// 選択されたことをNotesManagerに伝える
-		Debug.Log("選択された");
+		m_notesManager.SetSelectNotes(gameObject);
 	}
 
 
 
 	//-----------------------------------------------------------------
 	//! @summary   ノーツ情報の取得
-	//!
-	//! @parameter [void] なし
 	//!
 	//! @return    ノーツ情報
 	//-----------------------------------------------------------------
@@ -96,8 +107,6 @@ public class EditNotesController : MonoBehaviour
 	//! @summary   ノーツの音階を設定する
 	//!
 	//! @parameter [scale] 設定する音階
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetNotesScale(string scale)
 	{
@@ -110,8 +119,6 @@ public class EditNotesController : MonoBehaviour
 	//! @summary   ノーツの開始時間を設定する
 	//!
 	//! @parameter [startTime] 設定する開始時間
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetNotesStartTime(float startTime)
 	{
@@ -124,8 +131,6 @@ public class EditNotesController : MonoBehaviour
 	//! @summary   ノーツの終了時間を設定する
 	//!
 	//! @parameter [endTime] 設定する終了時間
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetNotesEndTime(float endTime)
 	{
@@ -138,11 +143,21 @@ public class EditNotesController : MonoBehaviour
 	//! @summary   ノーツの色を設定する
 	//!
 	//! @parameter [color] 設定する色
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetNotesColor(Color color)
 	{
 		m_notesData.color = color;
+	}
+
+
+
+	//-----------------------------------------------------------------
+	//! @summary   NotesManagerを設定する
+	//!
+	//! @parameter [notesManager] 設定するNotesManager
+	//-----------------------------------------------------------------
+	public void SetNotesManager(NotesManager notesManager)
+	{
+		m_notesManager = notesManager;
 	}
 }

@@ -22,7 +22,6 @@ public class NoteEdit : MonoBehaviour
 {
 	// <メンバ変数>
 	public NotesManager m_notesManager;
-	private bool m_isMove;
 	private Dictionary<string, float> m_keyPositionDictionary;
 	private Datas.NotesData m_noteData;
 	private EditManager m_editManager;
@@ -41,7 +40,6 @@ public class NoteEdit : MonoBehaviour
 		m_editManager = GameObject.Find("EditManager").GetComponent<EditManager>();
 		m_noteData = new Datas.NotesData();
 		m_noteData.scale = "C4";
-		m_isMove = false;
 		m_notesManager = GameObject.Find("NotesManager").GetComponent<NotesManager>();
 
 		GameObject key = GameObject.Find("88Key");
