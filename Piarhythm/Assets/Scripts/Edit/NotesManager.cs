@@ -18,6 +18,10 @@ using UnityEngine.UI;
 // クラスの定義 =============================================================
 public class NotesManager : MonoBehaviour
 {
+	// <メンバ定数>
+	public const float NOTES_SPEED = 10.0f;
+
+
 	// <メンバ変数>
 	// 生成された全てのノーツリスト
 	private List<GameObject> m_notesList;

@@ -52,14 +52,12 @@ public class MusicalScoreController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void ChangeScoreLength(float length)
 	{
-		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, length * 10.0f);
 		// 時間を座標に変換
+		float height = length * NotesManager.NOTES_SPEED;
 
+		if (height < MIN_HEIGHT) height = MIN_HEIGHT;
 
-		if (length < MIN_HEIGHT)
-		{
-
-		}
+		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, height);
 	}
 	#endregion
 
