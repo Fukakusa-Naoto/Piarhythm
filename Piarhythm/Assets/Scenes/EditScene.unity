@@ -4125,7 +4125,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27b8e59d18b744e48a65d7bbca3172be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_image: {fileID: 771316874}
   m_editManager: {fileID: 5288803}
 --- !u!114 &771316876
 MonoBehaviour:
@@ -4619,7 +4618,7 @@ PrefabInstance:
     - target: {fileID: 5026115498171245664, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -151.55
+      value: -151.54999
       objectReference: {fileID: 0}
     - target: {fileID: 5026115498171245664, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}
@@ -4665,21 +4664,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5026115498171245664, guid: 00f932d0442e68c4a8e43200d97d4a1a,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5026115498171245664, guid: 00f932d0442e68c4a8e43200d97d4a1a,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5026115498171245664, guid: 00f932d0442e68c4a8e43200d97d4a1a,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 00f932d0442e68c4a8e43200d97d4a1a, type: 3}
@@ -7120,6 +7104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 936bf125fbe50f7468a48ec2c200fd0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_notesEditScrollbarController: {fileID: 0}
 --- !u!224 &1546991729
 RectTransform:
   m_ObjectHideFlags: 0
