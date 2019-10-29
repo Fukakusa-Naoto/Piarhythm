@@ -21,6 +21,9 @@ public class MusicalPieceManager : MonoBehaviour
 	[SerializeField]
 	private GameObject m_totalTimeInputField = null;
 
+	[SerializeField]
+	private MusicalScoreController m_musicalScoreController = null;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 楽曲全体の時間の入力があった時の処理
@@ -38,6 +41,7 @@ public class MusicalPieceManager : MonoBehaviour
 		if (inputField.text == "") inputField.text = "0.0";
 
 		// 変更を報告する
+		m_musicalScoreController.ChangeScoreLength(float.Parse(inputField.text));
 	}
 	#endregion
 }

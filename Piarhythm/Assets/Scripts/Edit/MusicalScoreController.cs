@@ -25,6 +25,9 @@ public class MusicalScoreController : MonoBehaviour
 	// コンポーネント
 	private RectTransform m_transform = null;
 
+	[SerializeField]
+	private NotesEditScrollbarController m_notesEditScrollbarController;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 初期化処理

@@ -6938,6 +6938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_totalTimeInputField: {fileID: 670018046}
+  m_musicalScoreController: {fileID: 1546991728}
 --- !u!1 &1512081425
 GameObject:
   m_ObjectHideFlags: 0
