@@ -89,7 +89,7 @@ public class EditManager : MonoBehaviour
 			if (m_audioSource.time >= m_bgmData.endTime)
 			{
 				m_audioSource.Stop();
-				m_musicalScore.Stop();
+				//m_musicalScore.Stop();
 			}
 			m_nowTime.text = m_audioSource.time.ToString();
 		}
@@ -156,7 +156,7 @@ public class EditManager : MonoBehaviour
 
 		// スクロールバーにグラフィックとして表示
 		m_notesEditScrollbarController.UpdateTexture();
-		m_musicalScore.SetMusicalScoreSize(m_bgmData.endTime - m_bgmData.startTime);
+		m_musicalScore.ChangeScoreLength(m_bgmData.endTime - m_bgmData.startTime);
 	}
 
 
@@ -172,7 +172,7 @@ public class EditManager : MonoBehaviour
 	{
 		m_audioSource.time = m_bgmData.startTime;
 		if (!m_audioSource.isPlaying) m_audioSource.Play();
-		m_musicalScore.Play();
+		//m_musicalScore.Play();
 	}
 
 
@@ -187,7 +187,7 @@ public class EditManager : MonoBehaviour
 	public void OnPauseButton()
 	{
 		m_audioSource.Pause();
-		m_musicalScore.Pause();
+		//m_musicalScore.Pause();
 	}
 
 
@@ -202,7 +202,7 @@ public class EditManager : MonoBehaviour
 	public void OnStopButton()
 	{
 		if (m_audioSource.isPlaying) m_audioSource.Stop();
-		m_musicalScore.Stop();
+		//m_musicalScore.Stop();
 	}
 
 

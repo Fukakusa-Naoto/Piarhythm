@@ -1,9 +1,70 @@
-﻿using System.Collections;
+﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+//! @file		MusicalScoreController.cs
+//!
+//! @summary	楽譜に関するC#スクリプト
+//!
+//! @date		2019.10.29
+//!
+//! @author		深草直斗
+//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+
+// 名前空間の省略 ===========================================================
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+
+// クラスの定義 =============================================================
 public class MusicalScoreController : MonoBehaviour
 {
+	// <メンバ定数>
+	const float MIN_HEIGHT = 300.0f;
+
+	// <メンバ変数>
+	// コンポーネント
+	private RectTransform m_transform = null;
+
+
+	// メンバ関数の定義 =====================================================
+	#region 初期化処理
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void Start()
+	{
+		// コンポーネントの取得
+		m_transform = GetComponent<RectTransform>();
+	}
+	#endregion
+
+	#region 楽曲の長さが変更された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲の長さが変更された時の処理
+	//!
+	//! @parameter [length] 楽曲の長さ
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void ChangeScoreLength(float length)
+	{
+		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, length * 10.0f);
+		// 時間を座標に変換
+
+
+		if (length < MIN_HEIGHT)
+		{
+
+		}
+	}
+	#endregion
+
+
+#if false
 	private bool m_isPlaying;
 	private Vector3 m_startPosition;
 	private float m_time;
@@ -54,4 +115,5 @@ public class MusicalScoreController : MonoBehaviour
 		RectTransform rectTransform = GetComponent<RectTransform>();
 		rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, height * 10.0f);
 	}
+#endif
 }

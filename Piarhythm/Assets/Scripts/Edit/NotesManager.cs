@@ -180,6 +180,20 @@ public class NotesManager : MonoBehaviour
 	}
 	#endregion
 
+	#region 音階の入力があった時の処理
+	//-----------------------------------------------------------------
+	//! @summary   音階の入力があった時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnMusicalScaleInputField()
+	{
+		InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
+	}
+	#endregion
+
 #if false
 	// <メンバ変数>
 	public GameObject m_musicalScale;
