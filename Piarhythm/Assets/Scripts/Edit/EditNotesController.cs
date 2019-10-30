@@ -31,6 +31,7 @@ public class EditNotesController : MonoBehaviour
 
 
 	// メンバ関数の定義 =====================================================
+	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
 	//!
@@ -59,8 +60,9 @@ public class EditNotesController : MonoBehaviour
 		// 色の初期化
 		m_notesData.color = m_image.color = Color.green;
 	}
+	#endregion
 
-
+	#region ドラッグ時の移動処理
 	//-----------------------------------------------------------------
 	//! @summary   ドラッグ時の移動処理
 	//!
@@ -73,9 +75,9 @@ public class EditNotesController : MonoBehaviour
 		// ノーツの移動
 		Debug.Log("Drag");
 	}
+	#endregion
 
-
-
+	#region ノーツが選択された時の処理
 	//-----------------------------------------------------------------
 	//! @summary   ノーツが選択された時の処理
 	//!
@@ -88,9 +90,9 @@ public class EditNotesController : MonoBehaviour
 		// 選択されたことをNotesManagerに伝える
 		m_notesManager.SetSelectNotes(gameObject);
 	}
+	#endregion
 
-
-
+	#region ノーツ情報の取得
 	//-----------------------------------------------------------------
 	//! @summary   ノーツ情報の取得
 	//!
@@ -100,9 +102,9 @@ public class EditNotesController : MonoBehaviour
 	{
 		return m_notesData;
 	}
+	#endregion
 
-
-
+	#region ノーツの音階を設定する
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの音階を設定する
 	//!
@@ -111,10 +113,13 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesScale(string scale)
 	{
 		m_notesData.scale = scale;
+
+		// 座標を設定された音階の位置に移動させる
+
 	}
+	#endregion
 
-
-
+	#region ノーツの開始時間を設定する
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの開始時間を設定する
 	//!
@@ -124,9 +129,9 @@ public class EditNotesController : MonoBehaviour
 	{
 		m_notesData.startTime = startTime;
 	}
+	#endregion
 
-
-
+	#region ノーツの終了時間を設定する
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの終了時間を設定する
 	//!
@@ -136,9 +141,9 @@ public class EditNotesController : MonoBehaviour
 	{
 		m_notesData.endTime = endTime;
 	}
+	#endregion
 
-
-
+	#region ノーツの色を設定する
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの色を設定する
 	//!
@@ -148,9 +153,9 @@ public class EditNotesController : MonoBehaviour
 	{
 		m_notesData.color = color;
 	}
+	#endregion
 
-
-
+	#region NotesManagerを設定する
 	//-----------------------------------------------------------------
 	//! @summary   NotesManagerを設定する
 	//!
@@ -160,4 +165,5 @@ public class EditNotesController : MonoBehaviour
 	{
 		m_notesManager = notesManager;
 	}
+	#endregion
 }

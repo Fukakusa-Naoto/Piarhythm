@@ -19,7 +19,7 @@ using UnityEngine.UI;
 public class MusicalScoreController : MonoBehaviour
 {
 	// <メンバ定数>
-	const float MIN_HEIGHT = 300.0f;
+	private static readonly float MIN_HEIGHT = 300.0f;
 
 	// <メンバ変数>
 	// コンポーネント

@@ -24,12 +24,13 @@ public class NotesEditScrollbarController : MonoBehaviour
 	private Scrollbar m_scrollbar = null;
 	private RawImage m_rawImage = null;
 
+	// マネージャー
+	[SerializeField]
+	private EditManager m_editManager = null;
+
 	private int m_imageHeight;
 	private Texture2D m_texture;
 	private float[] m_samples;
-
-	[SerializeField]
-	private EditManager m_editManager = null;
 
 
 	// メンバ関数の定義 =====================================================

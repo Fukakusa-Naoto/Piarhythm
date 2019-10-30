@@ -89,7 +89,7 @@ public class KeyboardManager : MonoBehaviour
 		var noteInfo = new NoteInfo(note);
 
 		Debug.Log(noteInfo.note);
-		m_keys[noteInfo.note].GetComponent<KeyController>().Press();
+		//m_keys[noteInfo.note].GetComponent<KeyController>().Press();
 
 		noteInfoList.Add(noteInfo);
 	}
@@ -112,7 +112,7 @@ public class KeyboardManager : MonoBehaviour
 
 		if (niFound != null)
 		{
-			m_keys[niFound.note].GetComponent<KeyController>().Release();
+			//m_keys[niFound.note].GetComponent<KeyController>().Release();
 
 			foreach (var e in niFound.elements)
 			{

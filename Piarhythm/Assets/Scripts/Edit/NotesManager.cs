@@ -19,7 +19,7 @@ using UnityEngine.UI;
 public class NotesManager : MonoBehaviour
 {
 	// <メンバ定数>
-	public const float NOTES_SPEED = 10.0f;
+	public static readonly float NOTES_SPEED = 10.0f;
 
 
 	// <メンバ変数>
@@ -194,7 +194,38 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnMusicalScaleInputField()
 	{
+		// ノーツが選択されていない場合処理を終了する
+		if (!m_selectNotes) return;
+
+		// コンポーネントの取得
 		InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
+
+		// 選択されているノーツに設定する
+		m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(inputField.text);
+	}
+	#endregion
+
+	#region 選択されているノーツに音階を設定する
+	//-----------------------------------------------------------------
+	//! @summary   選択されているノーツに音階を設定する
+	//!
+	//! @parameter [scale] 設定する音階
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetSelectNotesScale(string scale)
+	{
+		// コンポーネントの取得
+		InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
+
+		// UIへ反映する
+		inputField.text = scale;
+
+		// ノーツが選択されていない場合処理を終了する
+		if (!m_selectNotes) return;
+
+		// ノーツへ設定する
+		m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(scale);
 	}
 	#endregion
 
