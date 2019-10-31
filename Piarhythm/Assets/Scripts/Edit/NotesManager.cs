@@ -161,6 +161,7 @@ public class NotesManager : MonoBehaviour
 			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
 			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
+			m_colorDropdown.GetComponent<Dropdown>().value = 0;
 		}
 		else
 		{
@@ -169,6 +170,9 @@ public class NotesManager : MonoBehaviour
 			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.scale;
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.startTime.ToString();
 			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.endTime.ToString();
+			if(notesData.color == Color.red) m_colorDropdown.GetComponent<Dropdown>().value = 0;
+			else if(notesData.color == Color.green) m_colorDropdown.GetComponent<Dropdown>().value = 1;
+			else if(notesData.color == Color.blue) m_colorDropdown.GetComponent<Dropdown>().value = 2;
 		}
 	}
 	#endregion
@@ -260,6 +264,38 @@ public class NotesManager : MonoBehaviour
 
 		// ノーツへ設定する
 		m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(scale);
+	}
+	#endregion
+
+	#region 色の選択がされた時の処理
+	//-----------------------------------------------------------------
+	//! @summary   色の選択がされた時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnColorDropdown()
+	{
+		// ノーツが選択されていない場合処理を終了する
+		if (!m_selectNotes) return;
+
+		// コンポーネントの取得
+		Dropdown colorDropdown = m_colorDropdown.GetComponent<Dropdown>();
+
+		// 入力値の応じて色を設定する
+		switch(colorDropdown.value)
+		{
+			case 0:     // 赤
+				m_selectNotes.GetComponent<EditNotesController>().SetNotesColor(Color.magenta);
+				break;
+			case 1:     // 緑
+				m_selectNotes.GetComponent<EditNotesController>().SetNotesColor(Color.green);
+				break;
+			case 2:     // 青
+				m_selectNotes.GetComponent<EditNotesController>().SetNotesColor(Color.cyan);
+				break;
+		}
 	}
 	#endregion
 

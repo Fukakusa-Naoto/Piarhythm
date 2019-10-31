@@ -198,7 +198,14 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetNotesColor(Color color)
 	{
+		// 情報を更新する
 		m_notesData.color = color;
+
+		// 色を反映させる
+		// #の色を変化させる
+		m_image.color = (m_notesData.scale.Contains("#"))
+			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_notesData.color;
 	}
 	#endregion
 
