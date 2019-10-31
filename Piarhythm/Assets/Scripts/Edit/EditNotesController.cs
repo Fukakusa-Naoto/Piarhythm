@@ -88,8 +88,34 @@ public class EditNotesController : MonoBehaviour
 		Vector2 localPoint = Vector2.zero;
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(m_musicalScoreTransform, Input.mousePosition, m_canvas.worldCamera, out localPoint);
 
+		float minDistance = float.MaxValue;
+		string scale = m_notesData.scale;
+		// ワールド座標のマウス座標を取得する
+		Vector3 mousePosition = Input.mousePosition;
+		mousePosition.z = 10.0f;
+		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+		// 最も近い音階を調べる
+		foreach(KeyValuePair<string,RectTransform> n in m_keyDictionary)
+		{
+			// コンポーネントの取得
+			RectTransform keyTransform = n.Value;
+
+			// 距離を求める
+			float distance = Mathf.Abs(worldPosition.x - keyTransform.position.x);
+
+			// 最も近いキーを調べる
+			if (minDistance >= distance)
+			{
+				// 最短距離を更新
+				minDistance = distance;
+				// 音階を更新する
+				scale = n.Key;
+			}
+		}
+
 		// ノーツの移動
-		MoveEditNotes(m_notesData.scale, localPoint.y);
+		MoveEditNotes(scale, localPoint.y);
 	}
 	#endregion
 

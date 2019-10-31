@@ -25,7 +25,7 @@ public class NotesManager : MonoBehaviour
 
 	// <メンバ変数>
 	// 生成された全てのノーツリスト
-	private List<GameObject> m_notesList;
+	private List<GameObject> m_notesList = null;
 	// 選択されているノーツ
 	private GameObject m_selectNotes = null;
 	// 生成するノーツのPrefab
