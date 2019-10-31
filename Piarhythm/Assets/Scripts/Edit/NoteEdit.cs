@@ -23,7 +23,7 @@ public class NoteEdit : MonoBehaviour
 	// <メンバ変数>
 	public NotesManager m_notesManager;
 	private Dictionary<string, float> m_keyPositionDictionary;
-	private Datas.NotesData m_noteData;
+	private PiarhythmDatas.NotesData m_noteData;
 	private EditManager m_editManager;
 
 
@@ -38,7 +38,7 @@ public class NoteEdit : MonoBehaviour
 	void Start()
 	{
 		m_editManager = GameObject.Find("EditManager").GetComponent<EditManager>();
-		m_noteData = new Datas.NotesData();
+		m_noteData = new PiarhythmDatas.NotesData();
 		m_noteData.scale = "C4";
 		m_notesManager = GameObject.Find("NotesManager").GetComponent<NotesManager>();
 
@@ -282,5 +282,5 @@ public class NoteEdit : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   ノードデータの取得
 	//-----------------------------------------------------------------
-	public Datas.NotesData GetNodeData() { return m_noteData; }
+	public PiarhythmDatas.NotesData GetNodeData() { return m_noteData; }
 }

@@ -18,16 +18,26 @@ using UnityEngine.UI;
 // クラスの定義 =============================================================
 public class EditNotesController : MonoBehaviour
 {
+	// <メンバ定数>
+	// #時の色の変化率
+	private static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
+
 	// <メンバ変数>
 	// コンポーネント
-	private RectTransform m_transform;
-	private Image m_image;
+	private RectTransform m_transform = null;
+	private Image m_image = null;
+	private RectTransform m_musicalScoreTransform = null;
+
+	// キャンバス
+	private Canvas m_canvas = null;
+	// キー情報が保存された連想配列
+	private Dictionary<string, RectTransform> m_keyDictionary = null;
 
 	// マネージャー
-	private NotesManager m_notesManager;
+	private NotesManager m_notesManager = null;
 
 	// ノーツ情報
-	private Datas.NotesData m_notesData;
+	private PiarhythmDatas.NotesData m_notesData;
 
 
 	// メンバ関数の定義 =====================================================
@@ -44,21 +54,23 @@ public class EditNotesController : MonoBehaviour
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();
 		m_image = GetComponent<Image>();
+		m_musicalScoreTransform = m_transform.parent.GetComponent<RectTransform>();
 
 		// データの初期化
-		m_notesData = new Datas.NotesData();
+		m_notesData = new PiarhythmDatas.NotesData();
 
-		// 音階の設定
-		m_notesData.scale = "C4";
-
-		// 座標の初期化
-
+		// 色の初期化
+		m_notesData.color = m_image.color = Color.green;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
 
-		// 色の初期化
-		m_notesData.color = m_image.color = Color.green;
+		// 座標の初期化
+		MoveEditNotes("C4", 0.0f);
+
+
+		// 作成されたノーツを選択状態にする
+		m_notesManager.SetSelectNotes(gameObject);
 	}
 	#endregion
 
@@ -72,8 +84,12 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnMouseDrag()
 	{
+		// マウス座標の取得
+		Vector2 localPoint = Vector2.zero;
+		RectTransformUtility.ScreenPointToLocalPointInRectangle(m_musicalScoreTransform, Input.mousePosition, m_canvas.worldCamera, out localPoint);
+
 		// ノーツの移動
-		Debug.Log("Drag");
+		MoveEditNotes(m_notesData.scale, localPoint.y);
 	}
 	#endregion
 
@@ -92,13 +108,33 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
+	#region ノーツの移動処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの移動処理
+	//!
+	//! @parameter [scale] 音階
+	//! @parameter [positionY] Y座標
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void MoveEditNotes(string scale, float positionY)
+	{
+		// ノーツの移動
+		m_transform.localPosition = new Vector3(m_transform.localPosition.x, positionY);
+		SetNotesScale(scale);
+
+		// データの更新
+		m_notesData.scale = scale;
+	}
+	#endregion
+
 	#region ノーツ情報の取得
 	//-----------------------------------------------------------------
 	//! @summary   ノーツ情報の取得
 	//!
 	//! @return    ノーツ情報
 	//-----------------------------------------------------------------
-	public Datas.NotesData GetNotesData()
+	public PiarhythmDatas.NotesData GetNotesData()
 	{
 		return m_notesData;
 	}
@@ -112,10 +148,21 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetNotesScale(string scale)
 	{
+		// データの更新
 		m_notesData.scale = scale;
 
 		// 座標を設定された音階の位置に移動させる
+		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y);
 
+		// 幅を合わせる
+		float width= m_keyDictionary[scale].sizeDelta.x
+			* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
+		m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+
+		// #の色を変化させる
+		m_image.color = (scale.Contains("#"))
+			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_notesData.color;
 	}
 	#endregion
 
@@ -164,6 +211,30 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesManager(NotesManager notesManager)
 	{
 		m_notesManager = notesManager;
+	}
+	#endregion
+
+	#region キャンバスを設定する
+	//-----------------------------------------------------------------
+	//! @summary   キャンバスを設定する
+	//!
+	//! @parameter [canvas] 設定するキャンバス
+	//-----------------------------------------------------------------
+	public void SetCanvas(Canvas canvas)
+	{
+		m_canvas = canvas;
+	}
+	#endregion
+
+	#region キー情報が保存された連想配列を設定する
+	//-----------------------------------------------------------------
+	//! @summary   キー情報が保存された連想配列を設定する
+	//!
+	//! @parameter [m_keyDictionary] 設定するキー情報が保存された連想配列
+	//-----------------------------------------------------------------
+	public void SetKeyDictionary(Dictionary<string,RectTransform> keyDictionary)
+	{
+		m_keyDictionary = keyDictionary;
 	}
 	#endregion
 }

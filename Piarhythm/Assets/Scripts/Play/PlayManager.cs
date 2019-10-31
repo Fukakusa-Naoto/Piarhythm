@@ -24,7 +24,7 @@ public class PlayManager : MonoBehaviour
 	// <メンバ変数>
 	private AudioSource m_audioSource;
 	private AudioClip m_audioClip = null;
-	private Datas.MusicPieceData m_musicPieceData;
+	private PiarhythmDatas.MusicPieceData m_musicPieceData;
 	private float m_notesEndTime;
 	// 経過時間
 	private float m_elapsedTime = 0.0f;
@@ -52,7 +52,7 @@ public class PlayManager : MonoBehaviour
 		reader = new StreamReader(filePath);
 		jsonStr = reader.ReadToEnd();
 		reader.Close();
-		m_musicPieceData = JsonUtility.FromJson<Datas.MusicPieceData>(jsonStr);
+		m_musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonStr);
 
 		// BGMの読み込みコルーチンのスタート
 		if (m_audioClip == null)
@@ -61,7 +61,7 @@ public class PlayManager : MonoBehaviour
 
 		// ノーツの終了時間の取得
 		m_notesEndTime = 0.0f;
-		foreach (Datas.NotesData n in m_musicPieceData.notesDataList)
+		foreach (PiarhythmDatas.NotesData n in m_musicPieceData.notesDataList)
 		{
 			if (m_notesEndTime < n.endTime)
 			{
@@ -176,7 +176,7 @@ public class PlayManager : MonoBehaviour
 	//!
 	//! @return    ノーツの配列
 	//-----------------------------------------------------------------
-	public Datas.NotesData[] GetNoteDatas()
+	public PiarhythmDatas.NotesData[] GetNoteDatas()
 	{
 		return m_musicPieceData.notesDataList;
 	}

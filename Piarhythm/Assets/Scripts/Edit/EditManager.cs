@@ -35,7 +35,7 @@ public class EditManager : MonoBehaviour
 	public GameObject m_startInputField;
 	public GameObject m_endInputField;
 	public Text m_bgmText;
-	private Datas.BGMData m_bgmData;
+	private PiarhythmDatas.BGMData m_bgmData;
 	public NotesManager m_notesManager;
 	public NotesEditScrollbarController m_notesEditScrollbarController;
 
@@ -50,7 +50,7 @@ public class EditManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
 	{
-		m_bgmData = new Datas.BGMData();
+		m_bgmData = new PiarhythmDatas.BGMData();
 		m_audioSource = gameObject.GetComponent<AudioSource>();
 
 		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
@@ -221,7 +221,7 @@ public class EditManager : MonoBehaviour
 			File.Copy(m_filePuth, UnityEngine.Application.dataPath + "/StreamingAssets/BGM/" + m_audioClip.name);
 
 		// 楽曲データを構築する
-		Datas.MusicPieceData musicPieceData = new Datas.MusicPieceData();
+		PiarhythmDatas.MusicPieceData musicPieceData = new PiarhythmDatas.MusicPieceData();
 		musicPieceData.bgmData = m_bgmData;
 		//musicPieceData.notesDataList = m_notesManager.GetNotesDatas();
 

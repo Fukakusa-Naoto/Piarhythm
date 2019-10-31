@@ -4530,10 +4530,12 @@ MonoBehaviour:
   m_notesPrefab: {fileID: 2379056659225877161, guid: cf573cc862e4dc64589c6939e9c29f73,
     type: 3}
   m_musicalScore: {fileID: 1546991727}
+  m_canvas: {fileID: 274047732}
   m_musicalScaleInputField: {fileID: 253121641}
   m_startTimeInputField: {fileID: 1930504470}
   m_endTimeInputField: {fileID: 1455447090}
   m_colorDropdown: {fileID: 1289244982}
+  m_keyboard: {fileID: 1377277568}
 --- !u!4 &941376371
 Transform:
   m_ObjectHideFlags: 0
@@ -6108,6 +6110,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1355854943}
   m_CullTransparentMesh: 0
+--- !u!1 &1377277568 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3230625646432667108, guid: 00f932d0442e68c4a8e43200d97d4a1a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3230625646355630428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1401242678
 GameObject:
   m_ObjectHideFlags: 0

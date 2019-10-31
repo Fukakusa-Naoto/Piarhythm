@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,17 +27,28 @@ public class NotesManager : MonoBehaviour
 	// 生成された全てのノーツリスト
 	private List<GameObject> m_notesList;
 	// 選択されているノーツ
-	private GameObject m_selectNotes;
+	private GameObject m_selectNotes = null;
 	// 生成するノーツのPrefab
 	public GameObject m_notesPrefab = null;
 	// 譜面オブジェクト
-	public GameObject m_musicalScore = null;
+	[SerializeField]
+	private GameObject m_musicalScore = null;
+	// キーボード情報
+	private Dictionary<string, RectTransform> m_keyDictionary = null;
 
 	// UI
-	public GameObject m_musicalScaleInputField = null;
-	public GameObject m_startTimeInputField = null;
-	public GameObject m_endTimeInputField = null;
-	public GameObject m_colorDropdown = null;
+	[SerializeField]
+	private Canvas m_canvas = null;
+	[SerializeField]
+	private GameObject m_musicalScaleInputField = null;
+	[SerializeField]
+	private GameObject m_startTimeInputField = null;
+	[SerializeField]
+	private GameObject m_endTimeInputField = null;
+	[SerializeField]
+	private GameObject m_colorDropdown = null;
+	[SerializeField]
+	private GameObject m_keyboard = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -51,7 +63,15 @@ public class NotesManager : MonoBehaviour
 	private void Start()
 	{
 		m_notesList = new List<GameObject>();
-		m_selectNotes = null;
+
+		// キーボード情報を登録する
+		m_keyDictionary = new Dictionary<string, RectTransform>();
+		RectTransform rectTransform = m_keyboard.GetComponent<RectTransform>();
+		for (int i = 0; i < rectTransform.childCount; ++i)
+		{
+			RectTransform keyTransform = rectTransform.GetChild(i).GetComponent<RectTransform>();
+			m_keyDictionary[keyTransform.name] = keyTransform;
+		}
 	}
 	#endregion
 
@@ -80,14 +100,21 @@ public class NotesManager : MonoBehaviour
 	//!
 	//! @return    生成されたノーツ
 	//-----------------------------------------------------------------
-	private GameObject CreateNotes()
+	private void CreateNotes()
 	{
 		// ノーツを生成する
 		if (m_notesPrefab == null) Debug.Log("NotesPrefabが設定されていません");
 		GameObject newNotes = Instantiate(m_notesPrefab);
 
+		// コンポーネントの取得
+		EditNotesController editNotes = newNotes.GetComponent<EditNotesController>();
+
 		// マネージャーを設定する
-		newNotes.GetComponent<EditNotesController>().SetNotesManager(this);
+		editNotes.SetNotesManager(this);
+		// キャンバスの設定
+		editNotes.SetCanvas(m_canvas);
+		// キーボード情報
+		editNotes.SetKeyDictionary(m_keyDictionary);
 
 		// MusicalScoreの子に設定する
 		if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
@@ -95,8 +122,6 @@ public class NotesManager : MonoBehaviour
 
 		// リストに登録する
 		m_notesList.Add(newNotes);
-
-		return newNotes;
 	}
 	#endregion
 
@@ -140,7 +165,7 @@ public class NotesManager : MonoBehaviour
 		else
 		{
 			// ノーツデータの取得
-			Datas.NotesData notesData = displayNotes.GetComponent<EditNotesController>().GetNotesData();
+			PiarhythmDatas.NotesData notesData = displayNotes.GetComponent<EditNotesController>().GetNotesData();
 			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.scale;
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.startTime.ToString();
 			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.endTime.ToString();
@@ -159,10 +184,7 @@ public class NotesManager : MonoBehaviour
 	public void OnClickNotesCreateButton()
 	{
 		// ノーツの作成
-		GameObject newNotes = CreateNotes();
-
-		// 作成されたノーツを選択状態にする
-		SetSelectNotes(newNotes);
+		CreateNotes();
 	}
 	#endregion
 
@@ -200,8 +222,20 @@ public class NotesManager : MonoBehaviour
 		// コンポーネントの取得
 		InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
 
-		// 選択されているノーツに設定する
-		m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(inputField.text);
+		// 文字列を大文字、小文字の区別なくチェックする
+		foreach(KeyValuePair<string, RectTransform> n in m_keyDictionary)
+		{
+			if(inputField.text.Equals(n.Key,StringComparison.OrdinalIgnoreCase))
+			{
+				// 文字列を大文字にする
+				string scale = inputField.text.ToUpper();
+				// 選択されているノーツに設定する
+				m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(scale);
+
+				// 処理を終了する
+				return;
+			}
+		}
 	}
 	#endregion
 
