@@ -153,7 +153,7 @@ public class NotesManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void DisplayNotes(GameObject displayNotes)
+	public void DisplayNotes(GameObject displayNotes)
 	{
 		// UIへ情報を反映させる
 		if (displayNotes == null)
@@ -167,9 +167,20 @@ public class NotesManager : MonoBehaviour
 		{
 			// ノーツデータの取得
 			PiarhythmDatas.NotesData notesData = displayNotes.GetComponent<EditNotesController>().GetNotesData();
+
+			// 音階の更新
+			m_musicalScaleInputField.GetComponent<InputField>().text =
 			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.scale;
+
+			// 開始時間の更新
+			m_startTimeInputField.GetComponent<InputField>().text =
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.startTime.ToString();
+
+			// 終了時間の更新
+			m_endTimeInputField.GetComponent<InputField>().text =
 			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.endTime.ToString();
+
+			// 色の更新
 			if(notesData.color == Color.red) m_colorDropdown.GetComponent<Dropdown>().value = 0;
 			else if(notesData.color == Color.green) m_colorDropdown.GetComponent<Dropdown>().value = 1;
 			else if(notesData.color == Color.blue) m_colorDropdown.GetComponent<Dropdown>().value = 2;

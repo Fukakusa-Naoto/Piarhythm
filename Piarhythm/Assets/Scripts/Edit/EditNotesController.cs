@@ -65,9 +65,14 @@ public class EditNotesController : MonoBehaviour
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
 
-		// 座標の初期化
-		MoveEditNotes("C4", 0.0f);
+		// 音階の設定
+		SetNotesScale("C4");
 
+		// 手前に持ってくる
+		Vector3 position = m_transform.localPosition;
+		position.z = 0.0f;
+		m_transform.localPosition = position;
+		Debug.Log("初期化：" + m_transform.localPosition);
 
 		// 作成されたノーツを選択状態にする
 		m_notesManager.SetSelectNotes(gameObject);
@@ -116,6 +121,9 @@ public class EditNotesController : MonoBehaviour
 
 		// ノーツの移動
 		MoveEditNotes(scale, localPoint.y);
+
+		// ノーツ情報をUIへ反映させる
+		m_notesManager.DisplayNotes(gameObject);
 	}
 	#endregion
 
@@ -146,7 +154,7 @@ public class EditNotesController : MonoBehaviour
 	private void MoveEditNotes(string scale, float positionY)
 	{
 		// ノーツの移動
-		m_transform.localPosition = new Vector3(m_transform.localPosition.x, positionY);
+		m_transform.localPosition = new Vector3(m_transform.localPosition.x, positionY, 0.0f);
 		SetNotesScale(scale);
 
 		// データの更新
@@ -178,7 +186,7 @@ public class EditNotesController : MonoBehaviour
 		m_notesData.scale = scale;
 
 		// 座標を設定された音階の位置に移動させる
-		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y);
+		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
 
 		// 幅を合わせる
 		float width= m_keyDictionary[scale].sizeDelta.x

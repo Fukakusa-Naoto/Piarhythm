@@ -19,7 +19,7 @@ using UnityEngine.UI;
 public class MusicalScoreController : MonoBehaviour
 {
 	// <メンバ定数>
-	private static readonly float MIN_HEIGHT = 300.0f;
+	private static readonly float MIN_HEIGHT = 368.9f;
 
 	// <メンバ変数>
 	// コンポーネント
@@ -53,11 +53,13 @@ public class MusicalScoreController : MonoBehaviour
 	public void ChangeScoreLength(float length)
 	{
 		// 時間を座標に変換
-		float height = length * NotesManager.NOTES_SPEED;
+		float height = (length * NotesManager.NOTES_SPEED);
 
 		if (height < MIN_HEIGHT) height = MIN_HEIGHT;
 
+		Debug.Log("変更前：" + m_transform.position);
 		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, height);
+		Debug.Log("変更後：" + m_transform.position);
 	}
 	#endregion
 
