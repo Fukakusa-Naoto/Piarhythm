@@ -99,7 +99,7 @@ public class MusicController : MonoBehaviour
 			rectTransform.offsetMin = offsetMin;
 			// 右上の座標
 			Vector2 offsetMax = rectTransform.offsetMax;
-			offsetMax.y = (m_speed * 100.0f) * n.endTime;
+			offsetMax.y = (m_speed * 100.0f) * n.length;
 			rectTransform.offsetMax = offsetMax;
 
 			// 音階に合わせて配置

@@ -44,7 +44,7 @@ public class NotesManager : MonoBehaviour
 	[SerializeField]
 	private GameObject m_startTimeInputField = null;
 	[SerializeField]
-	private GameObject m_endTimeInputField = null;
+	private GameObject m_lengthTimeInputField = null;
 	[SerializeField]
 	private GameObject m_colorDropdown = null;
 	[SerializeField]
@@ -160,7 +160,7 @@ public class NotesManager : MonoBehaviour
 		{
 			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
-			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
+			m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
 			m_colorDropdown.GetComponent<Dropdown>().value = 0;
 		}
 		else
@@ -177,8 +177,8 @@ public class NotesManager : MonoBehaviour
 			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.startTime.ToString();
 
 			// 終了時間の更新
-			m_endTimeInputField.GetComponent<InputField>().text =
-			m_endTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.endTime.ToString();
+			m_lengthTimeInputField.GetComponent<InputField>().text =
+			m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.length.ToString();
 
 			// 色の更新
 			if(notesData.color == Color.red) m_colorDropdown.GetComponent<Dropdown>().value = 0;
@@ -236,6 +236,9 @@ public class NotesManager : MonoBehaviour
 
 		// コンポーネントの取得
 		InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
+
+		// 何も入力がされていなければ処理を終了する
+		if (inputField.text == "") return;
 
 		// 文字列を大文字、小文字の区別なくチェックする
 		foreach(KeyValuePair<string, RectTransform> n in m_keyDictionary)
@@ -310,167 +313,51 @@ public class NotesManager : MonoBehaviour
 	}
 	#endregion
 
-#if false
-	// <メンバ変数>
-	public GameObject m_musicalScale;
-	public GameObject m_notesStart;
-	public GameObject m_notesEnd;
-	public GameObject m_color;
-	public GameObject m_moveNote;
-	public GameObject m_selectNote;
-	public GameObject m_notePrefab;
-	public GameObject m_musicalScore;
-	private List<GameObject> m_noteList;
-
-
-	// メンバ関数の定義 =====================================================
+	#region ノーツの開始時間の入力があった時の処理
 	//-----------------------------------------------------------------
-	//! @summary   初期化処理
+	//! @summary   ノーツの開始時間の入力があった時の処理
 	//!
 	//! @parameter [void] なし
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Start()
+	public void OnNotesStartTimeInputField()
 	{
-		m_noteList = new List<GameObject>();
-		m_selectNote = null;
+		// ノーツが選択されていない場合、処理を終了する
+		if (!m_selectNotes) return;
+
+		// コンポーネントの取得
+		InputField inputField = m_startTimeInputField.GetComponent<InputField>();
+
+		// 何も入力されていなければ処理を終了する
+		if (inputField.text == "") return;
+
+		// 選択されているノーツに設定する
+		m_selectNotes.GetComponent<EditNotesController>().SetNotesStartTime(float.Parse(inputField.text));
 	}
+	#endregion
 
-
-
+	#region ノーツの長さの入力があった時の処理
 	//-----------------------------------------------------------------
-	//! @summary   更新処理
+	//! @summary   ノーツの長さの入力があった時の処理
 	//!
 	//! @parameter [void] なし
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Update()
+	public void OnNotesLengthTimeInputField()
 	{
-		// 左クリックされる
-		if (Input.GetMouseButtonDown(0))
-		{
-			foreach (var n in m_noteList)
-			{
-				var note = n.GetComponent<NoteEdit>().OnCollision();
-				if (note)
-				{
-					m_moveNote = m_selectNote = note;
-					break;
-				}
-			}
-		}
-		else if (Input.GetMouseButtonUp(0)) m_moveNote = null;
+		// ノーツが選択されていない場合、処理を終了する
+		if (!m_selectNotes) return;
 
-		if(Input.GetMouseButton(0))
-		{
-			if (m_moveNote) m_moveNote.GetComponent<NoteEdit>().OnMove();
-		}
+		// コンポーネントの取得
+		InputField inputField = m_lengthTimeInputField.GetComponent<InputField>();
 
-		if (m_selectNote)
-		{
-			Datas.NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
-			m_musicalScale.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.scale;
-			m_notesStart.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.startTime.ToString();
-			m_notesEnd.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = nodeData.endTime.ToString();
-		}
-		else
-		{
-			m_musicalScale.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
-			m_notesStart.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
-			m_notesEnd.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "";
-		}
+		// 何も入力されていなければ処理を終了する
+		if (inputField.text == "") return;
+
+		// 選択されているノーツに設定する
+		m_selectNotes.GetComponent<EditNotesController>().SetNotesLengthTime(float.Parse(inputField.text));
 	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   新たにノードを作成する
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OnNewNoteButton()
-	{
-		m_selectNote = Instantiate(m_notePrefab);
-		m_selectNote.transform.SetParent(m_musicalScore.transform);
-		m_noteList.Add(m_selectNote);
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   音階の入力情報の取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OnMusicalScaleInputField()
-	{
-		InputField inputField = m_musicalScale.GetComponent<InputField>();
-		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetMusicScale(inputField.text);
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   ノーツの開始時間の入力情報の取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OnStartTimeInputField()
-	{
-		// 文字列を数値に変換
-		InputField inputField = m_notesStart.GetComponent<InputField>();
-		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetStartTime(float.Parse(inputField.text));
-
-		Datas.NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
-		m_notesEnd.GetComponent<InputField>().text = nodeData.endTime.ToString();
-		m_notesEnd.transform.GetChild(2).GetComponent<Text>().text = nodeData.endTime.ToString();
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   ノーツの終了時間の入力情報の取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OnEndTimeInputField()
-	{
-		// 文字列を数値に変換
-		InputField inputField = m_notesEnd.GetComponent<InputField>();
-		if (m_selectNote) m_selectNote.GetComponent<NoteEdit>().SetEndTime(float.Parse(inputField.text));
-
-		Datas.NotesData nodeData = m_selectNote.GetComponent<NoteEdit>().GetNodeData();
-		m_notesStart.GetComponent<InputField>().text = nodeData.startTime.ToString();
-		m_notesStart.transform.GetChild(2).GetComponent<Text>().text = nodeData.startTime.ToString();
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   ノーツデータの取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public Datas.NotesData[] GetNotesDatas()
-	{
-		Datas.NotesData[] notesDataList = new Datas.NotesData[m_noteList.Count];
-		for(int i = 0; i < m_noteList.Count; ++i)
-		{
-			notesDataList[i] = m_noteList[i].GetComponent<NoteEdit>().GetNodeData();
-		}
-		return notesDataList;
-	}
-#endif
+	#endregion
 }

@@ -1535,9 +1535,9 @@ RectTransform:
   - {fileID: 253121642}
   - {fileID: 1930504471}
   - {fileID: 1455447091}
+  - {fileID: 1289244983}
   - {fileID: 2039428215}
   - {fileID: 566208005}
-  - {fileID: 1289244983}
   m_Father: {fileID: 274047733}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2748,7 +2748,7 @@ RectTransform:
   m_Children:
   - {fileID: 728993388}
   m_Father: {fileID: 319202327}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4533,7 +4533,7 @@ MonoBehaviour:
   m_canvas: {fileID: 274047732}
   m_musicalScaleInputField: {fileID: 253121641}
   m_startTimeInputField: {fileID: 1930504470}
-  m_endTimeInputField: {fileID: 1455447090}
+  m_lengthTimeInputField: {fileID: 0}
   m_colorDropdown: {fileID: 1289244982}
   m_keyboard: {fileID: 1377277568}
 --- !u!4 &941376371
@@ -4720,7 +4720,7 @@ GameObject:
   - component: {fileID: 1131943131}
   - component: {fileID: 1131943130}
   m_Layer: 5
-  m_Name: NotesEndText
+  m_Name: NotesLengthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4778,7 +4778,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7D42\u4E86"
+  m_Text: "\u9577\u3055"
 --- !u!222 &1131943131
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5453,7 +5453,7 @@ RectTransform:
   - {fileID: 1925805464}
   - {fileID: 346385983}
   m_Father: {fileID: 319202327}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6635,7 +6635,7 @@ GameObject:
   - component: {fileID: 1455447093}
   - component: {fileID: 1455447092}
   m_Layer: 5
-  m_Name: NotesEndInputField
+  m_Name: NotesLengthInputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6701,19 +6701,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1455447093}
   m_TextComponent: {fileID: 1870424120}
   m_Placeholder: {fileID: 181718252}
-  m_ContentType: 0
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 941376370}
-        m_MethodName: OnEndTimeInputField
+        m_MethodName: OnNotesLengthTimeInputField
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8106,19 +8106,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1930504473}
   m_TextComponent: {fileID: 636357268}
   m_Placeholder: {fileID: 640236220}
-  m_ContentType: 0
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 941376370}
-        m_MethodName: OnStartTimeInputField
+        m_MethodName: OnNotesStartTimeInputField
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8698,7 +8698,7 @@ RectTransform:
   m_Children:
   - {fileID: 1270722324}
   m_Father: {fileID: 319202327}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

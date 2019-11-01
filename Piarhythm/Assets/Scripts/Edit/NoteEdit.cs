@@ -20,6 +20,7 @@ using UnityEngine.UI;
 // クラスの定義 =============================================================
 public class NoteEdit : MonoBehaviour
 {
+#if false
 	// <メンバ変数>
 	public NotesManager m_notesManager;
 	private Dictionary<string, float> m_keyPositionDictionary;
@@ -283,4 +284,5 @@ public class NoteEdit : MonoBehaviour
 	//! @summary   ノードデータの取得
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.NotesData GetNodeData() { return m_noteData; }
+#endif
 }

@@ -25,8 +25,8 @@ namespace PiarhythmDatas
 		public string scale;
 		// 開始時間
 		public float startTime;
-		// 終了時間
-		public float endTime;
+		// 長さ
+		public float length;
 		// 色
 		public Color color;
 	}

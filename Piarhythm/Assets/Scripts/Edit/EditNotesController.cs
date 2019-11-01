@@ -72,7 +72,10 @@ public class EditNotesController : MonoBehaviour
 		Vector3 position = m_transform.localPosition;
 		position.z = 0.0f;
 		m_transform.localPosition = position;
-		Debug.Log("初期化：" + m_transform.localPosition);
+
+		// 開始時間と長さの初期化
+		m_notesData.startTime = ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
+		m_notesData.length = ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 
 		// 作成されたノーツを選択状態にする
 		m_notesManager.SetSelectNotes(gameObject);
@@ -157,8 +160,20 @@ public class EditNotesController : MonoBehaviour
 		m_transform.localPosition = new Vector3(m_transform.localPosition.x, positionY, 0.0f);
 		SetNotesScale(scale);
 
+		// 移動制限
+		Vector2 offsetMin = m_transform.offsetMin;
+		if (offsetMin.y <= 0.0) offsetMin.y = 0.0f;
+		m_transform.offsetMin = offsetMin;
+
+		// 長さを変えないように調整する
+		Vector2 offsetMax = m_transform.offsetMax;
+		offsetMax.y = offsetMin.y + ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		m_transform.offsetMax = offsetMax;
+
 		// データの更新
 		m_notesData.scale = scale;
+		m_notesData.startTime = ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
+		m_notesData.length = ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 	}
 	#endregion
 
@@ -208,19 +223,42 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetNotesStartTime(float startTime)
 	{
+		// 開始位置がマイナスだった場合は処理を終了する
+		if (startTime <= 0.0f) return;
+
+		// データを更新する
 		m_notesData.startTime = startTime;
+
+		// スタート位置を更新
+		Vector2 offsetMin = m_transform.offsetMin;
+		offsetMin.y = ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
+		m_transform.offsetMin = offsetMin;
+
+		// 長さ分の更新
+		Vector2 offsetMax = m_transform.offsetMax;
+		offsetMax.y = offsetMin.y + ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		m_transform.offsetMax = offsetMax;
 	}
 	#endregion
 
-	#region ノーツの終了時間を設定する
+	#region ノーツの長さを設定する
 	//-----------------------------------------------------------------
-	//! @summary   ノーツの終了時間を設定する
+	//! @summary   ノーツの長さを設定する
 	//!
-	//! @parameter [endTime] 設定する終了時間
+	//! @parameter [lengthTime] 設定する長さ
 	//-----------------------------------------------------------------
-	public void SetNotesEndTime(float endTime)
+	public void SetNotesLengthTime(float lengthTime)
 	{
-		m_notesData.endTime = endTime;
+		// 長さがマイナスだった場合処理を終了する
+		if (lengthTime <= 0.0f) return;
+
+		// データを更新する
+		m_notesData.length = lengthTime;
+
+		// 長さを更新
+		Vector2 offsetMax = m_transform.offsetMax;
+		offsetMax.y = m_transform.offsetMin.y + ConvertTimeToPosition(lengthTime, NotesManager.NOTES_SPEED);
+		m_transform.offsetMax = offsetMax;
 	}
 	#endregion
 
@@ -276,6 +314,36 @@ public class EditNotesController : MonoBehaviour
 	public void SetKeyDictionary(Dictionary<string,RectTransform> keyDictionary)
 	{
 		m_keyDictionary = keyDictionary;
+	}
+	#endregion
+
+	#region 座標から時間に変換する
+	//-----------------------------------------------------------------
+	//! @summary   座標から時間に変換する
+	//!
+	//! @parameter [positionY] 変換する座標
+	//! @parameter [speed] 速度
+	//!
+	//! @return    変換された時間
+	//-----------------------------------------------------------------
+	public float ConvertPositionToTime(float positionY, float speed)
+	{
+		return positionY / speed;
+	}
+	#endregion
+
+	#region 時間から座標に変換する
+	//-----------------------------------------------------------------
+	//! @summary   時間から座標に変換する
+	//!
+	//! @parameter [time] 変換する時間
+	//! @parameter [speed] 速度
+	//!
+	//! @return    変換された座標
+	//-----------------------------------------------------------------
+	public float ConvertTimeToPosition(float time, float speed)
+	{
+		return time * speed;
 	}
 	#endregion
 }

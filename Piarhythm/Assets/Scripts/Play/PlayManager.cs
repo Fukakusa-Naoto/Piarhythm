@@ -63,9 +63,9 @@ public class PlayManager : MonoBehaviour
 		m_notesEndTime = 0.0f;
 		foreach (PiarhythmDatas.NotesData n in m_musicPieceData.notesDataList)
 		{
-			if (m_notesEndTime < n.endTime)
+			if (m_notesEndTime < n.length)
 			{
-				m_notesEndTime = n.endTime;
+				m_notesEndTime = n.length;
 			}
 		}
 
