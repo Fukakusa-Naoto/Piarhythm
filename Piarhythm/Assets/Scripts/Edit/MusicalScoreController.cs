@@ -57,9 +57,7 @@ public class MusicalScoreController : MonoBehaviour
 
 		if (height < MIN_HEIGHT) height = MIN_HEIGHT;
 
-		Debug.Log("変更前：" + m_transform.position);
 		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, height);
-		Debug.Log("変更後：" + m_transform.position);
 	}
 	#endregion
 
