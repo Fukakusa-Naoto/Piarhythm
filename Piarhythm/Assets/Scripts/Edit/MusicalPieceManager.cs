@@ -19,10 +19,12 @@ public class MusicalPieceManager : MonoBehaviour
 {
 	// <メンバ変数>
 	[SerializeField]
-	private GameObject m_totalTimeInputField = null;
+	private GameObject m_wholeTimeInputField = null;
 
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
+	[SerializeField]
+	private MenuController m_menuController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -34,14 +36,15 @@ public class MusicalPieceManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void OnEndEditMusicalScaleInputField()
+	public void OnEndEditWholeTimeInputField()
 	{
 		// コンポーネントの取得
-		InputField inputField = m_totalTimeInputField.GetComponent<InputField>();
+		InputField inputField = m_wholeTimeInputField.GetComponent<InputField>();
 		if (inputField.text == "") inputField.text = "0.0";
 
 		// 変更を報告する
 		m_musicalScoreController.ChangeScoreLength(float.Parse(inputField.text));
+		m_menuController.UpdateDisplayWholeTimeText(float.Parse(inputField.text));
 	}
 	#endregion
 }

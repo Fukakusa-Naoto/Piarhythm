@@ -667,7 +667,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 1
+    m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1186,7 +1186,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 1
+    m_FontSize: 15
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1452,8 +1452,8 @@ RectTransform:
   - {fileID: 420761351}
   - {fileID: 1512081426}
   - {fileID: 319202327}
-  - {fileID: 741932047}
   - {fileID: 1217893773}
+  - {fileID: 741932047}
   - {fileID: 158555598}
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -1511,7 +1511,7 @@ GameObject:
   - component: {fileID: 319202329}
   - component: {fileID: 319202328}
   m_Layer: 5
-  m_Name: NotesBack
+  m_Name: NotesSheet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2178,7 +2178,7 @@ GameObject:
   - component: {fileID: 420761353}
   - component: {fileID: 420761352}
   m_Layer: 5
-  m_Name: BGMBack
+  m_Name: BGMSheet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2326,6 +2326,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 449016427}
   m_CullTransparentMesh: 0
+--- !u!1 &475900940
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 475900941}
+  - component: {fileID: 475900942}
+  m_Layer: 5
+  m_Name: MenuController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &475900941
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475900940}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 741932047}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &475900942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475900940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f0afb6f321def14db1af63d654ca77a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_wholeText: {fileID: 898799191}
 --- !u!1 &481490390
 GameObject:
   m_ObjectHideFlags: 0
@@ -3376,7 +3425,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1487324315}
-        m_MethodName: OnEndEditMusicalScaleInputField
+        m_MethodName: OnEndEditWholeTimeInputField
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3849,8 +3898,9 @@ RectTransform:
   - {fileID: 1551953582}
   - {fileID: 898799190}
   - {fileID: 1412399725}
+  - {fileID: 475900941}
   m_Father: {fileID: 274047733}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -4431,7 +4481,7 @@ GameObject:
   - component: {fileID: 898799192}
   - component: {fileID: 898799191}
   m_Layer: 5
-  m_Name: MaxTime
+  m_Name: WholeTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4444,16 +4494,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 898799189}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 9, z: 1}
+  m_LocalScale: {x: 1, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 741932047}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 324.1, y: 0}
+  m_AnchoredPosition: {x: 324.1, y: -0.000061035156}
   m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &898799191
@@ -5180,7 +5230,7 @@ Transform:
   - {fileID: 74097721}
   - {fileID: 941376371}
   m_Father: {fileID: 274047733}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1243859313
 GameObject:
@@ -6822,8 +6872,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1c2d21ceffc184b8cea63a68d6d175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_totalTimeInputField: {fileID: 670018046}
+  m_wholeTimeInputField: {fileID: 670018046}
   m_musicalScoreController: {fileID: 1546991728}
+  m_menuController: {fileID: 475900942}
 --- !u!1 &1512081425
 GameObject:
   m_ObjectHideFlags: 0
@@ -6836,7 +6887,7 @@ GameObject:
   - component: {fileID: 1512081428}
   - component: {fileID: 1512081427}
   m_Layer: 5
-  m_Name: OptionBack
+  m_Name: OptionSheet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7100,7 +7151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00000064964047, y: 0.000021708694}
+  m_AnchoredPosition: {x: 0.00000064964047, y: 0.00000073750596}
   m_SizeDelta: {x: 0, y: 368.9}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1550625496
@@ -8805,7 +8856,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2063364511}
   m_Layer: 5
-  m_Name: TotalTime
+  m_Name: WholeTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
