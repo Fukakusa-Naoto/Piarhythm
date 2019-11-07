@@ -169,16 +169,19 @@ public class NotesManager : MonoBehaviour
 			PiarhythmDatas.NotesData notesData = displayNotes.GetComponent<EditNotesController>().GetNotesData();
 
 			// 音階の更新
-			m_musicalScaleInputField.GetComponent<InputField>().text =
-			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.scale;
+			m_musicalScaleInputField.GetComponent<InputField>().text
+				= m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
+				= notesData.scale;
 
 			// 開始時間の更新
-			m_startTimeInputField.GetComponent<InputField>().text =
-			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.startTime.ToString();
+			m_startTimeInputField.GetComponent<InputField>().text
+				= m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
+				= notesData.startTime.ToString();
 
 			// 終了時間の更新
-			m_lengthTimeInputField.GetComponent<InputField>().text =
-			m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = notesData.length.ToString();
+			m_lengthTimeInputField.GetComponent<InputField>().text
+				= m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
+				= notesData.length.ToString();
 
 			// 色の更新
 			if(notesData.color == Color.red) m_colorDropdown.GetComponent<Dropdown>().value = 0;

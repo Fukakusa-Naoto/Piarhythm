@@ -60,4 +60,38 @@ public class MusicalScoreController : MonoBehaviour
 		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, height);
 	}
 	#endregion
+
+	#region 現在時間の取得
+	//-----------------------------------------------------------------
+	//! @summary   現在時間の取得
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    現在時間
+	//-----------------------------------------------------------------
+	public float GetNowTime()
+	{
+		// 座標を時間に変換する
+		float nowTime = PiarhythmUtility.ConvertPositionToTime(m_transform.localPosition.y, NotesManager.NOTES_SPEED);
+
+		// 値を返す
+		return nowTime;
+	}
+	#endregion
+
+	#region 指定された時間の位置に座標を移動させる
+	//-----------------------------------------------------------------
+	//! @summary   指定された時間の位置に座標を移動させる
+	//!
+	//! @parameter [time] 移動させる時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetTime(float time)
+	{
+		Vector3 position = m_transform.localPosition;
+		position.y = PiarhythmUtility.ConvertTimeToPosition(time, NotesManager.NOTES_SPEED);
+		m_transform.localPosition = position;
+	}
+	#endregion
 }

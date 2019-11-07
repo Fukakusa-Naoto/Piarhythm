@@ -91,7 +91,7 @@ public class EditManager : MonoBehaviour
 				m_audioSource.Stop();
 				//m_musicalScore.Stop();
 			}
-			m_nowTime.text = m_audioSource.time.ToString();
+			//m_nowTime.text = m_audioSource.time.ToString();
 		}
 
 		// レイヤーの変更

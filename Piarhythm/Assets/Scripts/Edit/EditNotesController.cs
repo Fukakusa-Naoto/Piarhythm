@@ -74,8 +74,8 @@ public class EditNotesController : MonoBehaviour
 		m_transform.localPosition = position;
 
 		// 開始時間と長さの初期化
-		m_notesData.startTime = ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
-		m_notesData.length = ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
+		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
+		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 
 		// 作成されたノーツを選択状態にする
 		m_notesManager.SetSelectNotes(gameObject);
@@ -167,13 +167,13 @@ public class EditNotesController : MonoBehaviour
 
 		// 長さを変えないように調整する
 		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
 		m_transform.offsetMax = offsetMax;
 
 		// データの更新
 		m_notesData.scale = scale;
-		m_notesData.startTime = ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
-		m_notesData.length = ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
+		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
+		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 	}
 	#endregion
 
@@ -231,12 +231,12 @@ public class EditNotesController : MonoBehaviour
 
 		// スタート位置を更新
 		Vector2 offsetMin = m_transform.offsetMin;
-		offsetMin.y = ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
+		offsetMin.y = PiarhythmUtility.ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
 		m_transform.offsetMin = offsetMin;
 
 		// 長さ分の更新
 		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
 		m_transform.offsetMax = offsetMax;
 	}
 	#endregion
@@ -257,7 +257,7 @@ public class EditNotesController : MonoBehaviour
 
 		// 長さを更新
 		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = m_transform.offsetMin.y + ConvertTimeToPosition(lengthTime, NotesManager.NOTES_SPEED);
+		offsetMax.y = m_transform.offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(lengthTime, NotesManager.NOTES_SPEED);
 		m_transform.offsetMax = offsetMax;
 	}
 	#endregion
@@ -314,36 +314,6 @@ public class EditNotesController : MonoBehaviour
 	public void SetKeyDictionary(Dictionary<string,RectTransform> keyDictionary)
 	{
 		m_keyDictionary = keyDictionary;
-	}
-	#endregion
-
-	#region 座標から時間に変換する
-	//-----------------------------------------------------------------
-	//! @summary   座標から時間に変換する
-	//!
-	//! @parameter [positionY] 変換する座標
-	//! @parameter [speed] 速度
-	//!
-	//! @return    変換された時間
-	//-----------------------------------------------------------------
-	public float ConvertPositionToTime(float positionY, float speed)
-	{
-		return positionY / speed;
-	}
-	#endregion
-
-	#region 時間から座標に変換する
-	//-----------------------------------------------------------------
-	//! @summary   時間から座標に変換する
-	//!
-	//! @parameter [time] 変換する時間
-	//! @parameter [speed] 速度
-	//!
-	//! @return    変換された座標
-	//-----------------------------------------------------------------
-	public float ConvertTimeToPosition(float time, float speed)
-	{
-		return time * speed;
 	}
 	#endregion
 }

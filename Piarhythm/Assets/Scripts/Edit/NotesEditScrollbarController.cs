@@ -28,6 +28,11 @@ public class NotesEditScrollbarController : MonoBehaviour
 	[SerializeField]
 	private EditManager m_editManager = null;
 
+	[SerializeField]
+	private MusicalScoreController m_musicalScoreController = null;
+	[SerializeField]
+	private MenuController m_menuController = null;
+
 	private int m_imageHeight;
 	private Texture2D m_texture;
 	private float[] m_samples;
@@ -135,6 +140,24 @@ public class NotesEditScrollbarController : MonoBehaviour
 	public void SetScrollBarValue(float value)
 	{
 		m_scrollbar.value = value;
+	}
+	#endregion
+
+	#region スクロールバーの値が変更された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   スクロールバーの値が変更された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnValueChangedScrollbar()
+	{
+		// MusicalScoreから時間を現在時間を取得する
+		float nowTime = m_musicalScoreController.GetNowTime();
+
+		// メニューバーの現在時間に反映させる
+		m_menuController.UpdateDisplayNowTime(nowTime);
 	}
 	#endregion
 }
