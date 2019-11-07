@@ -39,6 +39,9 @@ public class EditNotesController : MonoBehaviour
 	// ノーツ情報
 	private PiarhythmDatas.NotesData m_notesData;
 
+	// UI
+	private NotesSheetController m_notesSheetController = null;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 初期化処理
@@ -126,7 +129,7 @@ public class EditNotesController : MonoBehaviour
 		MoveEditNotes(scale, localPoint.y);
 
 		// ノーツ情報をUIへ反映させる
-		m_notesManager.DisplayNotes(gameObject);
+		m_notesSheetController.DisplayNotes(this);
 	}
 	#endregion
 
@@ -309,11 +312,23 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   キー情報が保存された連想配列を設定する
 	//!
-	//! @parameter [m_keyDictionary] 設定するキー情報が保存された連想配列
+	//! @parameter [keyDictionary] 設定するキー情報が保存された連想配列
 	//-----------------------------------------------------------------
 	public void SetKeyDictionary(Dictionary<string,RectTransform> keyDictionary)
 	{
 		m_keyDictionary = keyDictionary;
+	}
+	#endregion
+
+	#region NotesSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   NotesSheetControllerを設定する
+	//!
+	//! @parameter [notesSheetController] 設定するNotesSheetController
+	//-----------------------------------------------------------------
+	public void SetNotesSheetController(NotesSheetController notesSheetController)
+	{
+		m_notesSheetController = notesSheetController;
 	}
 	#endregion
 }

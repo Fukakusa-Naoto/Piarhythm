@@ -1,7 +1,7 @@
 ﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
-//! @file		MusicalPieceManager.cs
+//! @file		OptionSheetController.cs
 //!
-//! @summary	楽曲設定に関するC#スクリプト
+//! @summary	設定シートに関するC#スクリプト
 //!
 //! @date		2019.10.29
 //!
@@ -14,8 +14,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 // クラスの定義 =============================================================
-public class MusicalPieceManager : MonoBehaviour
+public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	[SerializeField]
