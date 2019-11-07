@@ -14,10 +14,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// 名前空間の定義 ===========================================================
-namespace PiarhythmDatas
+// クラスの定義 =============================================================
+public class PiarhythmDatas
 {
-	// クラスの定義 =========================================================
+	// 定数の定義 ===========================================================
+	// 全てのデータを保存しているフォルダの階層パス
+	public static readonly string DATA_DIRECTORY_PATH = Application.dataPath + "/StreamingAssets/";
+	// BGMデータを保存しているフォルダの階層パス
+	public static readonly string BGM_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "BGM/";
+	// 楽曲データを保存しているフォルダの階層パス
+	public static readonly string MUSIC_PIECE_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "MusicPiece/";
+
+
+	// 構造体の定義 =========================================================
 	[System.Serializable]
 	public struct NotesData
 	{

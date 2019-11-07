@@ -12,10 +12,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Windows.Forms; //OpenFileDialog用に使う
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.IO;
 using UnityEngine.SceneManagement;
 
 
@@ -39,7 +36,7 @@ public class EditManager : MonoBehaviour
 	public NotesManager m_notesManager;
 	public NotesEditScrollbarController m_notesEditScrollbarController;
 
-
+#if false
 	// メンバ関数の定義 =====================================================
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
@@ -101,62 +98,6 @@ public class EditManager : MonoBehaviour
 		if ((m_filePuth != null) && (m_audioClip == null)) StartCoroutine("Load", m_filePuth);
 
 		if (Input.GetKey(KeyCode.Space)) SceneManager.LoadScene("Scenes/PlayScene");
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   ファイルの読み込み処理
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OpenExistFile()
-	{
-		OpenFileDialog open_file_dialog = new OpenFileDialog
-		{
-			//ファイルが実在しない場合は警告を出す(true)、警告を出さない(false)
-			CheckFileExists = false
-		};
-
-		//ダイアログを開く
-		open_file_dialog.ShowDialog();
-
-		//取得したファイル名を代入する
-		m_filePuth = open_file_dialog.FileName;
-
-		if (m_filePuth != null) m_audioClip = m_audioSource.clip = null;
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   読み込んだファイルをAudioCripに変換する
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	IEnumerator Load(string file)
-	{
-		var www = UnityWebRequestMultimedia.GetAudioClip("file://" + file, AudioType.WAV);
-		yield return www.SendWebRequest();
-
-		// 読み込み完了
-		m_audioClip = m_audioSource.clip = DownloadHandlerAudioClip.GetContent(www);
-		string[] str = file.Split('\\');
-		m_bgmText.text = m_audioClip.name = str[str.Length - 1];
-		m_maxTime.text = "/\t";
-		m_maxTime.text += m_audioClip.length.ToString();
-		Text text = m_endInputField.transform.GetChild(1).GetComponent<Text>();
-		text.text = m_audioClip.length.ToString();
-		m_bgmData.startTime = 0.0f;
-		m_bgmData.endTime = m_audioClip.length;
-
-		// スクロールバーにグラフィックとして表示
-		m_notesEditScrollbarController.UpdateTexture();
-		m_musicalScore.ChangeScoreLength(m_bgmData.endTime - m_bgmData.startTime);
 	}
 
 
@@ -306,7 +247,7 @@ public class EditManager : MonoBehaviour
 		InputField inputField = m_endInputField.GetComponent<InputField>();
 		m_bgmData.endTime = float.Parse(inputField.text);
 	}
-
+#endif
 
 
 	//-----------------------------------------------------------------
