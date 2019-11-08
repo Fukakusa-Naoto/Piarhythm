@@ -103,8 +103,10 @@ public class PiarhythmUtility
 			case ".aif":
 				audioType = AudioType.AIFF;
 				break;
+			case ".ogg":
+				audioType = AudioType.OGGVORBIS;
+				break;
 		}
-
 		// ファイルを読み込む
 		UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + fileName, audioType);
 		yield return www.SendWebRequest();
@@ -121,8 +123,14 @@ public class PiarhythmUtility
 	//-----------------------------------------------------------------
 	public static AudioClip ConvertToAudioClip(UnityWebRequest webRequest)
 	{
-		// AudioClipへ変換
-		return DownloadHandlerAudioClip.GetContent(webRequest);
+		string extension = Path.GetExtension(webRequest.url);
+		if ((extension == ".wav") || (extension == ".ogg"))
+		{
+			// AudioClipへ変換
+			return DownloadHandlerAudioClip.GetContent(webRequest);
+		}
+
+		return null;
 	}
 	#endregion
 }

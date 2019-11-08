@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,18 @@ public class BGMSheetController : MonoBehaviour
 	private InputField m_startTimeInputField = null;
 	[SerializeField]
 	private InputField m_endTimeInputField = null;
+	[SerializeField]
+	private MusicalScoreController m_musicalScoreController = null;
+	[SerializeField]
+	private MenuController m_menuController = null;
+	[SerializeField]
+	private NotesEditScrollbarController m_notesEditScrollbarController = null;
+	[SerializeField]
+	private OptionSheetController m_optionSheetController = null;
+
+	// マネージャー
+	[SerializeField]
+	private EditManager m_editManager = null;
 
 	// BGMデータ
 	private PiarhythmDatas.BGMData m_BGMData;
@@ -77,8 +90,25 @@ public class BGMSheetController : MonoBehaviour
 				// 読み込みフラグを倒す
 				m_loadFlag = false;
 
-				// BGMデータを設定する
-				SetBGMData();
+				if(m_audioClip)
+				{
+					// BGMデータを設定する
+					SetBGMData();
+
+					// UIへ反映させる
+					DisplayBGMData();
+					m_musicalScoreController.ChangeScoreLength(m_BGMData.endTime);
+					m_menuController.UpdateDisplayWholeTimeText(m_BGMData.endTime);
+					m_optionSheetController.SetWholeTime(m_BGMData.endTime);
+
+					// データの取得
+					float[] allSamples = new float[m_audioClip.samples * m_audioClip.channels];
+					m_audioClip.GetData(allSamples, 0);
+					m_notesEditScrollbarController.UpdateTexture(allSamples);
+
+					// AudioSourceに設定する
+					m_editManager.SetAudioClip(m_audioClip);
+				}
 			}
 		}
 	}
@@ -98,7 +128,7 @@ public class BGMSheetController : MonoBehaviour
 		m_filePath = PiarhythmUtility.OpenExistFileDialog();
 
 		// ファイルが選択されていなければ処理を終了する
-		if (m_filePath != "") return;
+		if (m_filePath == "") return;
 
 		// 読み込み開始フラグをたてる
 		m_loadFlag = true;
@@ -118,7 +148,15 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditStartTimeInputField()
 	{
+		// 入力が無ければ、初期化する
+		if (m_startTimeInputField.text == "") m_startTimeInputField.text = "0.0";
 
+		// 終了時間超えていれば処理を終了する
+		float startTime = float.Parse(m_startTimeInputField.text);
+		if (m_BGMData.endTime <= startTime) return;
+
+		// データを更新する
+		m_BGMData.startTime = startTime;
 	}
 	#endregion
 
@@ -132,7 +170,15 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditEndTimeInputField()
 	{
+		// 入力が無ければ、初期化する
+		if (m_endTimeInputField.text == "") m_endTimeInputField.text = "0.0";
 
+		// 開始時間超えていれば処理を終了する
+		float endTime = float.Parse(m_endTimeInputField.text);
+		if (m_BGMData.startTime >= endTime) return;
+
+		// データを更新する
+		m_BGMData.endTime = endTime;
 	}
 	#endregion
 
@@ -146,7 +192,13 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void DisplayBGMData()
 	{
+		// 曲名を取得する
+		string musicName = Path.GetFileNameWithoutExtension(m_BGMData.path);
 
+		// UIへ反映する
+		m_nameText.text = musicName;
+		m_startTimeInputField.text = m_BGMData.startTime.ToString();
+		m_endTimeInputField.text = m_BGMData.endTime.ToString();
 	}
 	#endregion
 
@@ -160,7 +212,12 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void SetBGMData()
 	{
-		m_BGMData.path = m_filePath;
+		// ファイル名を切り取る
+		string fileName = Path.GetFileName(m_filePath);
+
+		m_BGMData.path = PiarhythmDatas.BGM_DIRECTORY_PATH + fileName;
+		m_BGMData.startTime = 0.0f;
+		m_BGMData.endTime = m_audioClip.length;
 	}
 	#endregion
 }

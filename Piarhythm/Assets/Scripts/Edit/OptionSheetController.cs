@@ -20,7 +20,7 @@ public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	[SerializeField]
-	private GameObject m_wholeTimeInputField = null;
+	private InputField m_wholeTimeInputField = null;
 
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
@@ -39,13 +39,26 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditWholeTimeInputField()
 	{
-		// コンポーネントの取得
-		InputField inputField = m_wholeTimeInputField.GetComponent<InputField>();
-		if (inputField.text == "") inputField.text = "0.0";
+		// 入力が無ければ初期化する
+		if (m_wholeTimeInputField.text == "") m_wholeTimeInputField.text = "0.0";
 
 		// 変更を報告する
-		m_musicalScoreController.ChangeScoreLength(float.Parse(inputField.text));
-		m_menuController.UpdateDisplayWholeTimeText(float.Parse(inputField.text));
+		m_musicalScoreController.ChangeScoreLength(float.Parse(m_wholeTimeInputField.text));
+		m_menuController.UpdateDisplayWholeTimeText(float.Parse(m_wholeTimeInputField.text));
+	}
+	#endregion
+
+	#region BGMの読み込みがあった時の楽曲全体の長さの更新
+	//-----------------------------------------------------------------
+	//! @summary   BGMの読み込みがあった時の楽曲全体の長さの更新
+	//!
+	//! @parameter [time] BGMの時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetWholeTime(float time)
+	{
+		m_wholeTimeInputField.text = time.ToString();
 	}
 	#endregion
 }

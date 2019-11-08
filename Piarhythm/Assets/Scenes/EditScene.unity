@@ -2424,6 +2424,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40ba5c9b193728c4094ed040c5efe809, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_nameText: {fileID: 481490392}
+  m_startTimeInputField: {fileID: 757533444}
+  m_endTimeInputField: {fileID: 2025385905}
+  m_musicalScoreController: {fileID: 1546991728}
+  m_menuController: {fileID: 741932050}
+  m_notesEditScrollbarController: {fileID: 771316875}
+  m_optionSheetController: {fileID: 1512081429}
 --- !u!1 &449016427
 GameObject:
   m_ObjectHideFlags: 0
@@ -7335,7 +7342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1c2d21ceffc184b8cea63a68d6d175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_wholeTimeInputField: {fileID: 670018046}
+  m_wholeTimeInputField: {fileID: 670018048}
   m_musicalScoreController: {fileID: 1546991728}
   m_menuController: {fileID: 741932050}
 --- !u!1 &1524698372

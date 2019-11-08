@@ -86,13 +86,13 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   テクスチャの更新処理
 	//!
-	//! @parameter [void] なし
+	//! @parameter [samples] 音データ
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void UpdateTexture()
+	public void UpdateTexture(float[] samples)
 	{
-		m_samples = m_editManager.GetAudioData();
+		m_samples = samples;
 		if (m_samples == null) return;
 
 		int textureY = 0;

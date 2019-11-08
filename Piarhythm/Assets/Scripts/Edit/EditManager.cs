@@ -20,6 +20,41 @@ using UnityEngine.SceneManagement;
 public class EditManager : MonoBehaviour
 {
 	// <メンバ変数>
+	// コンポーネント
+	private AudioSource m_audioSource = null;
+
+
+	// メンバ関数の定義 =====================================================
+	#region 初期化処理
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void Start()
+	{
+		// コンポーネントの取得
+		m_audioSource = GetComponent<AudioSource>();
+	}
+	#endregion
+
+	#region AudioClipの設定処理
+	//-----------------------------------------------------------------
+	//! @summary   AudioClipの設定処理
+	//!
+	//! @parameter [audioClip] 設定するAudioClip
+	//-----------------------------------------------------------------
+	public void SetAudioClip(AudioClip audioClip)
+	{
+		m_audioSource.clip = audioClip;
+	}
+	#endregion
+
+
+#if false
+	// <メンバ変数>
 	private AudioSource m_audioSource;
 	private AudioClip m_audioClip = null;
 	private string m_filePuth = null;
@@ -36,7 +71,6 @@ public class EditManager : MonoBehaviour
 	public NotesManager m_notesManager;
 	public NotesEditScrollbarController m_notesEditScrollbarController;
 
-#if false
 	// メンバ関数の定義 =====================================================
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
@@ -247,7 +281,6 @@ public class EditManager : MonoBehaviour
 		InputField inputField = m_endInputField.GetComponent<InputField>();
 		m_bgmData.endTime = float.Parse(inputField.text);
 	}
-#endif
 
 
 	//-----------------------------------------------------------------
@@ -265,4 +298,5 @@ public class EditManager : MonoBehaviour
 
 		return samples;
 	}
+#endif
 }
