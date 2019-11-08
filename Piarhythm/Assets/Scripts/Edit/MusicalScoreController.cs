@@ -56,6 +56,7 @@ public class MusicalScoreController : MonoBehaviour
 		float height = (length * NotesManager.NOTES_SPEED);
 
 		if (height < MIN_HEIGHT) height = MIN_HEIGHT;
+		else height += MIN_HEIGHT;
 
 		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, height);
 	}
@@ -72,7 +73,7 @@ public class MusicalScoreController : MonoBehaviour
 	public float GetNowTime()
 	{
 		// 座標を時間に変換する
-		float position = m_transform.sizeDelta.y - m_transform.localPosition.y;
+		float position = -m_transform.offsetMin.y;
 		float nowTime = PiarhythmUtility.ConvertPositionToTime(position, NotesManager.NOTES_SPEED);
 
 		// 値を返す
@@ -92,7 +93,7 @@ public class MusicalScoreController : MonoBehaviour
 	{
 		Vector3 position = m_transform.localPosition;
 		position.y = m_transform.sizeDelta.y - PiarhythmUtility.ConvertTimeToPosition(nowTime, NotesManager.NOTES_SPEED);
-		m_transform.localPosition = position;
+		m_transform.anchoredPosition = position;
 	}
 	#endregion
 }

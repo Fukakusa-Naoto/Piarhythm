@@ -135,6 +135,9 @@ public class EditManager : MonoBehaviour
 
 		// 全てのノーツを元に戻す
 		m_notesManager.StopMomentEditNotes();
+
+		// 初期位置に戻す
+		m_musicalScoreController.SetNowTime(0.0f);
 	}
 	#endregion
 
