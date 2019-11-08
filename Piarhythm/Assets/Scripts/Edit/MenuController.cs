@@ -33,6 +33,10 @@ public class MenuController : MonoBehaviour
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
 
+	// マネージャー
+	[SerializeField]
+	private EditManager m_editManager = null;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 楽曲全体の長さの変更があった時の表示の更新処理
@@ -99,7 +103,7 @@ public class MenuController : MonoBehaviour
 		}
 
 		// スクロールバーを指定された時間の位置まで移動する
-		m_musicalScoreController.SetTime(float.Parse(m_nowTimeInputField.text));
+		m_musicalScoreController.SetNowTime(float.Parse(m_nowTimeInputField.text));
 	}
 	#endregion
 
@@ -130,10 +134,7 @@ public class MenuController : MonoBehaviour
 	public void OnClickStopButton()
 	{
 		// 曲を停止させる
-		OnClickPauseButton();
-
-		// 最初の位置へ移動させる
-
+		m_editManager.Stop();
 	}
 	#endregion
 
@@ -147,11 +148,8 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickPlayButton()
 	{
-		// 曲が再生されていた場合、処理を終了する
-		//if () return;
-
 		// 曲を再生させる
-
+		m_editManager.Play();
 	}
 	#endregion
 
@@ -165,11 +163,8 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickPauseButton()
 	{
-		// 曲が再生されていない場合、処理を終了する
-		//if () return;
-
 		// 曲を停止させる
-
+		m_editManager.Pause();
 	}
 	#endregion
 

@@ -84,14 +84,14 @@ public class MusicalScoreController : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   指定された時間の位置に座標を移動させる
 	//!
-	//! @parameter [time] 移動させる時間
+	//! @parameter [nowTime] 移動させる時間
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void SetTime(float time)
+	public void SetNowTime(float nowTime)
 	{
 		Vector3 position = m_transform.localPosition;
-		position.y = m_transform.sizeDelta.y - PiarhythmUtility.ConvertTimeToPosition(time, NotesManager.NOTES_SPEED);
+		position.y = m_transform.sizeDelta.y - PiarhythmUtility.ConvertTimeToPosition(nowTime, NotesManager.NOTES_SPEED);
 		m_transform.localPosition = position;
 	}
 	#endregion

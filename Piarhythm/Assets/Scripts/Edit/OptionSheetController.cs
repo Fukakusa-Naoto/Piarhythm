@@ -19,6 +19,8 @@ using UnityEngine.UI;
 public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
+	private float m_wholeTime = 0.0f;
+
 	// UI
 	[SerializeField]
 	private InputField m_wholeTimeInputField = null;
@@ -45,8 +47,9 @@ public class OptionSheetController : MonoBehaviour
 		if (m_wholeTimeInputField.text == "") m_wholeTimeInputField.text = "0.0";
 
 		// 変更を報告する
-		m_musicalScoreController.ChangeScoreLength(float.Parse(m_wholeTimeInputField.text));
-		m_menuController.UpdateDisplayWholeTimeText(float.Parse(m_wholeTimeInputField.text));
+		m_wholeTime = float.Parse(m_wholeTimeInputField.text);
+		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
+		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
 	}
 	#endregion
 
@@ -60,7 +63,20 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetWholeTime(float time)
 	{
-		m_wholeTimeInputField.text = time.ToString();
+		m_wholeTime = time;
+		m_wholeTimeInputField.text = m_wholeTime.ToString();
+	}
+	#endregion
+
+	#region 楽曲全体の時間の取得
+	//-----------------------------------------------------------------
+	//! @summary   楽曲全体の時間の取得
+	//!
+	//! @return    楽曲全体の時間
+	//-----------------------------------------------------------------
+	public float GetWholeTime()
+	{
+		return m_wholeTime;
 	}
 	#endregion
 }

@@ -145,6 +145,72 @@ public class NotesManager : MonoBehaviour
 	}
 	#endregion
 
+	#region 楽曲再生中の更新処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲再生中の更新処理
+	//!
+	//! @parameter [elapsedTime] 経過時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpdateAllEditNotes(float elapsedTime)
+	{
+		foreach(GameObject notes in m_notesList)
+		{
+			notes.GetComponent<EditNotesController>().UpdateEditNotes(elapsedTime);
+		}
+	}
+	#endregion
+
+	#region 再生瞬間のノーツの処理
+	//-----------------------------------------------------------------
+	//! @summary   再生瞬間のノーツの処理
+	//!
+	//! @parameter [elapsedTime] 経過時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void PlayMomentEditNotes(float elapsedTime)
+	{
+		foreach (GameObject notes in m_notesList)
+		{
+			// コンポーネントの取得
+			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+
+			// データの取得
+			PiarhythmDatas.NotesData notesData = editNotesController.GetNotesData();
+
+			// 経過時間が既にノーツの開始時間を過ぎている
+			if (elapsedTime >= notesData.startTime)
+			{
+				// 音をならないようにする
+				editNotesController.SetPlayedFlag(true);
+			}
+		}
+	}
+	#endregion
+
+	#region 停止瞬間のノーツの処理
+	//-----------------------------------------------------------------
+	//! @summary   停止瞬間のノーツの処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void StopMomentEditNotes()
+	{
+		foreach (GameObject notes in m_notesList)
+		{
+			// コンポーネントの取得
+			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+
+			// 音を復活させる
+			editNotesController.SetPlayedFlag(false);
+		}
+	}
+	#endregion
+
 	#region 選択されているノーツに音階を設定する
 	//-----------------------------------------------------------------
 	//! @summary   選択されているノーツに音階を設定する

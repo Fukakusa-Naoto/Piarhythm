@@ -23,15 +23,19 @@ public class EditNotesController : MonoBehaviour
 	private static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
 
 	// <メンバ変数>
-	// コンポーネント
-	private RectTransform m_transform = null;
-	private Image m_image = null;
-	private RectTransform m_musicalScoreTransform = null;
-
 	// キャンバス
 	private Canvas m_canvas = null;
 	// キー情報が保存された連想配列
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
+	// 音を鳴らしたか判定するためのフラグ
+	private bool m_playedFlag = false;
+
+	// コンポーネント
+	private RectTransform m_transform = null;
+	private Image m_image = null;
+	private RectTransform m_musicalScoreTransform = null;
+	private AudioSource m_audioSource = null;
+
 
 	// マネージャー
 	private NotesManager m_notesManager = null;
@@ -58,6 +62,7 @@ public class EditNotesController : MonoBehaviour
 		m_transform = GetComponent<RectTransform>();
 		m_image = GetComponent<Image>();
 		m_musicalScoreTransform = m_transform.parent.GetComponent<RectTransform>();
+		m_audioSource = GetComponent<AudioSource>();
 
 		// データの初期化
 		m_notesData = new PiarhythmDatas.NotesData();
@@ -180,6 +185,32 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
+	#region 楽曲再生中の更新処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲再生中の更新処理
+	//!
+	//! @parameter [elapsedTime] 経過時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpdateEditNotes(float elapsedTime)
+	{
+		// まだ音を鳴らしていない
+		if(!m_playedFlag)
+		{
+			// 経過時間がノーツの開始時間を過ぎた
+			if (m_notesData.startTime <= elapsedTime)
+			{
+				// 音を鳴らす
+				m_audioSource.Play();
+
+				// 音を鳴らしたからフラグを立てる
+				m_playedFlag = true;
+			}
+		}
+	}
+	#endregion
+
 	#region ノーツ情報の取得
 	//-----------------------------------------------------------------
 	//! @summary   ノーツ情報の取得
@@ -205,6 +236,9 @@ public class EditNotesController : MonoBehaviour
 
 		// 座標を設定された音階の位置に移動させる
 		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
+
+		// 音を設定する
+		m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
 
 		// 幅を合わせる
 		float width= m_keyDictionary[scale].sizeDelta.x
@@ -331,4 +365,17 @@ public class EditNotesController : MonoBehaviour
 		m_notesSheetController = notesSheetController;
 	}
 	#endregion
+
+	#region 音を鳴らしたか判定するためのフラグの設定
+	//-----------------------------------------------------------------
+	//! @summary   音を鳴らしたか判定するためのフラグの設定
+	//!
+	//! @parameter [playedFlag] 設定するフラグの値
+	//-----------------------------------------------------------------
+	public void SetPlayedFlag(bool playedFlag)
+	{
+		m_playedFlag = playedFlag;
+	}
+	#endregion
+
 }
