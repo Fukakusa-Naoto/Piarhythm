@@ -40,6 +40,8 @@ public class NotesManager : MonoBehaviour
 	private Canvas m_canvas = null;
 	[SerializeField]
 	private GameObject m_keyboard = null;
+
+	// コントローラー
 	[SerializeField]
 	private NotesSheetController m_notesSheetController = null;
 

@@ -22,8 +22,11 @@ public class NotesSheetController : MonoBehaviour
 	// <メンバ変数>
 	private string[] m_keyList = null;
 
+	// マネージャー
 	[SerializeField]
 	private NotesManager m_notesManager = null;
+
+	// UI
 	[SerializeField]
 	private GameObject m_musicalScaleInputField = null;
 	[SerializeField]

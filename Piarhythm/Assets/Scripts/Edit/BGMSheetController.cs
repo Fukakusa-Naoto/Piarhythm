@@ -33,6 +33,8 @@ public class BGMSheetController : MonoBehaviour
 	private InputField m_startTimeInputField = null;
 	[SerializeField]
 	private InputField m_endTimeInputField = null;
+
+	// コントローラー
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
 	[SerializeField]

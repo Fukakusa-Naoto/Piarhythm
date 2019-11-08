@@ -39,7 +39,7 @@ public class EditNotesController : MonoBehaviour
 	// ノーツ情報
 	private PiarhythmDatas.NotesData m_notesData;
 
-	// UI
+	// コントローラー
 	private NotesSheetController m_notesSheetController = null;
 
 

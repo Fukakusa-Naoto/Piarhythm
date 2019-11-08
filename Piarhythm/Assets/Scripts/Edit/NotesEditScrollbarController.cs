@@ -20,22 +20,20 @@ using UnityEngine.UI;
 public class NotesEditScrollbarController : MonoBehaviour
 {
 	// <メンバ変数>
+	private int m_imageHeight;
+	private Texture2D m_texture;
+	private float[] m_samples;
+
 	// コンポーネント
 	private Scrollbar m_scrollbar = null;
 	private RawImage m_rawImage = null;
 
-	// マネージャー
-	[SerializeField]
-	private EditManager m_editManager = null;
-
+	// コントローラー
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
 	[SerializeField]
 	private MenuController m_menuController = null;
 
-	private int m_imageHeight;
-	private Texture2D m_texture;
-	private float[] m_samples;
 
 
 	// メンバ関数の定義 =====================================================

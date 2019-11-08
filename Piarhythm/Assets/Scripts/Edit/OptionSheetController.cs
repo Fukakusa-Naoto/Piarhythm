@@ -19,9 +19,11 @@ using UnityEngine.UI;
 public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
+	// UI
 	[SerializeField]
 	private InputField m_wholeTimeInputField = null;
 
+	// コントローラー
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
 	[SerializeField]

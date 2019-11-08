@@ -19,16 +19,19 @@ using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
 	// <メンバ変数>
+	// UI
 	[SerializeField]
 	private Text m_wholeText = null;
 	[SerializeField]
 	private InputField m_nowTimeInputField = null;
 	[SerializeField]
-	private MusicalScoreController m_musicalScoreController = null;
-	[SerializeField]
 	private Dropdown m_sheetDropdown = null;
 	[SerializeField]
 	private RectTransform[] m_sheets = null;
+
+	// コントローラー
+	[SerializeField]
+	private MusicalScoreController m_musicalScoreController = null;
 
 
 	// メンバ関数の定義 =====================================================
