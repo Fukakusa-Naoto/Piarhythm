@@ -193,7 +193,14 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickLoadButton()
 	{
+		// ダイアログを開いて、ファイルパスを取得する
+		string filePath = PiarhythmUtility.OpenExistFileDialog();
 
+		// ファイルが選択されていなければ処理を終了する
+		if (filePath == "") return;
+
+		// 楽曲データを読み込む
+		m_editManager.LoadMusicPiece(filePath);
 	}
 	#endregion
 
@@ -207,7 +214,8 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickSaveButton()
 	{
-
+		// 楽曲データの保存処理
+		m_editManager.SaveMusicPiece();
 	}
 	#endregion
 }

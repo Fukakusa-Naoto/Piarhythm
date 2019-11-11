@@ -329,6 +329,7 @@ MonoBehaviour:
   m_musicalScoreController: {fileID: 1546991728}
   m_menuController: {fileID: 741932050}
   m_optionSheetController: {fileID: 1512081429}
+  m_bgmSheetController: {fileID: 420761354}
   m_notesManager: {fileID: 941376370}
 --- !u!1 &30971844
 GameObject:

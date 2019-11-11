@@ -133,4 +133,62 @@ public class PiarhythmUtility
 		return null;
 	}
 	#endregion
+
+	#region ファイルのコピー
+	//-----------------------------------------------------------------
+	//! @summary   ファイルのコピー
+	//!
+	//! @parameter [sourceFileName] コピーするファイル
+	//! @parameter [destFileName] コピー先のファイル名
+	//!
+	//! @return    true :コピー成功
+	//! @return    false:コピー失敗
+	//-----------------------------------------------------------------
+	public static bool CopyFile(string sourceFileName, string destFileName)
+	{
+		// コピー先にファイルがあるか調べる
+		if (File.Exists(destFileName))
+		{
+			// ファイルがある場合、メッセージボックスを表示する
+			if(!MossegeBoxYesOrNo("ファイルを上書きしますか？"))
+			{
+				// 処理を終了する
+				return false;
+			}
+		}
+
+		// ファイルをコピーする
+		File.Copy(sourceFileName, destFileName);
+
+		// コピー成功
+		return true;
+	}
+	#endregion
+
+	#region はい、いいえを答えるメッセージボックスの処理
+	//-----------------------------------------------------------------
+	//! @summary   はい、いいえを答えるメッセージボックスの処理
+	//!
+	//! @parameter [text] メッセージボックスに表示する分
+	//!
+	//! @return    true :Yes
+	//! @return    false:No
+	//-----------------------------------------------------------------
+	public static bool MossegeBoxYesOrNo(string text)
+	{
+		//メッセージボックスを表示する
+		DialogResult result = MessageBox.Show(
+			text,
+			"",
+			MessageBoxButtons.YesNoCancel,
+			MessageBoxIcon.Exclamation,
+			MessageBoxDefaultButton.Button2);
+
+		//何が選択されたか調べる
+		if (result == DialogResult.Yes) return true;
+		else if (result == DialogResult.No) return false;
+		else if (result == DialogResult.Cancel) return false;
+		else return false;
+	}
+	#endregion
 }

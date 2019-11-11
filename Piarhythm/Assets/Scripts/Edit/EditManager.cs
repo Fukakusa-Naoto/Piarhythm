@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,8 @@ public class EditManager : MonoBehaviour
 	private MenuController m_menuController = null;
 	[SerializeField]
 	private OptionSheetController m_optionSheetController = null;
+	[SerializeField]
+	private BGMSheetController m_bgmSheetController = null;
 
 	// マネージャー
 	[SerializeField]
@@ -177,6 +180,47 @@ public class EditManager : MonoBehaviour
 	}
 	#endregion
 
+	#region 楽曲データの保存処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲データの保存処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SaveMusicPiece()
+	{
+		// 音楽ファイルのパスを取得する
+		string audioFilePath = m_bgmSheetController.GetAudioFilePath();
+
+		// BGMデータを取得する
+
+
+		// BGMをコピーする
+
+		// 楽曲データを作成する
+
+		// json文字列に変換する
+
+		// ファイルに書き込んで保存する
+
+	}
+	#endregion
+
+	#region 楽曲データの読み込み処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲データの読み込み処理
+	//!
+	//! @parameter [filePath] 読み込むファイルパス
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void LoadMusicPiece(string filePath)
+	{
+
+	}
+	#endregion
+
 	#region AudioClipの設定処理
 	//-----------------------------------------------------------------
 	//! @summary   AudioClipの設定処理
@@ -188,6 +232,7 @@ public class EditManager : MonoBehaviour
 		m_audioSource.clip = audioClip;
 	}
 	#endregion
+
 
 
 #if false

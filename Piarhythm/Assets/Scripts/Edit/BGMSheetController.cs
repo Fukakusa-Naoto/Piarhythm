@@ -222,4 +222,16 @@ public class BGMSheetController : MonoBehaviour
 		m_BGMData.endTime = m_audioClip.length;
 	}
 	#endregion
+
+	#region 音楽ファイルのパスを取得する
+	//-----------------------------------------------------------------
+	//! @summary   音楽ファイルのパスを取得する
+	//!
+	//! @return    音楽ファイルのパス
+	//-----------------------------------------------------------------
+	public string GetAudioFilePath()
+	{
+		return m_filePath;
+	}
+	#endregion
 }
