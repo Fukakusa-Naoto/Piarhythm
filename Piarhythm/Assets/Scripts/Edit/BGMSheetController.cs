@@ -223,6 +223,18 @@ public class BGMSheetController : MonoBehaviour
 	}
 	#endregion
 
+	#region BGMデータを取得する
+	//-----------------------------------------------------------------
+	//! @summary   BGMデータを取得する
+	//!
+	//! @return    BGMデータ
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.BGMData GetBGMData()
+	{
+		return m_BGMData;
+	}
+	#endregion
+
 	#region 音楽ファイルのパスを取得する
 	//-----------------------------------------------------------------
 	//! @summary   音楽ファイルのパスを取得する

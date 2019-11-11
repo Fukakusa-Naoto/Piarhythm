@@ -23,7 +23,7 @@ public class PiarhythmDatas
 	// BGMデータを保存しているフォルダの階層パス
 	public static readonly string BGM_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "BGM/";
 	// 楽曲データを保存しているフォルダの階層パス
-	public static readonly string MUSIC_PIECE_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "MusicPiece/";
+	public static readonly string MUSIC_PIECE_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "Data/MusicPiece/";
 
 
 	// 構造体の定義 =========================================================

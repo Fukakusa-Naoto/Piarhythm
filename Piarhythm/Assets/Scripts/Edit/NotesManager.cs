@@ -19,7 +19,7 @@ using UnityEngine.UI;
 public class NotesManager : MonoBehaviour
 {
 	// <メンバ定数>
-	public static readonly float NOTES_SPEED = 10.0f;
+	public static readonly float NOTES_SPEED = 100.0f;
 
 
 	// <メンバ変数>
@@ -283,6 +283,30 @@ public class NotesManager : MonoBehaviour
 
 		// ノーツへ設定する
 		m_selectNotes.GetComponent<EditNotesController>().SetNotesColor(color);
+	}
+	#endregion
+
+	#region 全てのノーツデータを取得する
+	//-----------------------------------------------------------------
+	//! @summary   全てのノーツデータを取得する
+	//!
+	//! @parameter [voic] なし
+	//!
+	//! @return    ノーツデータの配列
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.NotesData[] GetNotesDatas()
+	{
+		PiarhythmDatas.NotesData[] notesDatas = new PiarhythmDatas.NotesData[m_notesList.Count];
+
+		// ノーツデータをまとめる
+		int i = 0;
+		foreach(GameObject notes in m_notesList)
+		{
+			notesDatas[i]=notes.GetComponent<EditNotesController>().GetNotesData();
+			++i;
+		}
+
+		return notesDatas;
 	}
 	#endregion
 }

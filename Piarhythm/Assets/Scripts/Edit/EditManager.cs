@@ -194,16 +194,27 @@ public class EditManager : MonoBehaviour
 		string audioFilePath = m_bgmSheetController.GetAudioFilePath();
 
 		// BGMデータを取得する
-
+		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
 
 		// BGMをコピーする
+		PiarhythmUtility.CopyFile(audioFilePath, bgmData.path);
+
+		// ノーツデータを取得する
+		PiarhythmDatas.NotesData[] notesDatas = m_notesManager.GetNotesDatas();
 
 		// 楽曲データを作成する
+		PiarhythmDatas.MusicPieceData musicPieceData = new PiarhythmDatas.MusicPieceData();
+		musicPieceData.bgmData = bgmData;
+		musicPieceData.notesDataList = notesDatas;
 
 		// json文字列に変換する
+		string jsonString = JsonUtility.ToJson(musicPieceData);
+
+		// 保存先のパスを作成する
+		string path = PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH + Path.GetFileNameWithoutExtension(audioFilePath) + ".json";
 
 		// ファイルに書き込んで保存する
-
+		PiarhythmUtility.WriteFileText(path, jsonString);
 	}
 	#endregion
 

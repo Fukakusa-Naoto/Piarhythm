@@ -191,4 +191,34 @@ public class PiarhythmUtility
 		else return false;
 	}
 	#endregion
+
+	#region ファイルの書き込み処理
+	//-----------------------------------------------------------------
+	//! @summary   ファイルの書き込み処理
+	//!
+	//! @parameter [filePath] 保存する階層も含めたファイル名
+	//! @parameter [contents] ファイルに書き込む文字列
+	//!
+	//! @return    true :書き込み成功
+	//! @return    false:書き込み失敗
+	//-----------------------------------------------------------------
+	public static bool WriteFileText(string filePath,string contents)
+	{
+		// 書き込み先にファイルがあるか調べる
+		if (File.Exists(filePath))
+		{
+			// ファイルがある場合、メッセージボックスを表示する
+			if (!MossegeBoxYesOrNo("ファイルを上書きしますか？"))
+			{
+				// 処理を終了する
+				return false;
+			}
+		}
+
+		// ファイルを書き込む
+		File.WriteAllText(filePath, contents);
+
+		return true;
+	}
+	#endregion
 }
