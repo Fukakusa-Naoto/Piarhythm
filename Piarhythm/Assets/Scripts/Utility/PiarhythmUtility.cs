@@ -55,17 +55,19 @@ public class PiarhythmUtility
 	//-----------------------------------------------------------------
 	//! @summary   ダイアログを開いてファイルをファイルを指定する
 	//!
-	//! @parameter [void] なし
+	//! @parameter [rootDirectory] 最初に開くフォルダ
 	//!
 	//! @return    選択されたファイル名
 	//-----------------------------------------------------------------
-	public static string OpenExistFileDialog()
+	public static string OpenExistFileDialog(string rootDirectory)
 	{
 		OpenFileDialog openFileDialog = new OpenFileDialog
 		{
 			//ファイルが実在しない場合は警告を出す(true)、警告を出さない(false)
 			CheckFileExists = false
 		};
+
+		openFileDialog.InitialDirectory = rootDirectory;
 
 		//ダイアログを開く
 		openFileDialog.ShowDialog();

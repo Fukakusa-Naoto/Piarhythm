@@ -194,7 +194,7 @@ public class MenuController : MonoBehaviour
 	public void OnClickLoadButton()
 	{
 		// ダイアログを開いて、ファイルパスを取得する
-		string filePath = PiarhythmUtility.OpenExistFileDialog();
+		string filePath = PiarhythmUtility.OpenExistFileDialog(PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH);
 
 		// ファイルが選択されていなければ処理を終了する
 		if (filePath == "") return;

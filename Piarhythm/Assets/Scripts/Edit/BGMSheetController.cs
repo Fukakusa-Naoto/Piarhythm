@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ public class BGMSheetController : MonoBehaviour
 	public void OnClickSelectButton()
 	{
 		// ダイアログを開いて、ファイルパスを取得する
-		m_filePath = PiarhythmUtility.OpenExistFileDialog();
+		m_filePath = PiarhythmUtility.OpenExistFileDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
 
 		// ファイルが選択されていなければ処理を終了する
 		if (m_filePath == "") return;
