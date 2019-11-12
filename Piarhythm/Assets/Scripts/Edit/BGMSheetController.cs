@@ -96,7 +96,7 @@ public class BGMSheetController : MonoBehaviour
 				if(m_audioClip)
 				{
 					// BGMデータを設定する
-					SetBGMData();
+					if(m_BGMData.Equals(new PiarhythmDatas.BGMData())) SetBGMData();
 
 					// UIへ反映させる
 					DisplayBGMData();
@@ -128,7 +128,9 @@ public class BGMSheetController : MonoBehaviour
 	public void OnClickSelectButton()
 	{
 		// ダイアログを開いて、ファイルパスを取得する
-		m_filePath = PiarhythmUtility.OpenExistFileDialog(Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+		m_filePath = PiarhythmUtility.OpenExistFileDialog(
+			Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+			"WAVファイル(*.wav) | *.wav");
 
 		// ファイルが選択されていなければ処理を終了する
 		if (m_filePath == "") return;
@@ -221,6 +223,26 @@ public class BGMSheetController : MonoBehaviour
 		m_BGMData.path = PiarhythmDatas.BGM_DIRECTORY_PATH + fileName;
 		m_BGMData.startTime = 0.0f;
 		m_BGMData.endTime = m_audioClip.length;
+	}
+	#endregion
+
+	#region BGMデータを設定する(設定引数あり)
+	//-----------------------------------------------------------------
+	//! @summary   BGMデータを設定する(設定引数あり)
+	//!
+	//! @parameter [BGMData] 設定するBGMData
+	//-----------------------------------------------------------------
+	public void SetBGMData(PiarhythmDatas.BGMData BGMData)
+	{
+		// 設定する
+		m_BGMData = BGMData;
+
+		// BGMを読み込む
+		// 読み込み開始フラグをたてる
+		m_loadFlag = true;
+
+		// コルーチンを設定する
+		m_coroutine = PiarhythmUtility.LoadAudioFile(m_BGMData.path);
 	}
 	#endregion
 

@@ -56,7 +56,7 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Start()
+	public void Initialize()
 	{
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();
@@ -378,4 +378,21 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
+	#region ノーツデータを設定する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツデータを設定する
+	//!
+	//! @parameter [notesData] 設定するノーツデータ
+	//-----------------------------------------------------------------
+	public void SetNotesData(PiarhythmDatas.NotesData notesData)
+	{
+		// データを設定する
+		m_notesData = notesData;
+
+		SetNotesScale(m_notesData.scale);
+		SetNotesStartTime(m_notesData.startTime);
+		SetNotesLengthTime(m_notesData.length);
+		SetNotesColor(m_notesData.color);
+	}
+	#endregion
 }

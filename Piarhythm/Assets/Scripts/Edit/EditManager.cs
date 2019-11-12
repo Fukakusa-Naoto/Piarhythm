@@ -228,7 +228,18 @@ public class EditManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void LoadMusicPiece(string filePath)
 	{
+		// ファイルを読み込む
+		string jsonString = "";
+		PiarhythmUtility.ReadFileText(filePath, ref jsonString);
 
+		// オブジェクトに変換する
+		PiarhythmDatas.MusicPieceData musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonString);
+
+		// BGMデータの設定
+		m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
+
+		// ノーツの生成
+		m_notesManager.CreateNotes(musicPieceData.notesDataList);
 	}
 	#endregion
 

@@ -93,7 +93,7 @@ public class NotesManager : MonoBehaviour
 	//!
 	//! @parameter [void] なし
 	//!
-	//! @return    生成されたノーツ
+	//! @return    なし
 	//-----------------------------------------------------------------
 	public void CreateNotes()
 	{
@@ -117,8 +117,56 @@ public class NotesManager : MonoBehaviour
 		if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
 		newNotes.GetComponent<RectTransform>().SetParent(m_musicalScore.GetComponent<RectTransform>());
 
+		// 初期化処理
+		editNotes.Initialize();
+
 		// リストに登録する
 		m_notesList.Add(newNotes);
+	}
+	#endregion
+
+	#region ノーツの生成処理(引数あり)
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの生成処理(引数あり)
+	//!
+	//! @parameter [notesDetas] ノーツデータの配列
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void CreateNotes(PiarhythmDatas.NotesData[] notesDatas)
+	{
+		if (m_notesPrefab == null) Debug.Log("NotesPrefabが設定されていません");
+
+		foreach (PiarhythmDatas.NotesData notesData in notesDatas)
+		{
+			// ノーツを生成する
+			GameObject newNotes = Instantiate(m_notesPrefab);
+
+			// コンポーネントの取得
+			EditNotesController editNotes = newNotes.GetComponent<EditNotesController>();
+
+			// マネージャーを設定する
+			editNotes.SetNotesManager(this);
+			// キャンバスの設定
+			editNotes.SetCanvas(m_canvas);
+			// キーボード情報
+			editNotes.SetKeyDictionary(m_keyDictionary);
+			// NotesSheetControllerを設定する
+			editNotes.SetNotesSheetController(m_notesSheetController);
+
+			// MusicalScoreの子に設定する
+			if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
+			newNotes.GetComponent<RectTransform>().SetParent(m_musicalScore.GetComponent<RectTransform>());
+
+			// 初期化処理
+			editNotes.Initialize();
+
+			// ノーツデータを設定する
+			editNotes.SetNotesData(notesData);
+
+			// リストに登録する
+			m_notesList.Add(newNotes);
+		}
 	}
 	#endregion
 

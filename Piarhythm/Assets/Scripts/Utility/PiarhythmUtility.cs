@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -56,10 +57,11 @@ public class PiarhythmUtility
 	//! @summary   ダイアログを開いてファイルをファイルを指定する
 	//!
 	//! @parameter [rootDirectory] 最初に開くフォルダ
+	//! @parameter [extension] 指定する拡張子
 	//!
 	//! @return    選択されたファイル名
 	//-----------------------------------------------------------------
-	public static string OpenExistFileDialog(string rootDirectory)
+	public static string OpenExistFileDialog(string rootDirectory, string extension)
 	{
 		OpenFileDialog openFileDialog = new OpenFileDialog
 		{
@@ -67,7 +69,11 @@ public class PiarhythmUtility
 			CheckFileExists = false
 		};
 
+		// 最初に開く階層を設定する
 		openFileDialog.InitialDirectory = rootDirectory;
+
+		// 拡張子を設定する
+		openFileDialog.Filter = (extension == "") ? "すべてのファイル(*.*)|*.*" : extension;
 
 		//ダイアログを開く
 		openFileDialog.ShowDialog();
@@ -204,7 +210,7 @@ public class PiarhythmUtility
 	//! @return    true :書き込み成功
 	//! @return    false:書き込み失敗
 	//-----------------------------------------------------------------
-	public static bool WriteFileText(string filePath,string contents)
+	public static bool WriteFileText(string filePath, string contents)
 	{
 		// 書き込み先にファイルがあるか調べる
 		if (File.Exists(filePath))
@@ -219,6 +225,34 @@ public class PiarhythmUtility
 
 		// ファイルを書き込む
 		File.WriteAllText(filePath, contents);
+
+		return true;
+	}
+	#endregion
+
+	#region ファイルの読み込み処理
+	//-----------------------------------------------------------------
+	//! @summary   ファイルの読み込み処理
+	//!
+	//! @parameter [filePath] 読み込むファイルパス
+	//! @parameter [text] 読み込んだ文字列を保存する変数
+	//!
+	//! @return    true :読み込み成功
+	//! @return    false:読み込み失敗
+	//-----------------------------------------------------------------
+	public static bool ReadFileText(string filePath, ref string text)
+	{
+		// ファイルがあるか調べる
+		if (!File.Exists(filePath)) return false;
+
+		// ファイルを開く
+		StreamReader sr = new StreamReader(filePath, Encoding.GetEncoding("Shift_JIS"));
+
+		// テキストを保存する
+		text = sr.ReadToEnd();
+
+		// ファイルを閉じる
+		sr.Close();
 
 		return true;
 	}
