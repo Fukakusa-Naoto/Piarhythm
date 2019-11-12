@@ -83,7 +83,8 @@ public class NotesManager : MonoBehaviour
 		m_selectNotes = selectNotes;
 
 		// UIへ情報を反映させる
-		m_notesSheetController.DisplayNotes(m_selectNotes.GetComponent<EditNotesController>());
+		if(m_selectNotes)
+			m_notesSheetController.DisplayNotes(m_selectNotes.GetComponent<EditNotesController>());
 	}
 	#endregion
 

@@ -165,8 +165,11 @@ public class PiarhythmUtility
 			}
 		}
 
+		// 同じファイルなら処理を停止する
+		if (sourceFileName == destFileName) return false;
+
 		// ファイルをコピーする
-		File.Copy(sourceFileName, destFileName);
+		File.Copy(sourceFileName, destFileName, true);
 
 		// コピー成功
 		return true;
