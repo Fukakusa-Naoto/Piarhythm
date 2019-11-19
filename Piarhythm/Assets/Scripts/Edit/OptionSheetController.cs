@@ -30,6 +30,10 @@ public class OptionSheetController : MonoBehaviour
 	private MusicalScoreController m_musicalScoreController = null;
 	[SerializeField]
 	private MenuController m_menuController = null;
+	[SerializeField]
+	private BGMSheetController m_bgmSheetController = null;
+	[SerializeField]
+	private NotesEditScrollbarController m_notesEditScrollbarController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -50,6 +54,9 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeTime = float.Parse(m_wholeTimeInputField.text);
 		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
 		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+
+		// スクロールバーのテクスチャを更新する
+		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
 	}
 	#endregion
 

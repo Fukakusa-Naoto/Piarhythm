@@ -50,7 +50,7 @@ public class MenuController : MonoBehaviour
 	public void UpdateDisplayWholeTimeText(float wholeTime)
 	{
 		// 表示する文字列の作成
-		string displayStr = "\t";
+		string displayStr = "/\t";
 		displayStr += wholeTime.ToString();
 
 		// UIの更新

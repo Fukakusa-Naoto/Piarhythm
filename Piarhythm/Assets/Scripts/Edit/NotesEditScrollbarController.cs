@@ -22,7 +22,7 @@ public class NotesEditScrollbarController : MonoBehaviour
 	// <メンバ変数>
 	private int m_imageHeight;
 	private Texture2D m_texture;
-	private float[] m_samples;
+	private AudioClip m_audioClip = null;
 
 	// コンポーネント
 	private Scrollbar m_scrollbar = null;
@@ -84,22 +84,37 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   テクスチャの更新処理
 	//!
-	//! @parameter [samples] 音データ
+	//! @parameter [bgmData] BGMデータ
+	//! @parameter [wholeTime] 曲全体の時間
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void UpdateTexture(float[] samples)
+	public void UpdateTexture(PiarhythmDatas.BGMData bgmData, float wholeTime)
 	{
-		m_samples = samples;
-		if (m_samples == null) return;
+		if (m_audioClip == null) return;
 
 		int textureY = 0;
 		float maxSample = 0;
 
-		for (int i = 0, l = m_samples.Length; (i < l) && (textureY < m_imageHeight); ++i)
+		// サンプルを取得する
+		float[] allSamples = new float[m_audioClip.samples * m_audioClip.channels];
+		float offset = bgmData.startTime * m_audioClip.frequency * m_audioClip.channels;
+		m_audioClip.GetData(allSamples, (int)offset);
+
+		// 使用するサンプル分だけ取り出す
+		float totalTime = bgmData.endTime - bgmData.startTime;
+		int totalOffset = (int)(totalTime * m_audioClip.frequency * m_audioClip.channels);
+		float[] samples = new float[totalOffset];
+		for (int i = 0; i < totalOffset; ++i) samples[i] = allSamples[i];
+
+		// 画像の高さ分を超えるまで処理する
+		int wholeOffset = (int)(wholeTime * m_audioClip.frequency * m_audioClip.channels);
+		for (int i = 0; textureY < m_imageHeight; ++i)
 		{
-			maxSample = Mathf.Max(maxSample, m_samples[i]);
-			int denominator = (m_samples.Length < m_imageHeight) ? i : m_samples.Length / m_imageHeight;
+			// 大きい方の値を取得する
+			if (i < samples.Length) maxSample = Mathf.Max(maxSample, samples[i]);
+
+			int denominator = (wholeOffset < m_imageHeight) ? i : wholeOffset / m_imageHeight;
 
 			if (i % denominator == 0)
 			{
@@ -132,12 +147,22 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//! @summary   スクロールの値を設定
 	//!
 	//! @parameter [value] 設定するスクロールバーの値(0.0~1.0)
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetScrollBarValue(float value)
 	{
 		m_scrollbar.value = value;
+	}
+	#endregion
+
+	#region オーディオクリップの設定
+	//-----------------------------------------------------------------
+	//! @summary   オーディオクリップの設定
+	//!
+	//! @parameter [audioClip] 設定するオーディオクリップ
+	//-----------------------------------------------------------------
+	public void SetAudioClip(AudioClip audioClip)
+	{
+		m_audioClip = audioClip;
 	}
 	#endregion
 
