@@ -82,11 +82,12 @@ public class EditManager : MonoBehaviour
 			// 全てのノーツの更新処理をする
 			m_notesManager.UpdateAllEditNotes(m_elapsedTime);
 
+			// BGMを止める
+			PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
+			if (m_audioSource.time >= bgmData.endTime) m_audioSource.Stop();
+
 			// 楽曲が終了した
-			if (m_elapsedTime >= m_optionSheetController.GetWholeTime())
-			{
-				FinishedMusic();
-			}
+			if (m_elapsedTime >= m_optionSheetController.GetWholeTime()) FinishedMusic();
 		}
 	}
 	#endregion
@@ -110,8 +111,11 @@ public class EditManager : MonoBehaviour
 		// 現在時間の取得
 		m_elapsedTime = m_musicalScoreController.GetNowTime();
 
+		// BGMデータの取得
+		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
+
 		// 再生位置を調節する
-		m_audioSource.time = m_elapsedTime;
+		m_audioSource.time = m_elapsedTime + bgmData.startTime;
 
 		// BGMを再生させる
 		if (m_audioSource.clip) m_audioSource.Play();
