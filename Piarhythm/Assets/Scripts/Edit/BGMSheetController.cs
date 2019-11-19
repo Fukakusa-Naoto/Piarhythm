@@ -104,10 +104,9 @@ public class BGMSheetController : MonoBehaviour
 					m_menuController.UpdateDisplayWholeTimeText(m_BGMData.endTime);
 					m_optionSheetController.SetWholeTime(m_BGMData.endTime);
 
-					// データの取得
-					float[] allSamples = new float[m_audioClip.samples * m_audioClip.channels];
-					m_audioClip.GetData(allSamples, 0);
-					m_notesEditScrollbarController.UpdateTexture(allSamples);
+					// オーディオクリップを設定し、スクロールバーのテクスチャを更新する
+					m_notesEditScrollbarController.SetAudioClip(m_audioClip);
+					m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_BGMData.endTime);
 
 					// AudioSourceに設定する
 					m_editManager.SetAudioClip(m_audioClip);
@@ -162,6 +161,9 @@ public class BGMSheetController : MonoBehaviour
 
 		// データを更新する
 		m_BGMData.startTime = startTime;
+
+		// スクロールバーのテクスチャの更新
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_optionSheetController.GetWholeTime());
 	}
 	#endregion
 
@@ -184,6 +186,9 @@ public class BGMSheetController : MonoBehaviour
 
 		// データを更新する
 		m_BGMData.endTime = endTime;
+
+		// スクロールバーのテクスチャの更新
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_optionSheetController.GetWholeTime());
 	}
 	#endregion
 
