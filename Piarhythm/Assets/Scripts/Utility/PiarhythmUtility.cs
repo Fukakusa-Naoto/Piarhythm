@@ -156,8 +156,11 @@ public class PiarhythmUtility
 		// コピー先にファイルがあるか調べる
 		if (File.Exists(destFileName))
 		{
+			// メッセージテキストを作成
+			string messegeText = Path.GetFileName(sourceFileName) + "を上書きしますか？";
+
 			// ファイルがある場合、メッセージボックスを表示する
-			if(!MossegeBoxYesOrNo("ファイルを上書きしますか？"))
+			if(!MessegeBoxYesOrNo(messegeText))
 			{
 				// 処理を終了する
 				return false;
@@ -184,15 +187,13 @@ public class PiarhythmUtility
 	//! @return    true :Yes
 	//! @return    false:No
 	//-----------------------------------------------------------------
-	public static bool MossegeBoxYesOrNo(string text)
+	public static bool MessegeBoxYesOrNo(string text)
 	{
 		//メッセージボックスを表示する
 		DialogResult result = MessageBox.Show(
 			text,
 			"",
-			MessageBoxButtons.YesNoCancel,
-			MessageBoxIcon.Exclamation,
-			MessageBoxDefaultButton.Button2);
+			MessageBoxButtons.YesNoCancel);
 
 		//何が選択されたか調べる
 		if (result == DialogResult.Yes) return true;
@@ -217,8 +218,11 @@ public class PiarhythmUtility
 		// 書き込み先にファイルがあるか調べる
 		if (File.Exists(filePath))
 		{
+			// メッセージテキストを作成
+			string messegeText = Path.GetFileName(filePath) + "を上書きしますか？";
+
 			// ファイルがある場合、メッセージボックスを表示する
-			if (!MossegeBoxYesOrNo("ファイルを上書きしますか？"))
+			if (!MessegeBoxYesOrNo(messegeText))
 			{
 				// 処理を終了する
 				return false;
