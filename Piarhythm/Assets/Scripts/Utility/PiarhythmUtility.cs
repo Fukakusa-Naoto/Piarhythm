@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -246,16 +245,10 @@ public class PiarhythmUtility
 	public static bool ReadFileText(string filePath, ref string text)
 	{
 		// ファイルがあるか調べる
-		if (!File.Exists(filePath)) return false;
-
-		// ファイルを開く
-		StreamReader sr = new StreamReader(filePath, Encoding.GetEncoding("Shift_JIS"));
+		if (!File.Exists(filePath))　return false;
 
 		// テキストを保存する
-		text = sr.ReadToEnd();
-
-		// ファイルを閉じる
-		sr.Close();
+		text = File.ReadAllText(filePath);
 
 		return true;
 	}
