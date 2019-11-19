@@ -87,8 +87,8 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditNowTimeInputField()
 	{
-		// 入力が無い場合、現在の時間で設定する
-		if (m_nowTimeInputField.text == "")
+		// 入力が無い場合、もしくはマイナスの値だった場合は現在の時間で設定する
+		if ((m_nowTimeInputField.text == "") || (float.Parse(m_nowTimeInputField.text) < 0))
 		{
 			// 現在の時間を取得
 			float time = m_musicalScoreController.GetNowTime();
