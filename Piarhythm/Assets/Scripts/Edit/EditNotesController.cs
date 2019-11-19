@@ -288,7 +288,7 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesStartTime(float startTime)
 	{
 		// 開始位置がマイナスだった場合は処理を終了する
-		if (startTime <= 0.0f) return;
+		if (startTime < 0.0f) return;
 
 		// データを更新する
 		m_notesData.startTime = startTime;
