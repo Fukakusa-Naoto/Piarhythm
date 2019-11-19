@@ -36,4 +36,5 @@ sysinfo.txt
 *.unitypackage
 Resources/
 
-StreamingAssets/BGM/
+Piarhythm/Assets/StreamingAssets/BGM
+Piarhythm/Assets/StreamingAssets/BGM.meta
