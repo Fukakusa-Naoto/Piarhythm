@@ -21,6 +21,11 @@ public class EditNotesController : MonoBehaviour
 	// <メンバ定数>
 	// #時の色の変化率
 	private static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
+	// 光彩の最小サイズ
+	private static readonly float MIN_GLOW_SIZE = 2.0f;
+	// 光彩の最大サイズ
+	private static readonly float MAX_GLOW_SIZE = 10.0f;
+
 
 	// <メンバ変数>
 	// キャンバス
@@ -32,7 +37,7 @@ public class EditNotesController : MonoBehaviour
 
 	// コンポーネント
 	private RectTransform m_transform = null;
-	private Image m_image = null;
+	private GlowImage m_glowImage = null;
 	private RectTransform m_musicalScoreTransform = null;
 	private AudioSource m_audioSource = null;
 
@@ -60,7 +65,7 @@ public class EditNotesController : MonoBehaviour
 	{
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();
-		m_image = GetComponent<Image>();
+		m_glowImage = GetComponent<GlowImage>();
 		m_musicalScoreTransform = m_transform.parent.GetComponent<RectTransform>();
 		m_audioSource = GetComponent<AudioSource>();
 
@@ -68,7 +73,7 @@ public class EditNotesController : MonoBehaviour
 		m_notesData = new PiarhythmDatas.NotesData();
 
 		// 色の初期化
-		m_notesData.color = m_image.color = Color.green;
+		m_notesData.color = m_glowImage.color = m_glowImage.glowColor = Color.green;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
@@ -87,6 +92,9 @@ public class EditNotesController : MonoBehaviour
 
 		// 作成されたノーツを選択状態にする
 		m_notesManager.SetSelectNotes(gameObject);
+
+		// 光彩を切る
+		m_glowImage.glowSize = 0.0f;
 	}
 	#endregion
 
@@ -150,6 +158,11 @@ public class EditNotesController : MonoBehaviour
 	{
 		// 選択されたことをNotesManagerに伝える
 		m_notesManager.SetSelectNotes(gameObject);
+
+		// 光彩を起動する
+		float glowSize = MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+		glowSize = Mathf.Clamp(glowSize, MIN_GLOW_SIZE, MAX_GLOW_SIZE);
+		m_glowImage.glowSize = glowSize;
 	}
 	#endregion
 
@@ -211,6 +224,20 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
+	#region 選択が外れた時の光彩を切る処理
+	//-----------------------------------------------------------------
+	//! @summary   選択が外れた時の光彩を切る処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OffGlow()
+	{
+		m_glowImage.glowSize = 0.0f;
+	}
+	#endregion
+
 	#region ノーツ情報の取得
 	//-----------------------------------------------------------------
 	//! @summary   ノーツ情報の取得
@@ -246,7 +273,7 @@ public class EditNotesController : MonoBehaviour
 		m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
 
 		// #の色を変化させる
-		m_image.color = (scale.Contains("#"))
+		m_glowImage.color = (scale.Contains("#"))
 			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
 			: m_notesData.color;
 	}
@@ -312,9 +339,12 @@ public class EditNotesController : MonoBehaviour
 
 		// 色を反映させる
 		// #の色を変化させる
-		m_image.color = (m_notesData.scale.Contains("#"))
+		m_glowImage.color = (m_notesData.scale.Contains("#"))
 			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
 			: m_notesData.color;
+
+		// 光彩の色を更新する
+		m_glowImage.glowColor = color;
 	}
 	#endregion
 
