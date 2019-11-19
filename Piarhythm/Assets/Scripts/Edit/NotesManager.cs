@@ -80,6 +80,10 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotes(GameObject selectNotes)
 	{
+		// 選択されていたノーツの光彩を切る
+		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().OffGlow();
+
+		// 選択されているノーツを更新する
 		m_selectNotes = selectNotes;
 
 		// UIへ情報を反映させる
