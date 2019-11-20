@@ -281,7 +281,7 @@ public class EditNotesController : MonoBehaviour
 		//m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
 
 		Vector3 localScale = m_transform.localScale;
-		localScale.x = (scale.Contains("#")) ? 0.75f : 1.0f;
+		localScale.x = (scale.Contains("#")) ? 0.65f : 0.9f;
 		m_transform.localScale = localScale;
 
 		// #の色を変化させる
