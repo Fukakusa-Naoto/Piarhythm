@@ -268,9 +268,14 @@ public class EditNotesController : MonoBehaviour
 		m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
 
 		// 幅を合わせる
-		float width= m_keyDictionary[scale].sizeDelta.x
-			* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
-		m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+		// GlowImageの解析と改造が終わるまで下の処理で代用する
+		//float width = m_keyDictionary[scale].sizeDelta.x
+		//	* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
+		//m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+
+		Vector3 localScale = m_transform.localScale;
+		localScale.x = (scale.Contains("#")) ? 0.75f : 1.0f;
+		m_transform.localScale = localScale;
 
 		// #の色を変化させる
 		m_glowImage.color = (scale.Contains("#"))
