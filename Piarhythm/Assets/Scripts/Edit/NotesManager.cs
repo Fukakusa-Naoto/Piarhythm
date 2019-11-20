@@ -81,13 +81,16 @@ public class NotesManager : MonoBehaviour
 	public void SetSelectNotes(GameObject selectNotes)
 	{
 		// 選択されていたノーツの光彩を切る
-		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().OffGlow();
+		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().SwitchGlow(false);
 
 		// 選択されているノーツを更新する
 		m_selectNotes = selectNotes;
 
+		// 光彩を付ける
+		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+
 		// UIへ情報を反映させる
-		if(m_selectNotes)
+		if (m_selectNotes)
 			m_notesSheetController.DisplayNotes(m_selectNotes.GetComponent<EditNotesController>());
 	}
 	#endregion
@@ -127,6 +130,9 @@ public class NotesManager : MonoBehaviour
 
 		// リストに登録する
 		m_notesList.Add(newNotes);
+
+		// 生成されたノーツを選択中にする
+		SetSelectNotes(newNotes);
 	}
 	#endregion
 

@@ -90,9 +90,6 @@ public class EditNotesController : MonoBehaviour
 		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
 		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 
-		// 作成されたノーツを選択状態にする
-		m_notesManager.SetSelectNotes(gameObject);
-
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
 	}
@@ -224,17 +221,27 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
-	#region 選択が外れた時の光彩を切る処理
+	#region 光彩のOn/Offの設定処理
 	//-----------------------------------------------------------------
-	//! @summary   選択が外れた時の光彩を切る処理
+	//! @summary   光彩のOn/Offの設定処理
 	//!
-	//! @parameter [void] なし
+	//! @parameter [flag] 光彩のOn/Offのフラグ
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void OffGlow()
+	public void SwitchGlow(bool flag)
 	{
-		m_glowImage.glowSize = 0.0f;
+		if(flag)
+		{
+			// 光彩を起動する
+			float glowSize = MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+			glowSize = Mathf.Clamp(glowSize, MIN_GLOW_SIZE, MAX_GLOW_SIZE);
+			m_glowImage.glowSize = glowSize;
+		}
+		else
+		{
+			m_glowImage.glowSize = 0.0f;
+		}
 	}
 	#endregion
 
