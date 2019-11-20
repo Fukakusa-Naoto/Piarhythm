@@ -216,8 +216,16 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickSaveButton()
 	{
+		// ダイアログを開いて、保存するファイルパスを決める
+		string filePath = PiarhythmUtility.OpenExistFileDialog(
+			PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH,
+			"JSONファイル(*.json)|*.json");
+
+		// ファイルが選択されていなければ処理を終了する
+		if (filePath == "") return;
+
 		// 楽曲データの保存処理
-		m_editManager.SaveMusicPiece();
+		m_editManager.SaveMusicPiece(filePath);
 	}
 	#endregion
 }

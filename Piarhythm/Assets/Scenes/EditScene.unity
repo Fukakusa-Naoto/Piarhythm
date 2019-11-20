@@ -4445,7 +4445,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3895924}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999995
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7412,6 +7412,8 @@ MonoBehaviour:
   m_wholeTimeInputField: {fileID: 670018048}
   m_musicalScoreController: {fileID: 1546991728}
   m_menuController: {fileID: 741932050}
+  m_bgmSheetController: {fileID: 420761354}
+  m_notesEditScrollbarController: {fileID: 771316875}
 --- !u!1 &1524698372
 GameObject:
   m_ObjectHideFlags: 0

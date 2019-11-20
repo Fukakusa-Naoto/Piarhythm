@@ -188,11 +188,11 @@ public class EditManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   楽曲データの保存処理
 	//!
-	//! @parameter [void] なし
+	//! @parameter [filePath] 保存するファイルパス
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void SaveMusicPiece()
+	public void SaveMusicPiece(string filePath)
 	{
 		// 音楽ファイルのパスを取得する
 		string audioFilePath = m_bgmSheetController.GetAudioFilePath();
@@ -216,11 +216,11 @@ public class EditManager : MonoBehaviour
 		// json文字列に変換する
 		string jsonString = JsonUtility.ToJson(musicPieceData);
 
-		// 保存先のパスを作成する
-		string path = PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH + Path.GetFileNameWithoutExtension(audioFilePath) + ".json";
+		// 拡張子があるか調べる
+		if (Path.GetExtension(filePath) != ".json") filePath += ".json";
 
 		// ファイルに書き込んで保存する
-		PiarhythmUtility.WriteFileText(path, jsonString);
+		PiarhythmUtility.WriteFileText(filePath, jsonString);
 	}
 	#endregion
 
