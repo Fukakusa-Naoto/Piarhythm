@@ -90,9 +90,6 @@ public class EditNotesController : MonoBehaviour
 		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
 		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 
-		// 作成されたノーツを選択状態にする
-		m_notesManager.SetSelectNotes(gameObject);
-
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
 	}
@@ -224,17 +221,27 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
-	#region 選択が外れた時の光彩を切る処理
+	#region 光彩のOn/Offの設定処理
 	//-----------------------------------------------------------------
-	//! @summary   選択が外れた時の光彩を切る処理
+	//! @summary   光彩のOn/Offの設定処理
 	//!
-	//! @parameter [void] なし
+	//! @parameter [flag] 光彩のOn/Offのフラグ
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void OffGlow()
+	public void SwitchGlow(bool flag)
 	{
-		m_glowImage.glowSize = 0.0f;
+		if(flag)
+		{
+			// 光彩を起動する
+			float glowSize = MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+			glowSize = Mathf.Clamp(glowSize, MIN_GLOW_SIZE, MAX_GLOW_SIZE);
+			m_glowImage.glowSize = glowSize;
+		}
+		else
+		{
+			m_glowImage.glowSize = 0.0f;
+		}
 	}
 	#endregion
 
@@ -268,9 +275,14 @@ public class EditNotesController : MonoBehaviour
 		m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
 
 		// 幅を合わせる
-		float width= m_keyDictionary[scale].sizeDelta.x
-			* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
-		m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+		// GlowImageの解析と改造が終わるまで下の処理で代用する
+		//float width = m_keyDictionary[scale].sizeDelta.x
+		//	* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
+		//m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+
+		Vector3 localScale = m_transform.localScale;
+		localScale.x = (scale.Contains("#")) ? 0.65f : 0.9f;
+		m_transform.localScale = localScale;
 
 		// #の色を変化させる
 		m_glowImage.color = (scale.Contains("#"))
@@ -288,7 +300,7 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesStartTime(float startTime)
 	{
 		// 開始位置がマイナスだった場合は処理を終了する
-		if (startTime <= 0.0f) return;
+		if (startTime < 0.0f) return;
 
 		// データを更新する
 		m_notesData.startTime = startTime;
@@ -423,6 +435,44 @@ public class EditNotesController : MonoBehaviour
 		SetNotesStartTime(m_notesData.startTime);
 		SetNotesLengthTime(m_notesData.length);
 		SetNotesColor(m_notesData.color);
+	}
+	#endregion
+
+	#region ノーツが譜面の範囲外に出た時の処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツが譜面の範囲外に出た時の処理
+	//!
+	//! @parameter [collision] 衝突したオブジェクト
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.name == "LimitArea")
+		{
+			// 光彩の色を赤に変える
+			m_glowImage.glowColor = Color.red;
+		}
+	}
+	#endregion
+
+	#region ノーツが譜面の範囲内に戻った時の処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツが譜面の範囲内に戻った時の処理
+	//!
+	//! @parameter [collision] 衝突したオブジェクト
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.name == "LimitArea")
+		{
+			// 光彩の色を元に戻す
+			m_glowImage.glowColor = (m_notesData.scale.Contains("#"))
+				? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+				: m_notesData.color;
+		}
 	}
 	#endregion
 }
