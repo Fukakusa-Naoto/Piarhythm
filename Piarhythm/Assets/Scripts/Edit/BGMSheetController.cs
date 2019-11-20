@@ -192,6 +192,43 @@ public class BGMSheetController : MonoBehaviour
 	}
 	#endregion
 
+	#region 曲を外すボタンが押された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   曲を外すボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnOnClickRemoveButton()
+	{
+		// パスを空にする
+		m_filePath = null;
+
+		// オーディオクリップを削除する
+		if(m_audioClip)
+		{
+			Destroy(m_audioClip);
+			m_audioClip = null;
+		}
+
+		// オーディオソースの設定を外す
+		m_editManager.SetAudioClip(m_audioClip);
+
+		// BGMデータを初期化する
+		m_BGMData = new PiarhythmDatas.BGMData();
+
+		// オーディオクリップを設定し、スクロールバーのテクスチャを更新する
+		m_notesEditScrollbarController.SetAudioClip(m_audioClip);
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_BGMData.endTime);
+
+		// UIを初期化する
+		m_nameInputField.text = "None";
+		m_startTimeInputField.text = "0.0";
+		m_endTimeInputField.text = "0.0";
+	}
+	#endregion
+
 	#region BGMデータをUIへ反映させる
 	//-----------------------------------------------------------------
 	//! @summary   BGMデータをUIへ反映させる

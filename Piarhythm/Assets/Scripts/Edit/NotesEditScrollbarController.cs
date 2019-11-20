@@ -91,7 +91,19 @@ public class NotesEditScrollbarController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void UpdateTexture(PiarhythmDatas.BGMData bgmData, float wholeTime)
 	{
-		if (m_audioClip == null) return;
+		// オーディオクリップが無ければ初期化する
+		if (m_audioClip == null)
+		{
+			for (int i = 0; i < m_imageHeight; ++i)
+			{
+				m_texture.SetPixel(0, i, new Color(0.01f, 0, 0));
+			}
+
+			m_texture.Apply();
+
+			// 処理を終了する
+			return;
+		}
 
 		int textureY = 0;
 		float maxSample = 0;
