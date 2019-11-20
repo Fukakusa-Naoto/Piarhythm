@@ -430,4 +430,42 @@ public class EditNotesController : MonoBehaviour
 		SetNotesColor(m_notesData.color);
 	}
 	#endregion
+
+	#region ノーツが譜面の範囲外に出た時の処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツが譜面の範囲外に出た時の処理
+	//!
+	//! @parameter [collision] 衝突したオブジェクト
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.name == "LimitArea")
+		{
+			// 光彩の色を赤に変える
+			m_glowImage.glowColor = Color.red;
+		}
+	}
+	#endregion
+
+	#region ノーツが譜面の範囲内に戻った時の処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツが譜面の範囲内に戻った時の処理
+	//!
+	//! @parameter [collision] 衝突したオブジェクト
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void OnTriggerExit2D(Collider2D collision)
+	{
+		if (collision.name == "LimitArea")
+		{
+			// 光彩の色を元に戻す
+			m_glowImage.glowColor = (m_notesData.scale.Contains("#"))
+				? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+				: m_notesData.color;
+		}
+	}
+	#endregion
 }
