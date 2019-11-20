@@ -29,7 +29,7 @@ public class BGMSheetController : MonoBehaviour
 
 	// UI
 	[SerializeField]
-	private Text m_nameText = null;
+	private InputField m_nameInputField = null;
 	[SerializeField]
 	private InputField m_startTimeInputField = null;
 	[SerializeField]
@@ -206,7 +206,7 @@ public class BGMSheetController : MonoBehaviour
 		string musicName = Path.GetFileNameWithoutExtension(m_BGMData.path);
 
 		// UIへ反映する
-		m_nameText.text = musicName;
+		m_nameInputField.text = musicName;
 		m_startTimeInputField.text = m_BGMData.startTime.ToString();
 		m_endTimeInputField.text = m_BGMData.endTime.ToString();
 	}
