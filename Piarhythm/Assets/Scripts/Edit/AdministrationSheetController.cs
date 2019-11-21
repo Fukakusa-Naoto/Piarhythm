@@ -35,6 +35,8 @@ public class AdministrationSheetController : MonoBehaviour
 	// マネージャー
 	[SerializeField]
 	private EditManager m_editManager = null;
+	[SerializeField]
+	private NotesManager m_notesManager = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -72,7 +74,7 @@ public class AdministrationSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnValueChangedNotesVolume()
 	{
-
+		m_notesManager.SetAllNotesVolume(m_notesVolumeScrollbar.value);
 	}
 	#endregion
 

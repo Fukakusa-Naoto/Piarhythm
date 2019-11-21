@@ -852,6 +852,7 @@ MonoBehaviour:
   m_notesVolumeScrollbar: {fileID: 434920576}
   m_bgmVolumeScrollbar: {fileID: 1778928868}
   m_editManager: {fileID: 5288803}
+  m_notesManager: {fileID: 941376370}
 --- !u!1 &181718250
 GameObject:
   m_ObjectHideFlags: 0

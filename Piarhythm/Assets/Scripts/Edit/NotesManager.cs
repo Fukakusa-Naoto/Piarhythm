@@ -349,8 +349,6 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	//! @summary   全てのノーツデータを取得する
 	//!
-	//! @parameter [voic] なし
-	//!
 	//! @return    ノーツデータの配列
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.NotesData[] GetNotesDatas()
@@ -366,6 +364,21 @@ public class NotesManager : MonoBehaviour
 		}
 
 		return notesDatas;
+	}
+	#endregion
+
+	#region 全てのノーツの音量を設定する
+	//-----------------------------------------------------------------
+	//! @summary   全てのノーツの音量を設定する
+	//!
+	//! @parameter [volume] 音量
+	//-----------------------------------------------------------------
+	public void SetAllNotesVolume(float volume)
+	{
+		foreach(GameObject notes in m_notesList)
+		{
+			notes.GetComponent<AudioSource>().volume = volume;
+		}
 	}
 	#endregion
 }
