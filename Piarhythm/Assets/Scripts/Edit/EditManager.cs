@@ -260,4 +260,16 @@ public class EditManager : MonoBehaviour
 		m_audioSource.clip = audioClip;
 	}
 	#endregion
+
+	#region BGMの音量を設定する
+	//-----------------------------------------------------------------
+	//! @summary   BGMの音量を設定する
+	//!
+	//! @parameter [volume] 設定する音量
+	//-----------------------------------------------------------------
+	public void SetAudioVolume(float volume)
+	{
+		m_audioSource.volume = volume;
+	}
+	#endregion
 }
