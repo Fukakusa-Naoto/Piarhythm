@@ -44,7 +44,7 @@ public class OptionSheetController : MonoBehaviour
 
 	// プレハブ
 	[SerializeField]
-	private GameObject tempoNodePrefab = null;
+	private GameObject m_tempoNodePrefab = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -138,19 +138,27 @@ public class OptionSheetController : MonoBehaviour
 	public void OnClickAddTempoButton()
 	{
 		// テンポノードを作成する
+		GameObject tempoNode = Instantiate(m_tempoNodePrefab);
 
 		// コンテナに登録する
+		RectTransform rectTransform = tempoNode.GetComponent<RectTransform>();
+		rectTransform.parent = m_tempoNodeContent;
+
+		// 親子関係を組んだことで変化した値を修正する
+		rectTransform.localScale = Vector3.one;
+		rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0.0f);
 
 		// データを追加する
+		m_tempDataList.Add(tempoNode.GetComponent<TempoNodeController>().GetTempoData());
 
 		//　全体の時間を更新する
-
+		CalculateWholeTime();
 	}
 	#endregion
 
-	#region 楽曲全体の時間の入力があった時の処理
+	#region 全小節数の入力があった時の処理
 	//-----------------------------------------------------------------
-	//! @summary   楽曲全体の時間の入力があった時の処理
+	//! @summary   全小節数の入力があった時の処理
 	//!
 	//! @parameter [void] なし
 	//!
@@ -158,16 +166,24 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditWholeMeasureInputField()
 	{
-		//// 入力が無ければ初期化する
-		//if (m_wholeMeasureInputField.text == "") m_wholeTimeInputField.text = "0.0";
+		// 入力値を取得する
+		int wholeMeasure = int.Parse(m_wholeMeasureInputField.text);
 
-		//// 変更を報告する
-		//m_wholeTime = float.Parse(m_wholeTimeInputField.text);
-		//m_musicalScoreController.ChangeScoreLength(m_wholeTime);
-		//m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+		// 入力された値が0以下だった場合
+		if (wholeMeasure <= 0)
+		{
+			// 前回の値を使用する
+			m_wholeMeasureInputField.text = m_wholeMeasure.ToString();
 
-		//// スクロールバーのテクスチャを更新する
-		//m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
+			// 処理を終了する
+			return;
+		}
+
+		// 更新する
+		m_wholeMeasure = wholeMeasure;
+
+		// 全体の時間を更新する
+		CalculateWholeTime();
 	}
 	#endregion
 

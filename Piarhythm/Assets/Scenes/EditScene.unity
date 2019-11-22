@@ -5068,7 +5068,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 879044979}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1512081429}
+        m_MethodName: OnClickAddTempoButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &879044979
@@ -8413,7 +8424,7 @@ MonoBehaviour:
   m_menuController: {fileID: 741932050}
   m_bgmSheetController: {fileID: 420761354}
   m_notesEditScrollbarController: {fileID: 771316875}
-  tempoNodePrefab: {fileID: 1058677233596138950, guid: 3d77b70442b281e4d963d1f07d04161c,
+  m_tempoNodePrefab: {fileID: 1058677233596138950, guid: 3d77b70442b281e4d963d1f07d04161c,
     type: 3}
 --- !u!1 &1524065005
 GameObject:
@@ -8504,7 +8515,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1512081429}
+        m_MethodName: OnEndEditWholeMeasureInputField
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+SubmitEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
@@ -11188,7 +11210,7 @@ PrefabInstance:
     - target: {fileID: 1058677233596138951, guid: 3d77b70442b281e4d963d1f07d04161c,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 120
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 1058677233596138951, guid: 3d77b70442b281e4d963d1f07d04161c,
         type: 3}
@@ -11219,6 +11241,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058677233032483163, guid: 3d77b70442b281e4d963d1f07d04161c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058677233200395714, guid: 3d77b70442b281e4d963d1f07d04161c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1058677233535726933, guid: 3d77b70442b281e4d963d1f07d04161c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d77b70442b281e4d963d1f07d04161c, type: 3}
