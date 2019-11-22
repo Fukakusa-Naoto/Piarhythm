@@ -35,7 +35,7 @@ public class MusicalScoreController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Start()
+	private void Awake()
 	{
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();

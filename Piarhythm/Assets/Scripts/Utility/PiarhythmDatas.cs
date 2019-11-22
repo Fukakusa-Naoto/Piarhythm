@@ -53,13 +53,34 @@ public class PiarhythmDatas
 	}
 
 
-
 	[System.Serializable]
 	public struct MusicPieceData
 	{
+		// 楽曲の設定
+		public OptionData optionData;
 		// BGM
 		public BGMData bgmData;
 		// ノーツ
 		public NotesData[] notesDataList;
+	}
+
+
+	[System.Serializable]
+	public struct TempData
+	{
+		// テンポの開始小節
+		public int startMeasure;
+		// テンポ数
+		public int tempo;
+	}
+
+
+	[System.Serializable]
+	public struct OptionData
+	{
+		// テンポデータのリスト
+		public TempData[] tempDatas;
+		// 全小節数
+		int wholeMeasure;
 	}
 }

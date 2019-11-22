@@ -117,9 +117,7 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void UpdateDisplayNowTime(float nowTime)
 	{
-		m_nowTimeInputField.text
-			= m_nowTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
-			= nowTime.ToString();
+		m_nowTimeInputField.text = nowTime.ToString();
 	}
 	#endregion
 

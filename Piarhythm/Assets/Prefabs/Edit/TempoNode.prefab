@@ -127,8 +127,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnEndEditWholeTimeInputField
+      - m_Target: {fileID: 3289752565915559881}
+        m_MethodName: OnEndEditTempo
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1058677233032483163}
   m_Layer: 5
-  m_Name: SatrtMeasure
+  m_Name: StartMeasure
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -578,7 +578,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1058677233535726928}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3289752565915559881}
+        m_MethodName: OnClickDestroyButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1058677233596138950
@@ -592,9 +603,10 @@ GameObject:
   - component: {fileID: 1058677233596138951}
   - component: {fileID: 1058677233596138945}
   - component: {fileID: 1058677233596138944}
+  - component: {fileID: 3289752565915559881}
   m_Layer: 5
   m_Name: TempoNode
-  m_TagString: Untagged
+  m_TagString: TempoNode
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -658,6 +670,20 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!114 &3289752565915559881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1058677233596138950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4189c03d7f437d6409e23d0e10c6b080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_startMeasureInputField: {fileID: 1058677233920641732}
+  m_tempoInputField: {fileID: 1058677232875030491}
 --- !u!1 &1058677233920641338
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,8 +811,8 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: OnEndEditWholeTimeInputField
+      - m_Target: {fileID: 3289752565915559881}
+        m_MethodName: OnEndEditStartMeasure
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

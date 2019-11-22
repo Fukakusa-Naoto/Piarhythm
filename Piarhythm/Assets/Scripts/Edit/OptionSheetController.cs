@@ -20,10 +20,17 @@ public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	private float m_wholeTime = 0.0f;
+	private List<PiarhythmDatas.TempData> m_tempDataList;
+	private int m_wholeMeasure = 0;
+
+	// データ
+	private PiarhythmDatas.OptionData m_optionData;
 
 	// UI
 	[SerializeField]
-	private InputField m_wholeTimeInputField = null;
+	private InputField m_wholeMeasureInputField = null;
+	[SerializeField]
+	private RectTransform m_tempoNodeContent;
 
 	// コントローラー
 	[SerializeField]
@@ -35,8 +42,112 @@ public class OptionSheetController : MonoBehaviour
 	[SerializeField]
 	private NotesEditScrollbarController m_notesEditScrollbarController = null;
 
+	// プレハブ
+	[SerializeField]
+	private GameObject tempoNodePrefab = null;
+
 
 	// メンバ関数の定義 =====================================================
+	#region 初期化処理
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void Start()
+	{
+		m_tempDataList = new List<PiarhythmDatas.TempData>();
+		m_optionData = new PiarhythmDatas.OptionData();
+
+		// 最初のテンポデータを登録する
+		GameObject tempoNode = GameObject.FindGameObjectWithTag("TempoNode");
+		m_tempDataList.Add(tempoNode.GetComponent<TempoNodeController>().GetTempoData());
+
+		// 全小節数を取得する
+		m_wholeMeasure = int.Parse(m_wholeMeasureInputField.text);
+
+		// 全体時間を計算する
+		CalculateWholeTime();
+	}
+	#endregion
+
+	#region 全体時間を計算する
+	//-----------------------------------------------------------------
+	//! @summary   全体時間を計算する
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void CalculateWholeTime()
+	{
+		// 時間を初期化
+		m_wholeTime = 0.0f;
+
+		// テンポデータ分計算する
+		PiarhythmDatas.TempData prevTempData = new PiarhythmDatas.TempData();
+		prevTempData.tempo = 0;
+		foreach (PiarhythmDatas.TempData tempData in m_tempDataList)
+		{
+			if (prevTempData.tempo != 0)
+			{
+				// 一拍当たりの時間を求める
+				float beatPerTempo = 60.0f / prevTempData.tempo;
+
+				for (int i = prevTempData.startMeasure; i < tempData.startMeasure; ++i)
+				{
+					// 1小節分加算する
+					m_wholeTime += beatPerTempo * 4.0f;
+				}
+			}
+
+			prevTempData = tempData;
+		}
+
+		// 最後に残りの小節分加算する
+		// 一拍当たりの時間を求める
+		{
+			float beatPerTempo = 60.0f / prevTempData.tempo;
+
+			for (int i = prevTempData.startMeasure; i < m_wholeMeasure; ++i)
+			{
+				// 1小節分加算する
+				m_wholeTime += beatPerTempo * 4.0f;
+			}
+		}
+
+		// 各UIへ反映させる
+		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
+		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+
+		// スクロールバーのテクスチャを更新する
+		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
+	}
+	#endregion
+
+	#region テンポの追加ボタンが押された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   テンポの追加ボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnClickAddTempoButton()
+	{
+		// テンポノードを作成する
+
+		// コンテナに登録する
+
+		// データを追加する
+
+		//　全体の時間を更新する
+
+	}
+	#endregion
+
 	#region 楽曲全体の時間の入力があった時の処理
 	//-----------------------------------------------------------------
 	//! @summary   楽曲全体の時間の入力があった時の処理
@@ -45,18 +156,18 @@ public class OptionSheetController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void OnEndEditWholeTimeInputField()
+	public void OnEndEditWholeMeasureInputField()
 	{
-		// 入力が無ければ初期化する
-		if (m_wholeTimeInputField.text == "") m_wholeTimeInputField.text = "0.0";
+		//// 入力が無ければ初期化する
+		//if (m_wholeMeasureInputField.text == "") m_wholeTimeInputField.text = "0.0";
 
-		// 変更を報告する
-		m_wholeTime = float.Parse(m_wholeTimeInputField.text);
-		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
-		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+		//// 変更を報告する
+		//m_wholeTime = float.Parse(m_wholeTimeInputField.text);
+		//m_musicalScoreController.ChangeScoreLength(m_wholeTime);
+		//m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
 
-		// スクロールバーのテクスチャを更新する
-		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
+		//// スクロールバーのテクスチャを更新する
+		//m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
 	}
 	#endregion
 
@@ -70,8 +181,8 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetWholeTime(float time)
 	{
-		m_wholeTime = time;
-		m_wholeTimeInputField.text = m_wholeTime.ToString();
+		//m_wholeTime = time;
+		//m_wholeTimeInputField.text = m_wholeTime.ToString();
 	}
 	#endregion
 
