@@ -11242,6 +11242,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3289752565915559881, guid: 3d77b70442b281e4d963d1f07d04161c,
+        type: 3}
+      propertyPath: m_optionSheetController
+      value: 
+      objectReference: {fileID: 1512081429}
     - target: {fileID: 1058677233032483163, guid: 3d77b70442b281e4d963d1f07d04161c,
         type: 3}
       propertyPath: m_AnchoredPosition.y

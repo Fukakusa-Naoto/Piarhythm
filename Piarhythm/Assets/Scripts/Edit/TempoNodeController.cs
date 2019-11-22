@@ -21,12 +21,17 @@ public class TempoNodeController : MonoBehaviour
 	// <メンバ変数>
 	// テンポデータ
 	PiarhythmDatas.TempData m_tempoData = new PiarhythmDatas.TempData();
+	int m_index = -1;
 
 	// UI
 	[SerializeField]
 	private InputField m_startMeasureInputField = null;
 	[SerializeField]
 	private InputField m_tempoInputField = null;
+
+	// コントローラー
+	[SerializeField]
+	private OptionSheetController m_optionSheetController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -70,6 +75,9 @@ public class TempoNodeController : MonoBehaviour
 
 		// 情報を更新する
 		m_tempoData.startMeasure = startMeasure;
+
+		// リスト内のデータを更新する
+		m_optionSheetController.UpdateTempoData(m_tempoData, m_index);
 	}
 	#endregion
 
@@ -98,6 +106,9 @@ public class TempoNodeController : MonoBehaviour
 
 		// 情報を更新する
 		m_tempoData.tempo = tempo;
+
+		// リスト内のデータを更新する
+		m_optionSheetController.UpdateTempoData(m_tempoData, m_index);
 	}
 	#endregion
 
@@ -112,9 +123,34 @@ public class TempoNodeController : MonoBehaviour
 	public void OnClickDestroyButton()
 	{
 		// データをリストから削除する
+		m_optionSheetController.RemoveTempoData(m_tempoData);
 
 		// 自身を削除する
 		Destroy(gameObject);
+	}
+	#endregion
+
+	#region リストの要素番号を設定する
+	//-----------------------------------------------------------------
+	//! @summary   リストの要素番号を設定する
+	//!
+	//! @parameter [index] 設定する要素番号
+	//-----------------------------------------------------------------
+	public void SetIndex(int index)
+	{
+		m_index = index;
+	}
+	#endregion
+
+	#region OptionSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   OptionSheetControllerを設定する
+	//!
+	//! @parameter [optionSheetController] 設定するOptionSheetController
+	//-----------------------------------------------------------------
+	public void SetOptionSheetController(OptionSheetController optionSheetController)
+	{
+		m_optionSheetController = optionSheetController;
 	}
 	#endregion
 

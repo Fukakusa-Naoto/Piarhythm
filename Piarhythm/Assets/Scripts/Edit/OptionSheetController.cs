@@ -63,7 +63,9 @@ public class OptionSheetController : MonoBehaviour
 
 		// 最初のテンポデータを登録する
 		GameObject tempoNode = GameObject.FindGameObjectWithTag("TempoNode");
-		m_tempDataList.Add(tempoNode.GetComponent<TempoNodeController>().GetTempoData());
+		TempoNodeController tempoNodeController = tempoNode.GetComponent<TempoNodeController>();
+		m_tempDataList.Add(tempoNodeController.GetTempoData());
+		tempoNodeController.SetIndex(m_tempDataList.Count - 1);
 
 		// 全小節数を取得する
 		m_wholeMeasure = int.Parse(m_wholeMeasureInputField.text);
@@ -148,8 +150,15 @@ public class OptionSheetController : MonoBehaviour
 		rectTransform.localScale = Vector3.one;
 		rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0.0f);
 
+		// コントローラーを設定する
+		TempoNodeController tempoNodeController = tempoNode.GetComponent<TempoNodeController>();
+		tempoNodeController.SetOptionSheetController(this);
+
 		// データを追加する
-		m_tempDataList.Add(tempoNode.GetComponent<TempoNodeController>().GetTempoData());
+		m_tempDataList.Add(tempoNodeController.GetTempoData());
+
+		// 要素番号を設定する
+		tempoNodeController.SetIndex(m_tempDataList.Count - 1);
 
 		//　全体の時間を更新する
 		CalculateWholeTime();
@@ -181,6 +190,52 @@ public class OptionSheetController : MonoBehaviour
 
 		// 更新する
 		m_wholeMeasure = wholeMeasure;
+
+		// 全体の時間を更新する
+		CalculateWholeTime();
+	}
+	#endregion
+
+	#region リスト内にあるテンポデータを更新する
+	//-----------------------------------------------------------------
+	//! @summary   リスト内にあるテンポデータを更新する
+	//!
+	//! @parameter [tempoData] 更新するテンポデータ
+	//! @parameter [index] 要素番号
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpdateTempoData(PiarhythmDatas.TempData tempData, int index)
+	{
+		// データがリストの範囲外だった場合、処理を終了する
+		if ((index < 0) || (index > m_tempDataList.Count)) return;
+
+		// データを更新する
+		m_tempDataList[index] = tempData;
+
+		// 全体の時間の更新
+		CalculateWholeTime();
+	}
+	#endregion
+
+	#region リスト内から指定したテンポデータを削除する
+	//-----------------------------------------------------------------
+	//! @summary   リスト内から指定したテンポデータを削除する
+	//!
+	//! @parameter [tempoData] 削除するテンポデータ
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void RemoveTempoData(PiarhythmDatas.TempData tempData)
+	{
+		// データを探す
+		int index = m_tempDataList.IndexOf(tempData);
+
+		// 見つからなかった場合は処理を終了する
+		if (index < 0) return;
+
+		// リストから削除する
+		m_tempDataList.Remove(tempData);
 
 		// 全体の時間を更新する
 		CalculateWholeTime();
