@@ -85,6 +85,9 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void CalculateWholeTime()
 	{
+		// 背景をリセットする
+		m_musicalScoreController.ResetMusicScoreBackGround();
+
 		// 時間を初期化
 		m_wholeTime = 0.0f;
 
@@ -100,8 +103,14 @@ public class OptionSheetController : MonoBehaviour
 
 				for (int i = prevTempData.startMeasure; i < tempData.startMeasure; ++i)
 				{
+					// 開始時間を保存する
+					float startTime = m_wholeTime;
+
 					// 1小節分加算する
 					m_wholeTime += beatPerTempo * 4.0f;
+
+					// 背景を生成する
+					m_musicalScoreController.CreateMusicScoreBackGround(startTime, m_wholeTime);
 				}
 			}
 
@@ -115,8 +124,14 @@ public class OptionSheetController : MonoBehaviour
 
 			for (int i = prevTempData.startMeasure; i < m_wholeMeasure; ++i)
 			{
+				// 開始時間を保存する
+				float startTime = m_wholeTime;
+
 				// 1小節分加算する
 				m_wholeTime += beatPerTempo * 4.0f;
+
+				// 背景を生成する
+				m_musicalScoreController.CreateMusicScoreBackGround(startTime, m_wholeTime);
 			}
 		}
 

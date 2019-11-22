@@ -24,6 +24,8 @@ public class MusicalScoreController : MonoBehaviour
 	// <メンバ変数>
 	// コンポーネント
 	private RectTransform m_transform = null;
+	[SerializeField]
+	private GameObject m_musicScoreBackGroundPrefab = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -94,6 +96,58 @@ public class MusicalScoreController : MonoBehaviour
 		Vector3 position = m_transform.localPosition;
 		position.y = m_transform.sizeDelta.y - PiarhythmUtility.ConvertTimeToPosition(nowTime, NotesManager.NOTES_SPEED);
 		m_transform.anchoredPosition = position;
+	}
+	#endregion
+
+	#region 背景の生成
+	//-----------------------------------------------------------------
+	//! @summary   背景の生成
+	//!
+	//! @parameter [startTime] 小節の開始時間
+	//! @parameter [endTime] 小節の終了時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void CreateMusicScoreBackGround(float startTime, float endTime)
+	{
+		// オブジェクトを生成する
+		GameObject backGround = Instantiate(m_musicScoreBackGroundPrefab);
+
+		// 親子関係を組ませる
+		RectTransform rectTransform = backGround.GetComponent<RectTransform>();
+		rectTransform.parent = m_transform;
+
+		// 親子関係を組んだことで変化した値を修正する
+		rectTransform.localScale = Vector3.one;
+		rectTransform.anchoredPosition = new Vector3(0.0f, rectTransform.anchoredPosition.y);
+		rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0.0f);
+
+		// 開始時間と終了時間を座標に変換する
+		Vector2 offsetMin = rectTransform.offsetMin;
+		Vector2 offsetMax = rectTransform.offsetMax;
+		offsetMin.y = PiarhythmUtility.ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
+		offsetMax.y = PiarhythmUtility.ConvertTimeToPosition(endTime, NotesManager.NOTES_SPEED);
+
+		// 設定する
+		rectTransform.offsetMin = offsetMin;
+		rectTransform.offsetMax = offsetMax;
+	}
+	#endregion
+
+	#region 背景をリセットする
+	//-----------------------------------------------------------------
+	//! @summary   背景をリセットする
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void ResetMusicScoreBackGround()
+	{
+		for (int i = 1; i < m_transform.childCount; ++i)
+		{
+			Destroy(m_transform.GetChild(i).gameObject);
+		}
 	}
 	#endregion
 }
