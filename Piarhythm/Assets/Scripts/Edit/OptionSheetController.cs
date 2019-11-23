@@ -283,4 +283,79 @@ public class OptionSheetController : MonoBehaviour
 		return m_wholeTime;
 	}
 	#endregion
+
+	#region 時間から全ての小節数を設定する
+	//-----------------------------------------------------------------
+	//! @summary   時間から全ての小節数を設定する
+	//!
+	//! @parameter [time] 時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetWholeMeasure(float time)
+	{
+		// 背景をリセットする
+		m_musicalScoreController.ResetMusicScoreBackGround();
+
+		// 時間を初期化
+		m_wholeTime = 0.0f;
+
+		// 全小節数の初期化
+		m_wholeMeasure = 0;
+
+		// テンポデータ分計算する
+		PiarhythmDatas.TempData prevTempData = new PiarhythmDatas.TempData();
+		prevTempData.tempo = 0;
+
+		foreach (PiarhythmDatas.TempData tempData in m_tempDataList)
+		{
+			if (prevTempData.tempo != 0)
+			{
+				// 一拍当たりの時間を求める
+				float beatPerTempo = 60.0f / prevTempData.tempo;
+
+				for (int i = prevTempData.startMeasure; i < tempData.startMeasure; ++i)
+				{
+					// 開始時間を保存する
+					float startTime = m_wholeTime;
+
+					// 1小節分加算する
+					m_wholeTime += beatPerTempo * 4.0f;
+					m_wholeMeasure++;
+
+					// 背景を生成する
+					m_musicalScoreController.CreateMusicScoreBackGround(startTime, m_wholeTime);
+				}
+			}
+
+			prevTempData = tempData;
+		}
+
+		// 最後に残りの小節分加算する
+		// 一拍当たりの時間を求める
+		{
+			float beatPerTempo = 60.0f / prevTempData.tempo;
+
+			while (m_wholeTime < time)
+			{
+				// 開始時間を保存する
+				float startTime = m_wholeTime;
+
+				// 1小節分加算する
+				m_wholeTime += beatPerTempo * 4.0f;
+				m_wholeMeasure++;
+
+				// 背景を生成する
+				m_musicalScoreController.CreateMusicScoreBackGround(startTime, m_wholeTime);
+			}
+		}
+
+		// 各UIへ反映させる
+		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
+		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+
+		// スクロールバーのテクスチャを更新する
+		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
+	}
+	#endregion
 }

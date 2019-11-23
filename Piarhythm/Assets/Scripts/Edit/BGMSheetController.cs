@@ -110,6 +110,9 @@ public class BGMSheetController : MonoBehaviour
 
 					// AudioSourceに設定する
 					m_editManager.SetAudioClip(m_audioClip);
+
+					// 全ての小節数を設定する
+					m_optionSheetController.SetWholeMeasure(m_audioClip.length);
 				}
 			}
 		}

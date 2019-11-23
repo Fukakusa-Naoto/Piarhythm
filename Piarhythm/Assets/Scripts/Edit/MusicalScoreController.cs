@@ -115,7 +115,7 @@ public class MusicalScoreController : MonoBehaviour
 
 		// 親子関係を組ませる
 		RectTransform rectTransform = backGround.GetComponent<RectTransform>();
-		rectTransform.parent = m_transform;
+		if (m_transform) rectTransform.SetParent(m_transform);
 
 		// 親子関係を組んだことで変化した値を修正する
 		rectTransform.localScale = Vector3.one;
