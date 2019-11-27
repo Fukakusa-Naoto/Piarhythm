@@ -527,4 +527,32 @@ public class OptionSheetController : MonoBehaviour
 		return notesData;
 	}
 	#endregion
+
+	#region 設定データの取得
+	//-----------------------------------------------------------------
+	//! @summary   設定データの取得
+	//!
+	//! @return    設定データ
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.OptionData GetOptionData()
+	{
+		// データをまとめる
+		m_optionData.tempDatas = m_tempoDataList.ToArray();
+		m_optionData.wholeMeasure = m_wholeMeasure;
+
+		return m_optionData;
+	}
+	#endregion
+
+	#region 設定データの設定
+	//-----------------------------------------------------------------
+	//! @summary   設定データの設定
+	//!
+	//! @parameter [optionData] 設定する設定データ
+	//-----------------------------------------------------------------
+	public void SetOptionData(PiarhythmDatas.OptionData optionData)
+	{
+		m_optionData = optionData;
+	}
+	#endregion
 }

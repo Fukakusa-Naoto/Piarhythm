@@ -81,7 +81,7 @@ public class PiarhythmDatas
 		// テンポデータのリスト
 		public TempoData[] tempDatas;
 		// 全小節数
-		int wholeMeasure;
+		public int wholeMeasure;
 	}
 
 	public struct PositionData
