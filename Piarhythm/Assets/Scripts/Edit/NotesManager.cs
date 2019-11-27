@@ -321,7 +321,7 @@ public class NotesManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void SetSelectNotesLengthTime(float lengthTime)
+	public void SetSelectNotesLengthTime(int lengthTime)
 	{
 		// ノーツが選択されていない場合処理を終了する
 		if (!m_selectNotes) return;

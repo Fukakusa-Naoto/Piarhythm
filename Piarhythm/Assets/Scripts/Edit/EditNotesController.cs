@@ -334,18 +334,15 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @parameter [lengthTime] 設定する長さ
 	//-----------------------------------------------------------------
-	public void SetNotesLengthTime(float lengthTime)
+	public void SetNotesLengthTime(int  lengthTime)
 	{
-		// 長さがマイナスだった場合処理を終了する
-		if (lengthTime <= 0.0f) return;
-
 		// データを更新する
-		//m_notesData.noteLength = lengthTime;
+		m_notesData.noteLength = lengthTime;
 
-		// 長さを更新
-		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = m_transform.offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(lengthTime, NotesManager.NOTES_SPEED);
-		m_transform.offsetMax = offsetMax;
+		// 長さの更新
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
 	}
 	#endregion
 
