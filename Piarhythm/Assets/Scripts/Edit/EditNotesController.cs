@@ -316,12 +316,15 @@ public class EditNotesController : MonoBehaviour
 		if (startTime < 0.0f) return;
 
 		// データを更新する
-		m_notesData.startBeat = startTime;
+		m_notesData.startBeat = PiarhythmUtility.MRound(startTime, 0.25f);
 
 		// 位置の更新
 		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
 		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
 		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+
+		// UIを更新
+		m_notesSheetController.DisplayNotes(this);
 	}
 	#endregion
 

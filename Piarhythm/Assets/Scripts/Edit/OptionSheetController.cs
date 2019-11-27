@@ -159,7 +159,7 @@ public class OptionSheetController : MonoBehaviour
 
 		// コンテナに登録する
 		RectTransform rectTransform = tempoNode.GetComponent<RectTransform>();
-		rectTransform.parent = m_tempoNodeContent;
+		rectTransform.SetParent(m_tempoNodeContent);
 
 		// 親子関係を組んだことで変化した値を修正する
 		rectTransform.localScale = Vector3.one;
