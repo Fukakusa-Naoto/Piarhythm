@@ -20,7 +20,7 @@ public class TempoNodeController : MonoBehaviour
 {
 	// <メンバ変数>
 	// テンポデータ
-	PiarhythmDatas.TempData m_tempoData = new PiarhythmDatas.TempData();
+	PiarhythmDatas.TempoData m_tempoData = new PiarhythmDatas.TempoData();
 	int m_index = -1;
 
 	// UI
@@ -160,7 +160,7 @@ public class TempoNodeController : MonoBehaviour
 	//!
 	//! @parameter [tempoData] 設定するテンポデータ
 	//-----------------------------------------------------------------
-	public void SetTempoData(PiarhythmDatas.TempData tempData)
+	public void SetTempoData(PiarhythmDatas.TempoData tempData)
 	{
 		// データを設定する
 		m_tempoData = tempData;
@@ -177,7 +177,7 @@ public class TempoNodeController : MonoBehaviour
 	//!
 	//! @return    テンポデータ
 	//-----------------------------------------------------------------
-	public PiarhythmDatas.TempData GetTempoData()
+	public PiarhythmDatas.TempoData GetTempoData()
 	{
 		return m_tempoData;
 	}

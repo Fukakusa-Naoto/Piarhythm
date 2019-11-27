@@ -117,6 +117,9 @@ public class MusicalScoreController : MonoBehaviour
 		RectTransform rectTransform = backGround.GetComponent<RectTransform>();
 		if (m_transform) rectTransform.SetParent(m_transform);
 
+		// 生成した背景を常にヒエラルキーの上に設定する
+		rectTransform.SetSiblingIndex(1);
+
 		// 親子関係を組んだことで変化した値を修正する
 		rectTransform.localScale = Vector3.one;
 		rectTransform.anchoredPosition = new Vector3(0.0f, rectTransform.anchoredPosition.y);
@@ -146,7 +149,10 @@ public class MusicalScoreController : MonoBehaviour
 	{
 		for (int i = 1; i < m_transform.childCount; ++i)
 		{
-			Destroy(m_transform.GetChild(i).gameObject);
+			if (m_transform.GetChild(i).tag != "Notes")
+			{
+				Destroy(m_transform.GetChild(i).gameObject);
+			}
 		}
 	}
 	#endregion

@@ -44,6 +44,8 @@ public class NotesManager : MonoBehaviour
 	// コントローラー
 	[SerializeField]
 	private NotesSheetController m_notesSheetController = null;
+	[SerializeField]
+	private OptionSheetController m_optionSheetController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -120,6 +122,8 @@ public class NotesManager : MonoBehaviour
 		editNotes.SetKeyDictionary(m_keyDictionary);
 		// NotesSheetControllerを設定する
 		editNotes.SetNotesSheetController(m_notesSheetController);
+		// OptionSheetControllerを設定する
+		editNotes.SetOptionSheetController(m_optionSheetController);
 
 		// MusicalScoreの子に設定する
 		if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
@@ -240,7 +244,7 @@ public class NotesManager : MonoBehaviour
 			PiarhythmDatas.NotesData notesData = editNotesController.GetNotesData();
 
 			// 経過時間が既にノーツの開始時間を過ぎている
-			if (elapsedTime >= notesData.startTime)
+			if (elapsedTime >= notesData.startBeat)
 			{
 				// 音をならないようにする
 				editNotesController.SetPlayedFlag(true);

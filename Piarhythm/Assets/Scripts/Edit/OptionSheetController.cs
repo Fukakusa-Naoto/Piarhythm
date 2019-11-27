@@ -20,7 +20,7 @@ public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	private float m_wholeTime = 0.0f;
-	private List<PiarhythmDatas.TempData> m_tempDataList;
+	private List<PiarhythmDatas.TempoData> m_tempoDataList;
 	private int m_wholeMeasure = 0;
 
 	// データ
@@ -30,7 +30,7 @@ public class OptionSheetController : MonoBehaviour
 	[SerializeField]
 	private InputField m_wholeMeasureInputField = null;
 	[SerializeField]
-	private RectTransform m_tempoNodeContent;
+	private RectTransform m_tempoNodeContent = null;
 
 	// コントローラー
 	[SerializeField]
@@ -58,14 +58,14 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Start()
 	{
-		m_tempDataList = new List<PiarhythmDatas.TempData>();
+		m_tempoDataList = new List<PiarhythmDatas.TempoData>();
 		m_optionData = new PiarhythmDatas.OptionData();
 
 		// 最初のテンポデータを登録する
 		GameObject tempoNode = GameObject.FindGameObjectWithTag("TempoNode");
 		TempoNodeController tempoNodeController = tempoNode.GetComponent<TempoNodeController>();
-		m_tempDataList.Add(tempoNodeController.GetTempoData());
-		tempoNodeController.SetIndex(m_tempDataList.Count - 1);
+		m_tempoDataList.Add(tempoNodeController.GetTempoData());
+		tempoNodeController.SetIndex(m_tempoDataList.Count - 1);
 
 		// 全小節数を取得する
 		m_wholeMeasure = int.Parse(m_wholeMeasureInputField.text);
@@ -92,9 +92,9 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeTime = 0.0f;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempData prevTempData = new PiarhythmDatas.TempData();
+		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
 		prevTempData.tempo = 0;
-		foreach (PiarhythmDatas.TempData tempData in m_tempDataList)
+		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
 		{
 			if (prevTempData.tempo != 0)
 			{
@@ -170,10 +170,10 @@ public class OptionSheetController : MonoBehaviour
 		tempoNodeController.SetOptionSheetController(this);
 
 		// データを追加する
-		m_tempDataList.Add(tempoNodeController.GetTempoData());
+		m_tempoDataList.Add(tempoNodeController.GetTempoData());
 
 		// 要素番号を設定する
-		tempoNodeController.SetIndex(m_tempDataList.Count - 1);
+		tempoNodeController.SetIndex(m_tempoDataList.Count - 1);
 
 		//　全体の時間を更新する
 		CalculateWholeTime();
@@ -220,13 +220,13 @@ public class OptionSheetController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void UpdateTempoData(PiarhythmDatas.TempData tempData, int index)
+	public void UpdateTempoData(PiarhythmDatas.TempoData tempData, int index)
 	{
 		// データがリストの範囲外だった場合、処理を終了する
-		if ((index < 0) || (index > m_tempDataList.Count)) return;
+		if ((index < 0) || (index > m_tempoDataList.Count)) return;
 
 		// データを更新する
-		m_tempDataList[index] = tempData;
+		m_tempoDataList[index] = tempData;
 
 		// 全体の時間の更新
 		CalculateWholeTime();
@@ -241,16 +241,16 @@ public class OptionSheetController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void RemoveTempoData(PiarhythmDatas.TempData tempData)
+	public void RemoveTempoData(PiarhythmDatas.TempoData tempData)
 	{
 		// データを探す
-		int index = m_tempDataList.IndexOf(tempData);
+		int index = m_tempoDataList.IndexOf(tempData);
 
 		// 見つからなかった場合は処理を終了する
 		if (index < 0) return;
 
 		// リストから削除する
-		m_tempDataList.Remove(tempData);
+		m_tempoDataList.Remove(tempData);
 
 		// 全体の時間を更新する
 		CalculateWholeTime();
@@ -304,10 +304,10 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeMeasure = 0;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempData prevTempData = new PiarhythmDatas.TempData();
+		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
 		prevTempData.tempo = 0;
 
-		foreach (PiarhythmDatas.TempData tempData in m_tempDataList)
+		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
 		{
 			if (prevTempData.tempo != 0)
 			{
@@ -356,6 +356,198 @@ public class OptionSheetController : MonoBehaviour
 
 		// スクロールバーのテクスチャを更新する
 		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
+	}
+	#endregion
+
+	#region ノーツの開始拍と音符から開始座標と長さに変換する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始拍と音符から開始座標と長さに変換する
+	//!
+	//! @parameter [startBeat] 開始の拍数
+	//! @parameter [noteLength] 音符の長さ
+	//!
+	//! @return    変換された座標
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.PositionData ConvertToPositionData(float startBeat, int noteLenght)
+	{
+		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
+		float elapsedBeat = 0.0f;
+		float elapsedPosition = 0.0f;
+
+		// 所属しているテンポデータを調べる
+		PiarhythmDatas.TempoData tempoData = m_tempoDataList[0];
+		for (int i = 1; i < m_tempoDataList.Count; ++i)
+		{
+			if (startBeat >= m_tempoDataList[i].startMeasure * 4)
+			{
+				// 一拍当たりの時間を求める
+				float beatPerTempo = 60.0f / tempoData.tempo;
+				// 時間を座標に変換する
+				float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+
+				// テンポデータの終了座標を求める
+				elapsedPosition += beatPosition * (m_tempoDataList[i].startMeasure * 4);
+
+				// 経過拍数を増やす
+				elapsedBeat += m_tempoDataList[i].startMeasure * 4;
+
+				tempoData = m_tempoDataList[i];
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		{
+			// 一拍当たりの時間を求める
+			float beatPerTempo = 60.0f / tempoData.tempo;
+			// 時間を座標に変換する
+			float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+
+			// テンポデータを元に座標と長さを決める
+			positionData.position = elapsedPosition + (startBeat - elapsedBeat) * beatPosition;
+
+			switch (noteLenght)
+			{
+				case 0:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.WHOLE_NOTE_SEMIBREVE;
+					break;
+				case 1:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.HALF_NOTE_MININ;
+					break;
+				case 2:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.QUARTER_NOTE_CROCHET;
+					break;
+				case 3:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.EIGHTH_NOTE_QUAVER;
+					break;
+				case 4:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.SIXTEENTH_NOTE_SEMIQUAVER;
+					break;
+				case 5:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.WHOLE_DOTTED_NOTE_SEMIBREVE;
+					break;
+				case 6:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.HALF_DOTTED_NOTE_MININ;
+					break;
+				case 7:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.QUARTER_DOTTED_NOTE_CROCHET;
+					break;
+				case 8:
+					positionData.lenght = beatPosition * PiarhythmDatas.NoteTime.EIGHTH_DOTTED_NOTE_QUAVER;
+					break;
+			}
+		}
+
+		return positionData;
+	}
+	#endregion
+
+	#region ノーツの開始座標と長さから開始拍と音符に変換する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始座標と長さから開始拍と音符に変換する
+	//!
+	//! @parameter [positionData] 座標データ
+	//!
+	//! @return    ノーツデータ
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.NotesData ConvertToNotesData(PiarhythmDatas.PositionData positionData)
+	{
+		PiarhythmDatas.NotesData notesData = new PiarhythmDatas.NotesData();
+		float startPosition = 0.0f;
+
+		// 所属しているテンポデータを調べる
+		PiarhythmDatas.TempoData tempoData = m_tempoDataList[0];
+		for (int i = 1; i < m_tempoDataList.Count; ++i)
+		{
+			// 一拍当たりの時間を求める
+			float beatPerTempo = 60.0f / tempoData.tempo;
+			// 時間を座標に変換する
+			float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+
+			if (i < m_tempoDataList.Count)
+			{
+				// テンポデータの終了座標を求める
+				float MaxPosition = beatPosition * (m_tempoDataList[i].startMeasure * 4) + startPosition;
+
+				if (positionData.position >= MaxPosition)
+				{
+					tempoData = m_tempoDataList[i];
+					startPosition = MaxPosition;
+				}
+			}
+		}
+
+		// 最後のテンポデータから調べる
+		{
+			float beat = tempoData.startMeasure * 4;
+			float beatPerTempo = 60.0f / tempoData.tempo;
+			float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+			float minDistance = float.MaxValue;
+			while (beat < m_wholeMeasure * 4)
+			{
+				// 座標を求める
+				float position = beatPosition * beat + startPosition;
+
+				// 距離を求める
+				float distance = Mathf.Abs(positionData.position - position);
+
+				// 最も近い拍を調べる
+				if (minDistance >= distance)
+				{
+					// 最短距離を更新
+					minDistance = distance;
+					// 開始位置を更新する
+					notesData.startBeat = beat;
+				}
+				else
+				{
+					if (positionData.position < position) break;
+				}
+
+				beat += 0.25f;
+			}
+
+			// 長さを求める
+			beat = 0.0f;
+			minDistance = float.MaxValue;
+			float bestLenght = 0.0f;
+			while (beat <= 4.0f)
+			{
+				// 長さを求める
+				float length = beatPosition * beat;
+
+				// 距離を求める
+				float distance = Mathf.Abs(positionData.lenght - length);
+
+				// 最も近い拍を調べる
+				if (minDistance >= distance)
+				{
+					// 最短距離を更新
+					minDistance = distance;
+
+					// 一番近い長さを更新する
+					bestLenght = length;
+				}
+
+				beat += 0.25f;
+			}
+
+			// 一番近い長さを元に音符を決める
+			if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.WHOLE_NOTE_SEMIBREVE)) notesData.noteLength = 0;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.HALF_NOTE_MININ)) notesData.noteLength = 1;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.QUARTER_NOTE_CROCHET)) notesData.noteLength = 2;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.EIGHTH_NOTE_QUAVER)) notesData.noteLength = 3;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.SIXTEENTH_NOTE_SEMIQUAVER)) notesData.noteLength = 4;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.WHOLE_DOTTED_NOTE_SEMIBREVE)) notesData.noteLength = 5;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.HALF_DOTTED_NOTE_MININ)) notesData.noteLength = 6;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.QUARTER_DOTTED_NOTE_CROCHET)) notesData.noteLength = 7;
+			else if (Mathf.Approximately(bestLenght, PiarhythmDatas.NoteTime.EIGHTH_DOTTED_NOTE_QUAVER)) notesData.noteLength = 8;
+			else notesData.noteLength = 2;
+		}
+
+		return notesData;
 	}
 	#endregion
 }

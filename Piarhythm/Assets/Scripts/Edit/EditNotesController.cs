@@ -50,6 +50,7 @@ public class EditNotesController : MonoBehaviour
 
 	// コントローラー
 	private NotesSheetController m_notesSheetController = null;
+	private OptionSheetController m_optionSheetController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -87,8 +88,18 @@ public class EditNotesController : MonoBehaviour
 		m_transform.localPosition = position;
 
 		// 開始時間と長さの初期化
-		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
-		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
+		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
+		positionData.position = m_transform.offsetMin.y;
+		positionData.lenght = m_transform.sizeDelta.y;
+		PiarhythmDatas.NotesData notesData = m_optionSheetController.ConvertToNotesData(positionData);
+		m_notesData.startBeat = notesData.startBeat;
+		m_notesData.noteLength = notesData.noteLength;
+		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, positionData.lenght);
+
+		Debug.Log("min:" + m_transform.offsetMin.y);
+		Debug.Log("size:" + m_transform.sizeDelta.y);
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
@@ -185,13 +196,13 @@ public class EditNotesController : MonoBehaviour
 
 		// 長さを変えないように調整する
 		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.noteLength, NotesManager.NOTES_SPEED);
 		m_transform.offsetMax = offsetMax;
 
 		// データの更新
 		m_notesData.scale = scale;
-		m_notesData.startTime = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
-		m_notesData.length = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
+		m_notesData.startBeat = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
+		//m_notesData.noteLength = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
 	}
 	#endregion
 
@@ -209,7 +220,7 @@ public class EditNotesController : MonoBehaviour
 		if(!m_playedFlag)
 		{
 			// 経過時間がノーツの開始時間を過ぎた
-			if (m_notesData.startTime <= elapsedTime)
+			if (m_notesData.startBeat <= elapsedTime)
 			{
 				// 音を鳴らす
 				m_audioSource.Play();
@@ -303,7 +314,7 @@ public class EditNotesController : MonoBehaviour
 		if (startTime < 0.0f) return;
 
 		// データを更新する
-		m_notesData.startTime = startTime;
+		m_notesData.startBeat = startTime;
 
 		// スタート位置を更新
 		Vector2 offsetMin = m_transform.offsetMin;
@@ -312,7 +323,7 @@ public class EditNotesController : MonoBehaviour
 
 		// 長さ分の更新
 		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.length, NotesManager.NOTES_SPEED);
+		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.noteLength, NotesManager.NOTES_SPEED);
 		m_transform.offsetMax = offsetMax;
 	}
 	#endregion
@@ -329,7 +340,7 @@ public class EditNotesController : MonoBehaviour
 		if (lengthTime <= 0.0f) return;
 
 		// データを更新する
-		m_notesData.length = lengthTime;
+		//m_notesData.noteLength = lengthTime;
 
 		// 長さを更新
 		Vector2 offsetMax = m_transform.offsetMax;
@@ -408,6 +419,18 @@ public class EditNotesController : MonoBehaviour
 	}
 	#endregion
 
+	#region OptionSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   OptionSheetControllerを設定する
+	//!
+	//! @parameter [optionSheetController] 設定するOptionSheetController
+	//-----------------------------------------------------------------
+	public void SetOptionSheetController(OptionSheetController optionSheetController)
+	{
+		m_optionSheetController = optionSheetController;
+	}
+	#endregion
+
 	#region 音を鳴らしたか判定するためのフラグの設定
 	//-----------------------------------------------------------------
 	//! @summary   音を鳴らしたか判定するためのフラグの設定
@@ -432,8 +455,8 @@ public class EditNotesController : MonoBehaviour
 		m_notesData = notesData;
 
 		SetNotesScale(m_notesData.scale);
-		SetNotesStartTime(m_notesData.startTime);
-		SetNotesLengthTime(m_notesData.length);
+		SetNotesStartTime(m_notesData.startBeat);
+		SetNotesLengthTime(m_notesData.noteLength);
 		SetNotesColor(m_notesData.color);
 	}
 	#endregion
