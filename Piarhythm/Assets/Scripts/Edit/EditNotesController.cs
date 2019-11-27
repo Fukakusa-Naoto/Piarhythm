@@ -93,13 +93,10 @@ public class EditNotesController : MonoBehaviour
 		positionData.lenght = m_transform.sizeDelta.y;
 		PiarhythmDatas.NotesData notesData = m_optionSheetController.ConvertToNotesData(positionData);
 		m_notesData.startBeat = notesData.startBeat;
-		m_notesData.noteLength = notesData.noteLength;
+		m_notesData.noteLength = 2;
 		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
 		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.sizeDelta = new Vector2(m_transform.sizeDelta.x, positionData.lenght);
-
-		Debug.Log("min:" + m_transform.offsetMin.y);
-		Debug.Log("size:" + m_transform.sizeDelta.y);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;

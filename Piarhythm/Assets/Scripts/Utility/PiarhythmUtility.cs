@@ -257,4 +257,24 @@ public class PiarhythmUtility
 		return true;
 	}
 	#endregion
+
+	#region 指定値の倍数に切り上げる、または切り捨てる
+	//-----------------------------------------------------------------
+	//! @summary   指定値の倍数に切り上げる、または切り捨てる
+	//!
+	//! @parameter [number] 数値
+	//! @parameter [multiple] 倍数
+	//!
+	//! @return    最も近い倍数の値
+	//-----------------------------------------------------------------
+	public static float MRound(float number,float multiple)
+	{
+		float answer = 0.0f;
+
+		int n = (int)(number / multiple);
+		answer = n * multiple;
+
+		return answer;
+	}
+	#endregion
 }
