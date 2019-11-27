@@ -191,15 +191,20 @@ public class EditNotesController : MonoBehaviour
 		if (offsetMin.y <= 0.0) offsetMin.y = 0.0f;
 		m_transform.offsetMin = offsetMin;
 
-		// 長さを変えないように調整する
-		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.noteLength, NotesManager.NOTES_SPEED);
-		m_transform.offsetMax = offsetMax;
+		// 最新データの作成
+		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
+		positionData.position = m_transform.offsetMin.y;
+		positionData.lenght = m_transform.sizeDelta.y;
 
 		// データの更新
+		PiarhythmDatas.NotesData notesData = m_optionSheetController.ConvertToNotesData(positionData);
+		m_notesData.startBeat = notesData.startBeat;
 		m_notesData.scale = scale;
-		m_notesData.startBeat = PiarhythmUtility.ConvertPositionToTime(m_transform.offsetMin.y, NotesManager.NOTES_SPEED);
-		//m_notesData.noteLength = PiarhythmUtility.ConvertPositionToTime(m_transform.sizeDelta.y, NotesManager.NOTES_SPEED);
+
+		// 位置調整
+		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
 	}
 	#endregion
 
@@ -313,15 +318,10 @@ public class EditNotesController : MonoBehaviour
 		// データを更新する
 		m_notesData.startBeat = startTime;
 
-		// スタート位置を更新
-		Vector2 offsetMin = m_transform.offsetMin;
-		offsetMin.y = PiarhythmUtility.ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
-		m_transform.offsetMin = offsetMin;
-
-		// 長さ分の更新
-		Vector2 offsetMax = m_transform.offsetMax;
-		offsetMax.y = offsetMin.y + PiarhythmUtility.ConvertTimeToPosition(m_notesData.noteLength, NotesManager.NOTES_SPEED);
-		m_transform.offsetMax = offsetMax;
+		// 位置の更新
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
 	}
 	#endregion
 
