@@ -245,11 +245,12 @@ public class EditManager : MonoBehaviour
 		// オブジェクトに変換する
 		PiarhythmDatas.MusicPieceData musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonString);
 
-		// 設定データの設定
-		m_optionSheetController.SetOptionData(musicPieceData.optionData);
+		// 設定データの設定と初期化
+		m_optionSheetController.Start(musicPieceData.optionData);
 
 		// BGMデータの設定
-		m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
+		if (musicPieceData.bgmData.path == "") m_bgmSheetController.SetBGMData(null);
+		else m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
 
 		// ノーツの生成
 		m_notesManager.CreateNotes(musicPieceData.notesDataList);

@@ -38,6 +38,8 @@ public class PiarhythmDatas
 		public int noteLength;
 		// 色
 		public Color color;
+		// 連結されたノーツの要素番号
+		public int connectElement;
 	}
 
 

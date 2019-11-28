@@ -100,6 +100,9 @@ public class EditNotesController : MonoBehaviour
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
+
+		// 連結情報を初期化する
+		m_notesData.connectElement = -1;
 	}
 	#endregion
 

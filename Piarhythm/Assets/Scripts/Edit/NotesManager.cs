@@ -168,9 +168,10 @@ public class NotesManager : MonoBehaviour
 			editNotes.SetKeyDictionary(m_keyDictionary);
 			// NotesSheetControllerを設定する
 			editNotes.SetNotesSheetController(m_notesSheetController);
+			// OptionSheetControllerを設定する
+			editNotes.SetOptionSheetController(m_optionSheetController);
 
 			// MusicalScoreの子に設定する
-			if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
 			newNotes.GetComponent<RectTransform>().SetParent(m_musicalScore.GetComponent<RectTransform>());
 
 			// 初期化処理

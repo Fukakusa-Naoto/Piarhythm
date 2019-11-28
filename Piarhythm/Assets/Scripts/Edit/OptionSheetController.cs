@@ -23,9 +23,6 @@ public class OptionSheetController : MonoBehaviour
 	private List<PiarhythmDatas.TempoData> m_tempoDataList;
 	private int m_wholeMeasure = 0;
 
-	// データ
-	private PiarhythmDatas.OptionData m_optionData;
-
 	// UI
 	[SerializeField]
 	private InputField m_wholeMeasureInputField = null;
@@ -59,7 +56,6 @@ public class OptionSheetController : MonoBehaviour
 	private void Start()
 	{
 		m_tempoDataList = new List<PiarhythmDatas.TempoData>();
-		m_optionData = new PiarhythmDatas.OptionData();
 
 		// 最初のテンポデータを登録する
 		GameObject tempoNode = GameObject.FindGameObjectWithTag("TempoNode");
@@ -72,6 +68,62 @@ public class OptionSheetController : MonoBehaviour
 
 		// 全体時間を計算する
 		CalculateWholeTime();
+	}
+	#endregion
+
+	#region 初期化処理(設定データあり)
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理(設定データあり)
+	//!
+	//! @parameter [optionData] 設定データ
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void Start(PiarhythmDatas.OptionData optionData)
+	{
+		// 全体小節数の設定
+		m_wholeMeasure = optionData.wholeMeasure;
+
+		// テンポノードをリセットする
+		m_tempoDataList.RemoveRange(1, m_tempoDataList.Count - 1);
+		for (int i = 1; i < m_tempoNodeContent.childCount; ++i) Destroy(m_tempoNodeContent.GetChild(i).gameObject);
+
+		// 最初のテンポノードを設定する
+		m_tempoNodeContent.GetChild(0).GetComponent<TempoNodeController>().SetTempoData(optionData.tempDatas[0]);
+		m_tempoDataList[0] = optionData.tempDatas[0];
+
+		for (int i = 1; i < optionData.tempDatas.Length; ++i)
+		{
+			// テンポノードを作成する
+			GameObject tempoNode = Instantiate(m_tempoNodePrefab);
+
+			// コンテナに登録する
+			RectTransform rectTransform = tempoNode.GetComponent<RectTransform>();
+			rectTransform.SetParent(m_tempoNodeContent);
+
+			// 親子関係を組んだことで変化した値を修正する
+			rectTransform.localScale = Vector3.one;
+			rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0.0f);
+
+			// コントローラーを設定する
+			TempoNodeController tempoNodeController = tempoNode.GetComponent<TempoNodeController>();
+			tempoNodeController.SetOptionSheetController(this);
+
+			// テンポデータを設定する
+			tempoNodeController.SetTempoData(optionData.tempDatas[i]);
+
+			// データを追加する
+			m_tempoDataList.Add(tempoNodeController.GetTempoData());
+
+			// 要素番号を設定する
+			tempoNodeController.SetIndex(m_tempoDataList.Count - 1);
+		}
+
+		// 全体時間を計算する
+		CalculateWholeTime();
+
+		// UIへ反映させる
+		m_wholeMeasureInputField.text = m_wholeMeasure.ToString();
 	}
 	#endregion
 
@@ -353,6 +405,7 @@ public class OptionSheetController : MonoBehaviour
 		// 各UIへ反映させる
 		m_musicalScoreController.ChangeScoreLength(m_wholeTime);
 		m_menuController.UpdateDisplayWholeTimeText(m_wholeTime);
+		m_wholeMeasureInputField.text = m_wholeMeasure.ToString();
 
 		// スクロールバーのテクスチャを更新する
 		m_notesEditScrollbarController.UpdateTexture(m_bgmSheetController.GetBGMData(), m_wholeTime);
@@ -537,22 +590,11 @@ public class OptionSheetController : MonoBehaviour
 	public PiarhythmDatas.OptionData GetOptionData()
 	{
 		// データをまとめる
-		m_optionData.tempDatas = m_tempoDataList.ToArray();
-		m_optionData.wholeMeasure = m_wholeMeasure;
+		PiarhythmDatas.OptionData optionData = new PiarhythmDatas.OptionData();
+		optionData.tempDatas = m_tempoDataList.ToArray();
+		optionData.wholeMeasure = m_wholeMeasure;
 
-		return m_optionData;
-	}
-	#endregion
-
-	#region 設定データの設定
-	//-----------------------------------------------------------------
-	//! @summary   設定データの設定
-	//!
-	//! @parameter [optionData] 設定する設定データ
-	//-----------------------------------------------------------------
-	public void SetOptionData(PiarhythmDatas.OptionData optionData)
-	{
-		m_optionData = optionData;
+		return optionData;
 	}
 	#endregion
 }
