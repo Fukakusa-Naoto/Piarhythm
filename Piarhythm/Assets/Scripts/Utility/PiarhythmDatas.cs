@@ -32,12 +32,14 @@ public class PiarhythmDatas
 	{
 		// 音階
 		public string scale;
-		// 開始時間
-		public float startTime;
-		// 長さ
-		public float length;
+		// 開始の拍数
+		public float startBeat;
+		// 音符の長さ
+		public int noteLength;
 		// 色
 		public Color color;
+		// 連結されたノーツの要素番号
+		public int connectElement;
 	}
 
 
@@ -53,13 +55,64 @@ public class PiarhythmDatas
 	}
 
 
-
 	[System.Serializable]
 	public struct MusicPieceData
 	{
+		// 楽曲の設定
+		public OptionData optionData;
 		// BGM
 		public BGMData bgmData;
 		// ノーツ
 		public NotesData[] notesDataList;
+	}
+
+
+	[System.Serializable]
+	public struct TempoData
+	{
+		// テンポの開始小節
+		public int startMeasure;
+		// テンポ数
+		public int tempo;
+	}
+
+
+	[System.Serializable]
+	public struct OptionData
+	{
+		// テンポデータのリスト
+		public TempoData[] tempDatas;
+		// 全小節数
+		public int wholeMeasure;
+	}
+
+	public struct PositionData
+	{
+		// 開始座標
+		public float position;
+		// 長さ
+		public float lenght;
+	}
+
+	public struct NoteTime
+	{
+		// 全音符
+		public static float WHOLE_NOTE_SEMIBREVE = 4.0f;
+		// 2分音符
+		public static float HALF_NOTE_MININ = 2.0f;
+		// 4分音符
+		public static float QUARTER_NOTE_CROCHET = 1.0f;
+		// 8分音符
+		public static float EIGHTH_NOTE_QUAVER = 0.5f;
+		// 16分音符
+		public static float SIXTEENTH_NOTE_SEMIQUAVER = 0.25f;
+		// 付点全音符
+		public static float WHOLE_DOTTED_NOTE_SEMIBREVE = 6.0f;
+		// 付点2分音符
+		public static float HALF_DOTTED_NOTE_MININ = 3.0f;
+		// 付点4分音符
+		public static float QUARTER_DOTTED_NOTE_CROCHET = 1.5f;
+		// 付点8分音符
+		public static float EIGHTH_DOTTED_NOTE_QUAVER = 0.75f;
 	}
 }

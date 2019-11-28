@@ -28,13 +28,13 @@ public class NotesSheetController : MonoBehaviour
 
 	// UI
 	[SerializeField]
-	private GameObject m_musicalScaleInputField = null;
+	private InputField m_musicalScaleInputField = null;
 	[SerializeField]
-	private GameObject m_startTimeInputField = null;
+	private InputField m_startBeatInputField = null;
 	[SerializeField]
-	private GameObject m_lengthTimeInputField = null;
+	private Dropdown m_noteLengthDropdown = null;
 	[SerializeField]
-	private GameObject m_colorDropdown = null;
+	private Dropdown m_colorDropdown = null;
 	[SerializeField]
 	private RectTransform m_keyboard = null;
 
@@ -102,14 +102,8 @@ public class NotesSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditNotesStartTimeInputField()
 	{
-		// コンポーネントの取得
-		InputField inputField = m_startTimeInputField.GetComponent<InputField>();
-
-		// 何も入力されていなければ処理を終了する
-		if (inputField.text == "") return;
-
 		// 選択されているノーツに設定する
-		m_notesManager.SetSelectNotesStartTime(float.Parse(inputField.text));
+		m_notesManager.SetSelectNotesStartTime(float.Parse(m_startBeatInputField.text));
 	}
 	#endregion
 
@@ -123,14 +117,8 @@ public class NotesSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditNotesLengthTimeInputField()
 	{
-		// コンポーネントの取得
-		InputField inputField = m_lengthTimeInputField.GetComponent<InputField>();
-
-		// 何も入力されていなければ処理を終了する
-		if (inputField.text == "") return;
-
 		// 選択されているノーツに設定する
-		m_notesManager.SetSelectNotesLengthTime(float.Parse(inputField.text));
+		m_notesManager.SetSelectNotesLengthTime(m_noteLengthDropdown.value);
 	}
 	#endregion
 
@@ -207,10 +195,10 @@ public class NotesSheetController : MonoBehaviour
 		// UIへ情報を反映させる
 		if (displayNotes == null)
 		{
-			m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
-			m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
-			m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text = "None";
-			m_colorDropdown.GetComponent<Dropdown>().value = 0;
+			m_musicalScaleInputField.text = "None";
+			m_startBeatInputField.text = "None";
+			m_noteLengthDropdown.value = 2;
+			m_colorDropdown.value = 0;
 		}
 		else
 		{
@@ -218,24 +206,18 @@ public class NotesSheetController : MonoBehaviour
 			PiarhythmDatas.NotesData notesData = displayNotes.GetNotesData();
 
 			// 音階の更新
-			m_musicalScaleInputField.GetComponent<InputField>().text
-				= m_musicalScaleInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
-				= notesData.scale;
+			m_musicalScaleInputField.text = notesData.scale;
 
-			// 開始時間の更新
-			m_startTimeInputField.GetComponent<InputField>().text
-				= m_startTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
-				= notesData.startTime.ToString();
+			// 開始の拍数を更新
+			m_startBeatInputField.text = notesData.startBeat.ToString();
 
-			// 終了時間の更新
-			m_lengthTimeInputField.GetComponent<InputField>().text
-				= m_lengthTimeInputField.GetComponent<RectTransform>().GetChild(1).GetComponent<Text>().text
-				= notesData.length.ToString();
+			// 音符の長さを更新
+			m_noteLengthDropdown.value = notesData.noteLength;
 
 			// 色の更新
-			if (notesData.color == Color.red) m_colorDropdown.GetComponent<Dropdown>().value = 0;
-			else if (notesData.color == Color.green) m_colorDropdown.GetComponent<Dropdown>().value = 1;
-			else if (notesData.color == Color.blue) m_colorDropdown.GetComponent<Dropdown>().value = 2;
+			if (notesData.color == Color.red) m_colorDropdown.value = 0;
+			else if (notesData.color == Color.green) m_colorDropdown.value = 1;
+			else if (notesData.color == Color.blue) m_colorDropdown.value = 2;
 		}
 	}
 	#endregion

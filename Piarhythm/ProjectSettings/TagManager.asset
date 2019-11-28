@@ -6,6 +6,7 @@ TagManager:
   tags:
   - LimitArea
   - Notes
+  - TempoNode
   layers:
   - Default
   - TransparentFX

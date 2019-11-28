@@ -208,10 +208,14 @@ public class EditManager : MonoBehaviour
 		// ノーツデータを取得する
 		PiarhythmDatas.NotesData[] notesDatas = m_notesManager.GetNotesDatas();
 
+		// 設定データを取得する
+		PiarhythmDatas.OptionData optionData = m_optionSheetController.GetOptionData();
+
 		// 楽曲データを作成する
 		PiarhythmDatas.MusicPieceData musicPieceData = new PiarhythmDatas.MusicPieceData();
 		musicPieceData.bgmData = bgmData;
 		musicPieceData.notesDataList = notesDatas;
+		musicPieceData.optionData = optionData;
 
 		// json文字列に変換する
 		string jsonString = JsonUtility.ToJson(musicPieceData);
@@ -241,8 +245,12 @@ public class EditManager : MonoBehaviour
 		// オブジェクトに変換する
 		PiarhythmDatas.MusicPieceData musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonString);
 
+		// 設定データの設定と初期化
+		m_optionSheetController.Start(musicPieceData.optionData);
+
 		// BGMデータの設定
-		m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
+		if (musicPieceData.bgmData.path == "") m_bgmSheetController.SetBGMData(null);
+		else m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
 
 		// ノーツの生成
 		m_notesManager.CreateNotes(musicPieceData.notesDataList);
