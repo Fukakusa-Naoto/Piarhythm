@@ -26,7 +26,7 @@ public class NotesManager : MonoBehaviour
 	// 生成された全てのノーツリスト
 	private List<GameObject> m_notesList = null;
 	// 選択されているノーツ
-	private GameObject m_selectNotes = null;
+	private List<GameObject> m_selectNotes = null;
 	// 生成するノーツのPrefab
 	public GameObject m_notesPrefab = null;
 	// 譜面オブジェクト
@@ -34,6 +34,8 @@ public class NotesManager : MonoBehaviour
 	private GameObject m_musicalScore = null;
 	// キーボード情報
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
+	// 複数選択フラグ
+	private bool m_multipleSelectFlag = false;
 
 	// UI
 	[SerializeField]
@@ -46,6 +48,8 @@ public class NotesManager : MonoBehaviour
 	private NotesSheetController m_notesSheetController = null;
 	[SerializeField]
 	private OptionSheetController m_optionSheetController = null;
+	[SerializeField]
+	private ConnectNoteSheetController m_connectNoteSheetController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -60,6 +64,7 @@ public class NotesManager : MonoBehaviour
 	private void Start()
 	{
 		m_notesList = new List<GameObject>();
+		m_selectNotes = new List<GameObject>();
 
 		// キーボード情報を登録する
 		m_keyDictionary = new Dictionary<string, RectTransform>();
@@ -82,18 +87,70 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotes(GameObject selectNotes)
 	{
-		// 選択されていたノーツの光彩を切る
-		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().SwitchGlow(false);
+		if (selectNotes != null)
+		{
+			// Ctrlキーが押されている
+			if (Input.GetKey(KeyCode.LeftControl))
+			{
+				// 登録されているか調べる
+				int index = m_selectNotes.IndexOf(selectNotes);
 
-		// 選択されているノーツを更新する
-		m_selectNotes = selectNotes;
+				// 登録されていない場合
+				if (index < 0)
+				{
+					// 選択されているノーツを追加する
+					m_selectNotes.Add(selectNotes);
 
-		// 光彩を付ける
-		if (m_selectNotes) m_selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+					// 光彩を付ける
+					selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+				}
+				else
+				{
+					// 選択リストから外す
+					m_selectNotes.RemoveAt(index);
 
-		// UIへ情報を反映させる
-		if (m_selectNotes)
-			m_notesSheetController.DisplayNotes(m_selectNotes.GetComponent<EditNotesController>());
+					// 選択されたノーツの光彩を切る
+					selectNotes.GetComponent<EditNotesController>().SwitchGlow(false);
+				}
+			}
+			else
+			{
+				// 選択されている全ての光彩を切る
+				foreach (GameObject note in m_selectNotes) note.GetComponent<EditNotesController>().SwitchGlow(false);
+
+				// リストをクリアする
+				m_selectNotes.Clear();
+
+				// 選択されているノーツを追加する
+				m_selectNotes.Add(selectNotes);
+
+				// 光彩を付ける
+				selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+			}
+
+			// シートの切り替え
+			if (m_selectNotes.Count > 1)
+			{
+				// 複数選択のフラグを立てる
+				m_multipleSelectFlag = true;
+
+				// 連結可能か調べる
+
+				// 連結ノーツシートを手前に持ってくる
+				m_connectNoteSheetController.SetAsLastSibling();
+			}
+			else
+			{
+				// 複数選択のフラグを倒す
+				m_multipleSelectFlag = false;
+
+				// 連結ノーツシートを奥に持っていく
+				m_connectNoteSheetController.SetAsFirstSibling();
+			}
+
+			// UIへ情報を反映させる
+			m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
+		}
 	}
 	#endregion
 
@@ -198,11 +255,17 @@ public class NotesManager : MonoBehaviour
 	{
 		if (m_selectNotes == null) Debug.Log("ノーツが選択されていません");
 
-		// リストから外す
-		m_notesList.Remove(m_selectNotes);
+		foreach(GameObject note in m_selectNotes)
+		{
+			// リストから外す
+			m_notesList.Remove(note);
 
-		// オブジェクトを削除する
-		Destroy(m_selectNotes);
+			// オブジェクトを削除する
+			Destroy(note);
+		}
+
+		// リストをクリアする
+		m_selectNotes.Clear();
 
 		// 選択されているノーツを設定し直す
 		SetSelectNotes(null);
@@ -288,11 +351,11 @@ public class NotesManager : MonoBehaviour
 		// UIへ反映する
 		m_notesSheetController.UpdateMusicalScale(scale);
 
-		// ノーツが選択されていない場合処理を終了する
-		if (!m_selectNotes) return;
+		// 1つのノーツが選択されていなければ、処理を終了する
+		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes.GetComponent<EditNotesController>().SetNotesScale(scale);
+		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesScale(scale);
 	}
 	#endregion
 
@@ -306,11 +369,11 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotesStartTime(float startTime)
 	{
-		// ノーツが選択されていない場合処理を終了する
-		if (!m_selectNotes) return;
+		// 1つのノーツが選択されていなければ、処理を終了する
+		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes.GetComponent<EditNotesController>().SetNotesStartTime(startTime);
+		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesStartTime(startTime);
 	}
 	#endregion
 
@@ -324,11 +387,11 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotesLengthTime(int lengthTime)
 	{
-		// ノーツが選択されていない場合処理を終了する
-		if (!m_selectNotes) return;
+		// 1つのノーツが選択されていなければ、処理を終了する
+		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes.GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
+		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
 	}
 	#endregion
 
@@ -342,11 +405,11 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotesColor(Color color)
 	{
-		// ノーツが選択されていない場合処理を終了する
-		if (!m_selectNotes) return;
+		// 1つのノーツが選択されていなければ、処理を終了する
+		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes.GetComponent<EditNotesController>().SetNotesColor(color);
+		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesColor(color);
 	}
 	#endregion
 
@@ -384,6 +447,18 @@ public class NotesManager : MonoBehaviour
 		{
 			notes.GetComponent<AudioSource>().volume = volume;
 		}
+	}
+	#endregion
+
+	#region 複数選択フラグを取得する
+	//-----------------------------------------------------------------
+	//! @summary   複数選択フラグを取得する
+	//!
+	//! @return    フラグの状態
+	//-----------------------------------------------------------------
+	public bool GetMultipleSelectFlag()
+	{
+		return m_multipleSelectFlag;
 	}
 	#endregion
 }
