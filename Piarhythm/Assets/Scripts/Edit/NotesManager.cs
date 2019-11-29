@@ -195,6 +195,20 @@ public class NotesManager : MonoBehaviour
 	}
 	#endregion
 
+	#region 連結ノーツの生成処理
+	//-----------------------------------------------------------------
+	//! @summary   連結ノーツの生成処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void CreateConnectNote()
+	{
+
+	}
+	#endregion
+
 	#region ノーツの生成処理(引数あり)
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの生成処理(引数あり)
@@ -251,12 +265,18 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void DestroyNotes()
 	{
-		if (m_selectNotes == null) Debug.Log("ノーツが選択されていません");
-
 		foreach(GameObject note in m_selectNotes)
 		{
-			// リストから外す
-			m_notesList.Remove(note);
+			// 連結ノーツだった場合
+			if (note.GetComponent<ConnectNoteController>() != null)
+			{
+
+			}
+			else
+			{
+				// リストから外す
+				m_notesList.Remove(note);
+			}
 
 			// オブジェクトを削除する
 			Destroy(note);
@@ -267,6 +287,20 @@ public class NotesManager : MonoBehaviour
 
 		// 選択されているノーツを設定し直す
 		SetSelectNotes(null);
+	}
+	#endregion
+
+	#region ノーツの連結を解除
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの連結を解除
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void CuttingNote()
+	{
+
 	}
 	#endregion
 
@@ -346,14 +380,20 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetSelectNotesScale(string scale)
 	{
-		// UIへ反映する
-		m_notesSheetController.UpdateMusicalScale(scale);
-
 		// 1つのノーツが選択されていなければ、処理を終了する
 		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesScale(scale);
+		if (m_selectNotes[0].GetComponent<EditNotesController>() != null)
+		{
+			// 通常のノーツの設定
+			m_selectNotes[0].GetComponent<EditNotesController>().SetNotesScale(scale);
+		}
+		else
+		{
+			// 連結ノーツの設定
+			m_selectNotes[0].GetComponent<ConnectNoteController>().SetNotesScale(scale);
+		}
 	}
 	#endregion
 
@@ -371,7 +411,16 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesStartTime(startTime);
+		if (m_selectNotes[0].GetComponent<EditNotesController>() != null)
+		{
+			// 通常のノーツの設定
+			m_selectNotes[0].GetComponent<EditNotesController>().SetNotesStartTime(startTime);
+		}
+		else
+		{
+			// 連結ノーツの設定
+			m_selectNotes[0].GetComponent<ConnectNoteController>().SetStartBeat(startTime);
+		}
 	}
 	#endregion
 
@@ -407,7 +456,16 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesColor(color);
+		if (m_selectNotes[0].GetComponent<EditNotesController>() != null)
+		{
+			// 通常のノーツの設定
+			m_selectNotes[0].GetComponent<EditNotesController>().SetNotesColor(color);
+		}
+		else
+		{
+			// 連結ノーツの設定
+			m_selectNotes[0].GetComponent<ConnectNoteController>().SetColor(color);
+		}
 	}
 	#endregion
 

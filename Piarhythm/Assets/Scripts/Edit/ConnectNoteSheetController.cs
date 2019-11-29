@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,8 @@ using UnityEngine.UI;
 public class ConnectNoteSheetController : MonoBehaviour
 {
 	// <メンバ変数>
+	private string[] m_keyList = null;
+
 	// コンポーネント
 	private RectTransform m_transform = null;
 
@@ -34,6 +37,10 @@ public class ConnectNoteSheetController : MonoBehaviour
 	[SerializeField]
 	private Dropdown m_colorDropdown = null;
 
+	// 参照するデータ
+	[SerializeField]
+	private RectTransform m_keyboard = null;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 初期化処理
@@ -48,6 +55,13 @@ public class ConnectNoteSheetController : MonoBehaviour
 	{
 		// コンポーネントの取得
 		m_transform = GetComponent<RectTransform>();
+
+		m_keyList = new string[m_keyboard.childCount];
+
+		for (int i = 0; i < m_keyboard.childCount; ++i)
+		{
+			m_keyList[i] = m_keyboard.GetChild(i).name;
+		}
 	}
 	#endregion
 
@@ -89,26 +103,23 @@ public class ConnectNoteSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditMusicalScaleInputField()
 	{
-		//// コンポーネントの取得
-		//InputField inputField = m_musicalScaleInputField.GetComponent<InputField>();
+		// 何も入力がされていなければ処理を終了する
+		if (m_musicalScaleInputField.text == "") return;
 
-		//// 何も入力がされていなければ処理を終了する
-		//if (inputField.text == "") return;
+		// 文字列を大文字、小文字の区別なくチェックする
+		foreach (string n in m_keyList)
+		{
+			if (m_musicalScaleInputField.text.Equals(n, StringComparison.OrdinalIgnoreCase))
+			{
+				// 文字列を大文字にする
+				string scale = m_musicalScaleInputField.text.ToUpper();
+				// 選択されているノーツに設定する
+				m_notesManager.SetSelectNotesScale(scale);
 
-		//// 文字列を大文字、小文字の区別なくチェックする
-		//foreach (string n in m_keyList)
-		//{
-		//	if (inputField.text.Equals(n, StringComparison.OrdinalIgnoreCase))
-		//	{
-		//		// 文字列を大文字にする
-		//		string scale = inputField.text.ToUpper();
-		//		// 選択されているノーツに設定する
-		//		m_notesManager.SetSelectNotesScale(scale);
-
-		//		// 処理を終了する
-		//		return;
-		//	}
-		//}
+				// 処理を終了する
+				return;
+			}
+		}
 	}
 	#endregion
 
@@ -123,10 +134,10 @@ public class ConnectNoteSheetController : MonoBehaviour
 	public void OnEndEditStartBeatInputField()
 	{
 		// 入力が無ければ、処理を終了する
-		//if (m_startBeatInputField.text == "") return;
+		if (m_startBeatInputField.text == "") return;
 
 		// 選択されているノーツに設定する
-		//m_notesManager.SetSelectNotesStartTime(float.Parse(m_startBeatInputField.text));
+		m_notesManager.SetSelectNotesStartTime(float.Parse(m_startBeatInputField.text));
 	}
 	#endregion
 
@@ -140,22 +151,19 @@ public class ConnectNoteSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnValueChangedColorDropdown()
 	{
-		//// コンポーネントの取得
-		//Dropdown colorDropdown = m_colorDropdown.GetComponent<Dropdown>();
-
-		//// 入力値の応じて色を設定する
-		//switch (colorDropdown.value)
-		//{
-		//	case 0:     // 赤
-		//		m_notesManager.SetSelectNotesColor(Color.magenta);
-		//		break;
-		//	case 1:     // 緑
-		//		m_notesManager.SetSelectNotesColor(Color.green);
-		//		break;
-		//	case 2:     // 青
-		//		m_notesManager.SetSelectNotesColor(Color.cyan);
-		//		break;
-		//}
+		// 入力値の応じて色を設定する
+		switch (m_colorDropdown.value)
+		{
+			case 0:     // 赤
+				m_notesManager.SetSelectNotesColor(Color.magenta);
+				break;
+			case 1:     // 緑
+				m_notesManager.SetSelectNotesColor(Color.green);
+				break;
+			case 2:     // 青
+				m_notesManager.SetSelectNotesColor(Color.cyan);
+				break;
+		}
 	}
 	#endregion
 
@@ -169,8 +177,8 @@ public class ConnectNoteSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickConnectButton()
 	{
-		// ノーツの作成
-		//m_notesManager.CreateNotes();
+		// 連結ノーツの作成
+		m_notesManager.CreateConnectNote();
 	}
 	#endregion
 
@@ -184,8 +192,8 @@ public class ConnectNoteSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickCuttingButton()
 	{
-		// ノーツの作成
-		//m_notesManager.CreateNotes();
+		// ノーツの連結を解除
+		m_notesManager.CuttingNote();
 	}
 	#endregion
 
@@ -200,8 +208,7 @@ public class ConnectNoteSheetController : MonoBehaviour
 	public void OnClickDestroyButton()
 	{
 		// 選択されているノーツの削除
-		//m_notesManager.DestroyNotes();
-
+		m_notesManager.DestroyNotes();
 	}
 	#endregion
 }

@@ -4548,6 +4548,8 @@ MonoBehaviour:
   m_musicalScaleInputField: {fileID: 938167542}
   m_startBeatInputField: {fileID: 616977374}
   m_colorDropdown: {fileID: 1999198030}
+  m_keyboard: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
+    type: 3}
 --- !u!114 &635777311
 MonoBehaviour:
   m_ObjectHideFlags: 0

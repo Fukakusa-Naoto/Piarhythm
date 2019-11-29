@@ -1,0 +1,124 @@
+﻿//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+//! @file		ConnectNoteController.cs
+//!
+//! @summary	連結ノーツの制御に関するC#スクリプト
+//!
+//! @date		2019.11.29
+//!
+//! @author		深草直斗
+//__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
+
+// 名前空間の省略 ===========================================================
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+
+// クラスの定義 =============================================================
+public class ConnectNoteController : MonoBehaviour
+{
+	// <メンバ変数>
+	// キー情報が保存された連想配列
+	private Dictionary<string, RectTransform> m_keyDictionary = null;
+
+	// コンポーネント
+	private RectTransform m_transform = null;
+	private GlowImage m_glowImage = null;
+	private RectTransform m_musicalScoreTransform = null;
+	private AudioSource m_audioSource = null;
+
+
+	// メンバ関数の定義 =====================================================
+	#region ノーツの音階を設定する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの音階を設定する
+	//!
+	//! @parameter [scale] 設定する音階
+	//-----------------------------------------------------------------
+	public void SetNotesScale(string scale)
+	{
+		//// データの更新
+		//m_notesData.scale = scale;
+
+		//// 座標を設定された音階の位置に移動させる
+		//m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
+
+		//// 音を設定する
+		//m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
+
+		//// 幅を合わせる
+		// GlowImageの解析と改造が終わるまで下の処理で代用する
+		//float width = m_keyDictionary[scale].sizeDelta.x
+		//	* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
+		//m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
+
+		//Vector3 localScale = m_transform.localScale;
+		//localScale.x = (scale.Contains("#")) ? 0.6f : 0.8f;
+		//m_transform.localScale = localScale;
+
+		//// #の色を変化させる
+		//m_glowImage.color = (scale.Contains("#"))
+		//	? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+		//	: m_notesData.color;
+	}
+	#endregion
+
+	#region ノーツの開始の拍数を設定する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始の拍数を設定する
+	//!
+	//! @parameter [startBeat] 設定する開始の拍数
+	//-----------------------------------------------------------------
+	public void SetStartBeat(float startBeat)
+	{
+		//// 開始位置がマイナスだった場合は処理を終了する
+		//if (startTime < 0.0f) return;
+
+		//// データを更新する
+		//m_notesData.startBeat = PiarhythmUtility.MRound(startTime, 0.25f);
+
+		//// 位置の更新
+		//PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
+		//m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		//m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+
+		//// UIを更新
+		//m_notesSheetController.DisplayNotes(this);
+	}
+	#endregion
+
+	#region ノーツの色を設定する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの色を設定する
+	//!
+	//! @parameter [color] 設定する色
+	//-----------------------------------------------------------------
+	public void SetColor(Color color)
+	{
+		//// 情報を更新する
+		//m_notesData.color = color;
+
+		//// 色を反映させる
+		//// #の色を変化させる
+		//m_glowImage.color = (m_notesData.scale.Contains("#"))
+		//	? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+		//	: m_notesData.color;
+
+		//// 光彩の色を更新する
+		//m_glowImage.glowColor = color;
+	}
+	#endregion
+
+	#region キー情報が保存された連想配列を設定する
+	//-----------------------------------------------------------------
+	//! @summary   キー情報が保存された連想配列を設定する
+	//!
+	//! @parameter [keyDictionary] 設定するキー情報が保存された連想配列
+	//-----------------------------------------------------------------
+	public void SetKeyDictionary(Dictionary<string, RectTransform> keyDictionary)
+	{
+		m_keyDictionary = keyDictionary;
+	}
+	#endregion
+}

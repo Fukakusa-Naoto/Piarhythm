@@ -18,15 +18,6 @@ using UnityEngine.UI;
 // クラスの定義 =============================================================
 public class EditNotesController : MonoBehaviour
 {
-	// <メンバ定数>
-	// #時の色の変化率
-	private static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
-	// 光彩の最小サイズ
-	private static readonly float MIN_GLOW_SIZE = 2.0f;
-	// 光彩の最大サイズ
-	private static readonly float MAX_GLOW_SIZE = 10.0f;
-
-
 	// <メンバ変数>
 	// キャンバス
 	private Canvas m_canvas = null;
@@ -168,8 +159,8 @@ public class EditNotesController : MonoBehaviour
 		m_notesManager.SetSelectNotes(gameObject);
 
 		// 光彩を起動する
-		float glowSize = MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
-		glowSize = Mathf.Clamp(glowSize, MIN_GLOW_SIZE, MAX_GLOW_SIZE);
+		float glowSize = PiarhythmDatas.MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+		glowSize = Mathf.Clamp(glowSize, PiarhythmDatas.MIN_GLOW_SIZE, PiarhythmDatas.MAX_GLOW_SIZE);
 		m_glowImage.glowSize = glowSize;
 	}
 	#endregion
@@ -250,8 +241,8 @@ public class EditNotesController : MonoBehaviour
 		if(flag)
 		{
 			// 光彩を起動する
-			float glowSize = MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
-			glowSize = Mathf.Clamp(glowSize, MIN_GLOW_SIZE, MAX_GLOW_SIZE);
+			float glowSize = PiarhythmDatas.MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+			glowSize = Mathf.Clamp(glowSize, PiarhythmDatas.MIN_GLOW_SIZE, PiarhythmDatas.MAX_GLOW_SIZE);
 			m_glowImage.glowSize = glowSize;
 		}
 		else
@@ -302,7 +293,7 @@ public class EditNotesController : MonoBehaviour
 
 		// #の色を変化させる
 		m_glowImage.color = (scale.Contains("#"))
-			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+			? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
 			: m_notesData.color;
 	}
 	#endregion
@@ -363,7 +354,7 @@ public class EditNotesController : MonoBehaviour
 		// 色を反映させる
 		// #の色を変化させる
 		m_glowImage.color = (m_notesData.scale.Contains("#"))
-			? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+			? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
 			: m_notesData.color;
 
 		// 光彩の色を更新する
@@ -493,7 +484,7 @@ public class EditNotesController : MonoBehaviour
 		{
 			// 光彩の色を元に戻す
 			m_glowImage.glowColor = (m_notesData.scale.Contains("#"))
-				? new Color(m_notesData.color.r * SHARP_COLOR_PERCENTAGE, m_notesData.color.g * SHARP_COLOR_PERCENTAGE, m_notesData.color.b * SHARP_COLOR_PERCENTAGE, 1.0f)
+				? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
 				: m_notesData.color;
 		}
 	}

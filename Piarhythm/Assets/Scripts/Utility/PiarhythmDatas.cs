@@ -24,6 +24,12 @@ public class PiarhythmDatas
 	public static readonly string BGM_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "BGM/";
 	// 楽曲データを保存しているフォルダの階層パス
 	public static readonly string MUSIC_PIECE_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "Data/MusicPiece/";
+	// #時の色の変化率
+	public static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
+	// 光彩の最小サイズ
+	public static readonly float MIN_GLOW_SIZE = 2.0f;
+	// 光彩の最大サイズ
+	public static readonly float MAX_GLOW_SIZE = 10.0f;
 
 
 	// 構造体の定義 =========================================================
