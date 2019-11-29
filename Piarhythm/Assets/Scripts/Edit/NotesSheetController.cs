@@ -102,6 +102,9 @@ public class NotesSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnEndEditNotesStartTimeInputField()
 	{
+		// 入力が無ければ、処理を終了する
+		if (m_startBeatInputField.text == "") return;
+
 		// 選択されているノーツに設定する
 		m_notesManager.SetSelectNotesStartTime(float.Parse(m_startBeatInputField.text));
 	}
