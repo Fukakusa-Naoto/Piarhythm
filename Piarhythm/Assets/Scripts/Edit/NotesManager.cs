@@ -134,8 +134,6 @@ public class NotesManager : MonoBehaviour
 				// 複数選択のフラグを立てる
 				m_multipleSelectFlag = true;
 
-				// 連結可能か調べる
-
 				// 連結ノーツシートを手前に持ってくる
 				m_connectNoteSheetController.SetAsLastSibling();
 			}
