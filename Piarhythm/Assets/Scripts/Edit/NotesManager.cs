@@ -329,9 +329,6 @@ public class NotesManager : MonoBehaviour
 
 			// リストに登録する
 			m_notesList.Add(newNotes);
-
-			// 最大IDを更新する
-			if (notesData.id > m_incrementID) m_incrementID = notesData.id;
 		}
 	}
 	#endregion
@@ -346,18 +343,10 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void DestroyNotes()
 	{
-		foreach(GameObject note in m_selectNotes)
+		foreach (GameObject note in m_selectNotes)
 		{
-			// 連結ノーツだった場合
-			if (note.GetComponent<ConnectNoteController>() != null)
-			{
-
-			}
-			else
-			{
-				// リストから外す
-				m_notesList.Remove(note);
-			}
+			// リストから外す
+			m_notesList.Remove(note);
 
 			// オブジェクトを削除する
 			Destroy(note);
@@ -381,7 +370,33 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void CuttingNote()
 	{
+		// 選択されているノーツが複数だった場合、処理を終了する
+		if (m_selectNotes.Count != 1) return;
 
+		// 選択されているノーツが連結ノーツでなければ処理を終了する
+		ConnectNoteController connectNoteController = m_selectNotes[0].GetComponent<ConnectNoteController>();
+		if (connectNoteController == null) return;
+
+		// データを取得する
+		PiarhythmDatas.NotesData[] noteDatas = connectNoteController.GetNoteData();
+
+		// 連結を切る
+		for (int i = 0; i < noteDatas.Length; ++i) noteDatas[0].connectID = 0;
+
+		// ノーツを生成する
+		CreateNotes(noteDatas);
+
+		// リストから削除する
+		m_notesList.Remove(m_selectNotes[0]);
+
+		// 削除する
+		Destroy(m_selectNotes[0]);
+
+		// リストをクリアする
+		m_selectNotes.Clear();
+
+		// UIの表示を更新する
+		SetSelectNotes(null);
 	}
 	#endregion
 
@@ -693,6 +708,18 @@ public class NotesManager : MonoBehaviour
 	public bool GetMultipleSelectFlag()
 	{
 		return m_multipleSelectFlag;
+	}
+	#endregion
+
+	#region ノーツID割り振り用変数を設定する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツID割り振り用変数を設定する
+	//!
+	//! @parameter [incrementID] 設定するノーツID
+	//-----------------------------------------------------------------
+	public void SetIncrementID(uint incrementID)
+	{
+		m_incrementID = incrementID;
 	}
 	#endregion
 }

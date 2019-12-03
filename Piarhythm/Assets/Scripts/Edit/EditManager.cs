@@ -254,6 +254,14 @@ public class EditManager : MonoBehaviour
 
 		// ノーツの生成
 		m_notesManager.CreateNotes(musicPieceData.notesDataList);
+
+		uint maxID = 0;
+		// ノーツIDの更新
+		foreach(PiarhythmDatas.NotesData noteData in musicPieceData.notesDataList)
+		{
+			if (maxID < noteData.id) maxID = noteData.id;
+		}
+		m_notesManager.SetIncrementID(maxID);
 	}
 	#endregion
 
