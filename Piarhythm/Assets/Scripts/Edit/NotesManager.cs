@@ -29,6 +29,8 @@ public class NotesManager : MonoBehaviour
 	private List<GameObject> m_selectNotes = null;
 	// 生成するノーツのPrefab
 	public GameObject m_notesPrefab = null;
+	// 連結ノーツのPrefab
+	public GameObject m_connectNotePrefab = null;
 	// 譜面オブジェクト
 	[SerializeField]
 	private GameObject m_musicalScore = null;
@@ -36,6 +38,8 @@ public class NotesManager : MonoBehaviour
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	// 複数選択フラグ
 	private bool m_multipleSelectFlag = false;
+	// ノーツIDのナンバリング
+	private uint m_incrementID = 0;
 
 	// UI
 	[SerializeField]
@@ -125,7 +129,8 @@ public class NotesManager : MonoBehaviour
 				m_selectNotes.Add(selectNotes);
 
 				// 光彩を付ける
-				selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+				if (selectNotes.GetComponent<EditNotesController>()) selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+				else selectNotes.GetComponent<ConnectNoteController>().SwitchGlow(true);
 			}
 
 			// シートの切り替え
@@ -139,15 +144,38 @@ public class NotesManager : MonoBehaviour
 			}
 			else
 			{
-				// 複数選択のフラグを倒す
-				m_multipleSelectFlag = false;
+				if (m_selectNotes.Count == 0)
+				{
+					// 複数選択のフラグを倒す
+					m_multipleSelectFlag = false;
 
-				// 連結ノーツシートを奥に持っていく
-				m_connectNoteSheetController.SetAsFirstSibling();
+					// 連結ノーツシートを奥に持っていく
+					m_connectNoteSheetController.SetAsFirstSibling();
+				}
+				else
+				{
+					if (m_selectNotes[0].GetComponent<EditNotesController>())
+					{
+						// 複数選択のフラグを倒す
+						m_multipleSelectFlag = false;
+
+						// 連結ノーツシートを奥に持っていく
+						m_connectNoteSheetController.SetAsFirstSibling();
+					}
+					else
+					{
+						// 複数選択のフラグを立てる
+						m_multipleSelectFlag = true;
+
+						// 連結ノーツシートを手前に持ってくる
+						m_connectNoteSheetController.SetAsLastSibling();
+					}
+				}
 			}
 
 			// UIへ情報を反映させる
 			m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
+			m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
 		}
 	}
 	#endregion
@@ -163,7 +191,6 @@ public class NotesManager : MonoBehaviour
 	public void CreateNotes()
 	{
 		// ノーツを生成する
-		if (m_notesPrefab == null) Debug.Log("NotesPrefabが設定されていません");
 		GameObject newNotes = Instantiate(m_notesPrefab);
 
 		// コンポーネントの取得
@@ -179,9 +206,10 @@ public class NotesManager : MonoBehaviour
 		editNotes.SetNotesSheetController(m_notesSheetController);
 		// OptionSheetControllerを設定する
 		editNotes.SetOptionSheetController(m_optionSheetController);
+		// ノーツIDの設定
+		editNotes.SetID(++m_incrementID);
 
 		// MusicalScoreの子に設定する
-		if (m_musicalScore == null) Debug.Log("MusicalScoreが設定されていません");
 		newNotes.GetComponent<RectTransform>().SetParent(m_musicalScore.GetComponent<RectTransform>());
 
 		// 初期化処理
@@ -205,7 +233,59 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void CreateConnectNote()
 	{
+		// 連結可能か調べる
+		if (!CheckConnectNote()) return;
 
+		// 連結ノーツを生成する
+		GameObject connectNote = Instantiate(m_connectNotePrefab);
+
+		// コンポーネントの取得
+		ConnectNoteController connectNoteController = connectNote.GetComponent<ConnectNoteController>();
+
+		// マネージャーを設定する
+		//connectNoteController.SetNotesManager(this);
+		// キャンバスの設定
+		//connectNoteController.SetCanvas(m_canvas);
+		// キーボード情報
+		connectNoteController.SetKeyDictionary(m_keyDictionary);
+		// NotesSheetControllerを設定する
+		//connectNoteController.SetNotesSheetController(m_notesSheetController);
+		// OptionSheetControllerを設定する
+		connectNoteController.SetOptionSheetController(m_optionSheetController);
+
+		// MusicalScoreの子に設定する
+		connectNote.GetComponent<RectTransform>().SetParent(m_musicalScore.GetComponent<RectTransform>());
+
+		// 連結に使用したノーツデータを登録する
+		for (int i = 0; i < m_selectNotes.Count; ++i)
+		{
+			// データを取得する
+			PiarhythmDatas.NotesData notesData = m_selectNotes[i].GetComponent<EditNotesController>().GetNotesData();
+
+			// ノーツデータの連結先の要素数を更新する
+			if (i + 1 < m_selectNotes.Count) notesData.connectID = m_selectNotes[i + 1].GetComponent<EditNotesController>().GetNotesData().id;
+
+			// 登録する
+			connectNoteController.AddNoteData(notesData);
+
+			// リストから削除する
+			m_notesList.Remove(m_selectNotes[i]);
+
+			// ノーツを削除する
+			Destroy(m_selectNotes[i]);
+		}
+
+		// リストをクリアする
+		m_selectNotes.Clear();
+
+		// 初期化処理
+		connectNoteController.Initialize();
+
+		// リストに登録する
+		m_notesList.Add(connectNote);
+
+		// 生成されたノーツを選択中にする
+		SetSelectNotes(connectNote);
 	}
 	#endregion
 
@@ -219,8 +299,6 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void CreateNotes(PiarhythmDatas.NotesData[] notesDatas)
 	{
-		if (m_notesPrefab == null) Debug.Log("NotesPrefabが設定されていません");
-
 		foreach (PiarhythmDatas.NotesData notesData in notesDatas)
 		{
 			// ノーツを生成する
@@ -251,6 +329,9 @@ public class NotesManager : MonoBehaviour
 
 			// リストに登録する
 			m_notesList.Add(newNotes);
+
+			// 最大IDを更新する
+			if (notesData.id > m_incrementID) m_incrementID = notesData.id;
 		}
 	}
 	#endregion
@@ -301,6 +382,103 @@ public class NotesManager : MonoBehaviour
 	public void CuttingNote()
 	{
 
+	}
+	#endregion
+
+	#region 連結可能か調べる
+	//-----------------------------------------------------------------
+	//! @summary   連結可能か調べる
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    true :連結可能
+	//! @return    false:連結不可
+	//-----------------------------------------------------------------
+	private bool CheckConnectNote()
+	{
+		PiarhythmDatas.NotesData notesData = m_selectNotes[0].GetComponent<EditNotesController>().GetNotesData();
+		string scale = notesData.scale;
+		Color color = notesData.color;
+		float nextStart = notesData.startBeat;
+		switch (notesData.noteLength)
+		{
+			case 0:
+				nextStart += PiarhythmDatas.NoteTime.WHOLE_NOTE_SEMIBREVE;
+				break;
+			case 1:
+				nextStart += PiarhythmDatas.NoteTime.HALF_NOTE_MININ;
+				break;
+			case 2:
+				nextStart += PiarhythmDatas.NoteTime.QUARTER_NOTE_CROCHET;
+				break;
+			case 3:
+				nextStart += PiarhythmDatas.NoteTime.EIGHTH_NOTE_QUAVER;
+				break;
+			case 4:
+				nextStart += PiarhythmDatas.NoteTime.SIXTEENTH_NOTE_SEMIQUAVER;
+				break;
+			case 5:
+				nextStart += PiarhythmDatas.NoteTime.WHOLE_DOTTED_NOTE_SEMIBREVE;
+				break;
+			case 6:
+				nextStart += PiarhythmDatas.NoteTime.HALF_DOTTED_NOTE_MININ;
+				break;
+			case 7:
+				nextStart += PiarhythmDatas.NoteTime.QUARTER_DOTTED_NOTE_CROCHET;
+				break;
+			case 8:
+				nextStart += PiarhythmDatas.NoteTime.EIGHTH_DOTTED_NOTE_QUAVER;
+				break;
+		}
+
+		for (int i = 1; i < m_selectNotes.Count; ++i)
+		{
+			// データを取得する
+			notesData = m_selectNotes[i].GetComponent<EditNotesController>().GetNotesData();
+
+			// 音階が一致するか調べる
+			if (notesData.scale != scale) return false;
+
+			// 次の開始位置を調べる
+			if (!Mathf.Approximately(notesData.startBeat, nextStart)) return false;
+
+			// 色を調べる
+			if (notesData.color != color) return false;
+
+			// データを更新する
+			switch (notesData.noteLength)
+			{
+				case 0:
+					nextStart += PiarhythmDatas.NoteTime.WHOLE_NOTE_SEMIBREVE;
+					break;
+				case 1:
+					nextStart += PiarhythmDatas.NoteTime.HALF_NOTE_MININ;
+					break;
+				case 2:
+					nextStart += PiarhythmDatas.NoteTime.QUARTER_NOTE_CROCHET;
+					break;
+				case 3:
+					nextStart += PiarhythmDatas.NoteTime.EIGHTH_NOTE_QUAVER;
+					break;
+				case 4:
+					nextStart += PiarhythmDatas.NoteTime.SIXTEENTH_NOTE_SEMIQUAVER;
+					break;
+				case 5:
+					nextStart += PiarhythmDatas.NoteTime.WHOLE_DOTTED_NOTE_SEMIBREVE;
+					break;
+				case 6:
+					nextStart += PiarhythmDatas.NoteTime.HALF_DOTTED_NOTE_MININ;
+					break;
+				case 7:
+					nextStart += PiarhythmDatas.NoteTime.QUARTER_DOTTED_NOTE_CROCHET;
+					break;
+				case 8:
+					nextStart += PiarhythmDatas.NoteTime.EIGHTH_DOTTED_NOTE_QUAVER;
+					break;
+			}
+		}
+
+		return true;
 	}
 	#endregion
 

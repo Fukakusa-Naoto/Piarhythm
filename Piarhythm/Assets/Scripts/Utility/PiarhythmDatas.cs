@@ -36,6 +36,8 @@ public class PiarhythmDatas
 	[System.Serializable]
 	public struct NotesData
 	{
+		// ID
+		public uint id;
 		// 音階
 		public string scale;
 		// 開始の拍数
@@ -44,8 +46,8 @@ public class PiarhythmDatas
 		public int noteLength;
 		// 色
 		public Color color;
-		// 連結されたノーツの要素番号
-		public int connectElement;
+		// 連結されたノーツのID
+		public uint connectID;
 	}
 
 

@@ -369,7 +369,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -0.82748413, y: 0.4618492}
+  m_AnchoredPosition: {x: -0.75, y: 0.4618492}
   m_SizeDelta: {x: 530, y: 368.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74097722
@@ -1556,8 +1556,8 @@ RectTransform:
   - {fileID: 852317432}
   - {fileID: 1512081426}
   - {fileID: 420761351}
-  - {fileID: 319202327}
   - {fileID: 635777313}
+  - {fileID: 319202327}
   - {fileID: 1217893773}
   - {fileID: 741932047}
   - {fileID: 158555598}
@@ -1870,7 +1870,7 @@ RectTransform:
   - {fileID: 2039428215}
   - {fileID: 566208005}
   m_Father: {fileID: 274047733}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -4605,7 +4605,7 @@ RectTransform:
   - {fileID: 202180766}
   - {fileID: 848202493}
   m_Father: {fileID: 274047733}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -7279,6 +7279,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_notesPrefab: {fileID: 2379056659225877161, guid: cf573cc862e4dc64589c6939e9c29f73,
+    type: 3}
+  m_connectNotePrefab: {fileID: 2379056659225877161, guid: 52f44c42fa877344289e35d504e3d964,
     type: 3}
   m_musicalScore: {fileID: 1546991727}
   m_canvas: {fileID: 274047732}
@@ -14837,7 +14839,7 @@ PrefabInstance:
     - target: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -151.15
+      value: -151.25
       objectReference: {fileID: 0}
     - target: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}

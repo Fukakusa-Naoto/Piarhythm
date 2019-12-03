@@ -91,9 +91,6 @@ public class EditNotesController : MonoBehaviour
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
-
-		// 連結情報を初期化する
-		m_notesData.connectElement = -1;
 	}
 	#endregion
 
@@ -487,6 +484,18 @@ public class EditNotesController : MonoBehaviour
 				? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
 				: m_notesData.color;
 		}
+	}
+	#endregion
+
+	#region 要素番号の設定
+	//-----------------------------------------------------------------
+	//! @summary   ノーツIDの設定
+	//!
+	//! @parameter [id] 設定するID
+	//-----------------------------------------------------------------
+	public void SetID(uint id)
+	{
+		m_notesData.id = id;
 	}
 	#endregion
 }

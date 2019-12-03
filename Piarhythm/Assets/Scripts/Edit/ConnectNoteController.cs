@@ -21,6 +21,8 @@ public class ConnectNoteController : MonoBehaviour
 	// <メンバ変数>
 	// キー情報が保存された連想配列
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
+	// 連結に使用したノーツデータのリスト
+	private List<PiarhythmDatas.NotesData> m_noteList = new List<PiarhythmDatas.NotesData>();
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -28,8 +30,58 @@ public class ConnectNoteController : MonoBehaviour
 	private RectTransform m_musicalScoreTransform = null;
 	private AudioSource m_audioSource = null;
 
+	// コントローラー
+	private OptionSheetController m_optionSheetController = null;
+
 
 	// メンバ関数の定義 =====================================================
+	#region 初期化処理
+	//-----------------------------------------------------------------
+	//! @summary   初期化処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void Initialize()
+	{
+		// コンポーネントの取得
+		m_transform = GetComponent<RectTransform>();
+		m_glowImage = GetComponent<GlowImage>();
+		m_musicalScoreTransform = m_transform.parent.GetComponent<RectTransform>();
+		m_audioSource = GetComponent<AudioSource>();
+
+		// 色の初期化
+		m_glowImage.color = m_glowImage.glowColor = m_noteList[0].color;
+
+		// スケールの初期化
+		m_transform.localScale = Vector3.one;
+
+		// 音階の設定
+		SetNotesScale(m_noteList[0].scale);
+
+		// 手前に持ってくる
+		Vector3 position = m_transform.localPosition;
+		position.z = 0.0f;
+		m_transform.localPosition = position;
+
+		// 開始時間と長さの初期化
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_noteList[0].startBeat, m_noteList[0].noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		for (int i = 1; i < m_noteList.Count; ++i)
+		{
+			positionData = m_optionSheetController.ConvertToPositionData(m_noteList[i].startBeat, m_noteList[i].noteLength);
+			Vector2 offsetMax = m_transform.offsetMax;
+			offsetMax.y += positionData.lenght;
+			m_transform.offsetMax = offsetMax;
+		}
+
+		// 光彩を切る
+		m_glowImage.glowSize = 0.0f;
+	}
+	#endregion
+
 	#region ノーツの音階を設定する
 	//-----------------------------------------------------------------
 	//! @summary   ノーツの音階を設定する
@@ -38,29 +90,34 @@ public class ConnectNoteController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetNotesScale(string scale)
 	{
-		//// データの更新
-		//m_notesData.scale = scale;
+		// データの更新
+		for (int i = 0; i < m_noteList.Count; ++i)
+		{
+			PiarhythmDatas.NotesData noteData = m_noteList[i];
+			noteData.scale = scale;
+			m_noteList[i] = noteData;
+		}
 
-		//// 座標を設定された音階の位置に移動させる
-		//m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
+		// 座標を設定された音階の位置に移動させる
+		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
 
-		//// 音を設定する
-		//m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
+		// 音を設定する
+		m_audioSource.clip = m_keyDictionary[scale].GetComponent<AudioSource>().clip;
 
-		//// 幅を合わせる
-		// GlowImageの解析と改造が終わるまで下の処理で代用する
+		// 幅を合わせる
+		//GlowImageの解析と改造が終わるまで下の処理で代用する
 		//float width = m_keyDictionary[scale].sizeDelta.x
 		//	* m_keyDictionary[scale].parent.GetComponent<RectTransform>().localScale.x;
 		//m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
 
-		//Vector3 localScale = m_transform.localScale;
-		//localScale.x = (scale.Contains("#")) ? 0.6f : 0.8f;
-		//m_transform.localScale = localScale;
+		Vector3 localScale = m_transform.localScale;
+		localScale.x = (scale.Contains("#")) ? 0.6f : 0.8f;
+		m_transform.localScale = localScale;
 
-		//// #の色を変化させる
-		//m_glowImage.color = (scale.Contains("#"))
-		//	? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-		//	: m_notesData.color;
+		// #の色を変化させる
+		m_glowImage.color = (scale.Contains("#"))
+			? new Color(m_noteList[0].color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_noteList[0].color;
 	}
 	#endregion
 
@@ -119,6 +176,69 @@ public class ConnectNoteController : MonoBehaviour
 	public void SetKeyDictionary(Dictionary<string, RectTransform> keyDictionary)
 	{
 		m_keyDictionary = keyDictionary;
+	}
+	#endregion
+
+	#region 連結に使用したノーツデータを保存する
+	//-----------------------------------------------------------------
+	//! @summary   連結に使用したノーツデータを保存する
+	//!
+	//! @parameter [noteData] 保存するノーツデータ
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void AddNoteData(PiarhythmDatas.NotesData noteData)
+	{
+		// 登録する
+		m_noteList.Add(noteData);
+	}
+	#endregion
+
+	#region OptionSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   OptionSheetControllerを設定する
+	//!
+	//! @parameter [optionSheetController] 設定するOptionSheetController
+	//-----------------------------------------------------------------
+	public void SetOptionSheetController(OptionSheetController optionSheetController)
+	{
+		m_optionSheetController = optionSheetController;
+	}
+	#endregion
+
+	#region 光彩のOn/Offの設定処理
+	//-----------------------------------------------------------------
+	//! @summary   光彩のOn/Offの設定処理
+	//!
+	//! @parameter [flag] 光彩のOn/Offのフラグ
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SwitchGlow(bool flag)
+	{
+		if (flag)
+		{
+			// 光彩を起動する
+			float glowSize = PiarhythmDatas.MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+			glowSize = Mathf.Clamp(glowSize, PiarhythmDatas.MIN_GLOW_SIZE, PiarhythmDatas.MAX_GLOW_SIZE);
+			m_glowImage.glowSize = glowSize;
+		}
+		else
+		{
+			m_glowImage.glowSize = 0.0f;
+		}
+	}
+	#endregion
+
+	#region 連結されているノーツデータの取得
+	//-----------------------------------------------------------------
+	//! @summary   連結されているノーツデータの取得
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public PiarhythmDatas.NotesData[] GetNoteData()
+	{
+		return m_noteList.ToArray();
 	}
 	#endregion
 }
