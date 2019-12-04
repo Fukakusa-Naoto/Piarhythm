@@ -177,6 +177,18 @@ public class NotesManager : MonoBehaviour
 			m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
 			m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
 		}
+		else
+		{
+			// 複数選択のフラグを倒す
+			m_multipleSelectFlag = false;
+
+			// 連結ノーツシートを奥に持っていく
+			m_connectNoteSheetController.SetAsFirstSibling();
+
+			// UIへ情報を反映させる
+			m_notesSheetController.DisplayNotes(null);
+			m_connectNoteSheetController.DisplayNotes(null);
+		}
 	}
 	#endregion
 
