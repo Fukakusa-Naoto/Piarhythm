@@ -84,7 +84,7 @@ public class EditManager : MonoBehaviour
 
 			// BGMを止める
 			PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
-			if (m_audioSource.time >= bgmData.endTime) m_audioSource.Stop();
+			if (m_audioSource.time >= bgmData.m_endTime) m_audioSource.Stop();
 
 			// 楽曲が終了した
 			if (m_elapsedTime >= m_optionSheetController.GetWholeTime()) FinishedMusic();
@@ -115,7 +115,7 @@ public class EditManager : MonoBehaviour
 		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
 
 		// 再生位置を調節する
-		m_audioSource.time = m_elapsedTime + bgmData.startTime;
+		m_audioSource.time = m_elapsedTime + bgmData.m_startTime;
 
 		// BGMを再生させる
 		if (m_audioSource.clip) m_audioSource.Play();
@@ -200,22 +200,22 @@ public class EditManager : MonoBehaviour
 		// BGMデータを取得する
 		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
 
-		if (audioFilePath == null) audioFilePath = bgmData.path;
+		if (audioFilePath == null) audioFilePath = bgmData.m_path;
 
 		// BGMをコピーする
-		PiarhythmUtility.CopyFile(audioFilePath, bgmData.path);
+		PiarhythmUtility.CopyFile(audioFilePath, bgmData.m_path);
 
 		// ノーツデータを取得する
-		PiarhythmDatas.NotesData[] notesDatas = m_notesManager.GetNotesDatas();
+		PiarhythmDatas.NoteData[] notesDatas = m_notesManager.GetNotesDatas();
 
 		// 設定データを取得する
 		PiarhythmDatas.OptionData optionData = m_optionSheetController.GetOptionData();
 
 		// 楽曲データを作成する
 		PiarhythmDatas.MusicPieceData musicPieceData = new PiarhythmDatas.MusicPieceData();
-		musicPieceData.bgmData = bgmData;
-		musicPieceData.notesDataList = notesDatas;
-		musicPieceData.optionData = optionData;
+		musicPieceData.m_bgmData = bgmData;
+		musicPieceData.m_noteDataList = notesDatas;
+		musicPieceData.m_optionData = optionData;
 
 		// json文字列に変換する
 		string jsonString = JsonUtility.ToJson(musicPieceData);
@@ -246,22 +246,19 @@ public class EditManager : MonoBehaviour
 		PiarhythmDatas.MusicPieceData musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonString);
 
 		// 設定データの設定と初期化
-		m_optionSheetController.Start(musicPieceData.optionData);
+		m_optionSheetController.Start(musicPieceData.m_optionData);
 
 		// BGMデータの設定
-		if (musicPieceData.bgmData.path == "") m_bgmSheetController.SetBGMData(null);
-		else m_bgmSheetController.SetBGMData(musicPieceData.bgmData);
+		if (musicPieceData.m_bgmData.m_path == "") m_bgmSheetController.SetBGMData(null);
+		else m_bgmSheetController.SetBGMData(musicPieceData.m_bgmData);
 
-		// ノーツの生成
-		m_notesManager.CreateNotes(musicPieceData.notesDataList);
-
-		uint maxID = 0;
-		// ノーツIDの更新
-		foreach(PiarhythmDatas.NotesData noteData in musicPieceData.notesDataList)
+		// 通常ノーツの生成
+		foreach (PiarhythmDatas.NoteData noteData in musicPieceData.m_noteDataList)
 		{
-			if (maxID < noteData.id) maxID = noteData.id;
+			// ノーツの生成
+			if (noteData.m_nextNoteData == null) m_notesManager.CreateNotes(noteData);
+			else m_notesManager.CreateConnectNote(noteData);
 		}
-		m_notesManager.SetIncrementID(maxID);
 	}
 	#endregion
 

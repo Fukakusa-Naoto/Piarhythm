@@ -56,16 +56,16 @@ public class PlayManager : MonoBehaviour
 
 		// BGMの読み込みコルーチンのスタート
 		if (m_audioClip == null)
-			StartCoroutine(LoadToAudioClip(m_musicPieceData.bgmData.path));
+			StartCoroutine(LoadToAudioClip(m_musicPieceData.m_bgmData.m_path));
 
 
 		// ノーツの終了時間の取得
 		m_notesEndTime = 0.0f;
-		foreach (PiarhythmDatas.NotesData n in m_musicPieceData.notesDataList)
+		foreach (PiarhythmDatas.NoteData n in m_musicPieceData.m_noteDataList)
 		{
-			if (m_notesEndTime < n.noteLength)
+			if (m_notesEndTime < n.m_noteLength)
 			{
-				m_notesEndTime = n.noteLength;
+				m_notesEndTime = n.m_noteLength;
 			}
 		}
 
@@ -106,7 +106,7 @@ public class PlayManager : MonoBehaviour
 		if ((m_audioClip != null) && (!m_audioSource.isPlaying)) m_audioSource.Play();
 
 		// BGMの停止
-		if (m_audioSource.time >= m_musicPieceData.bgmData.endTime) m_audioSource.Stop();
+		if (m_audioSource.time >= m_musicPieceData.m_bgmData.m_endTime) m_audioSource.Stop();
 
 		// 楽曲の終了
 		if ((!m_audioSource.isPlaying) && (m_notesEndTime <= m_elapsedTime)) SceneManager.LoadScene(2);
@@ -150,7 +150,7 @@ public class PlayManager : MonoBehaviour
 			m_audioClip = m_audioSource.clip = audioClip;
 			string[] str = path.Split('\\');
 			m_audioClip.name = str[str.Length - 1];
-			m_audioSource.time = m_musicPieceData.bgmData.startTime;
+			m_audioSource.time = m_musicPieceData.m_bgmData.m_startTime;
 		}
 	}
 
@@ -176,9 +176,9 @@ public class PlayManager : MonoBehaviour
 	//!
 	//! @return    ノーツの配列
 	//-----------------------------------------------------------------
-	public PiarhythmDatas.NotesData[] GetNoteDatas()
+	public PiarhythmDatas.NoteData[] GetNoteDatas()
 	{
-		return m_musicPieceData.notesDataList;
+		return m_musicPieceData.m_noteDataList;
 	}
 
 

@@ -22,7 +22,7 @@ public class ConnectNoteController : MonoBehaviour
 	// キー情報が保存された連想配列
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	// 連結に使用したノーツデータのリスト
-	private List<PiarhythmDatas.NotesData> m_noteList = new List<PiarhythmDatas.NotesData>();
+	private List<PiarhythmDatas.NoteData> m_noteList = new List<PiarhythmDatas.NoteData>();
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -52,13 +52,13 @@ public class ConnectNoteController : MonoBehaviour
 		m_audioSource = GetComponent<AudioSource>();
 
 		// 色の初期化
-		m_glowImage.color = m_glowImage.glowColor = m_noteList[0].color;
+		m_glowImage.color = m_glowImage.glowColor = m_noteList[0].m_color;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
 
 		// 音階の設定
-		SetNotesScale(m_noteList[0].scale);
+		SetNotesScale(m_noteList[0].m_scale);
 
 		// 手前に持ってくる
 		Vector3 position = m_transform.localPosition;
@@ -66,14 +66,14 @@ public class ConnectNoteController : MonoBehaviour
 		m_transform.localPosition = position;
 
 		// 開始時間と長さの初期化
-		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_noteList[0].startBeat, m_noteList[0].noteLength);
-		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_noteList[0].m_startBeat, m_noteList[0].m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
 		for (int i = 1; i < m_noteList.Count; ++i)
 		{
-			positionData = m_optionSheetController.ConvertToPositionData(m_noteList[i].startBeat, m_noteList[i].noteLength);
+			positionData = m_optionSheetController.ConvertToPositionData(m_noteList[i].m_startBeat, m_noteList[i].m_noteLength);
 			Vector2 offsetMax = m_transform.offsetMax;
-			offsetMax.y += positionData.lenght;
+			offsetMax.y += positionData.m_lenght;
 			m_transform.offsetMax = offsetMax;
 		}
 
@@ -91,12 +91,7 @@ public class ConnectNoteController : MonoBehaviour
 	public void SetNotesScale(string scale)
 	{
 		// データの更新
-		for (int i = 0; i < m_noteList.Count; ++i)
-		{
-			PiarhythmDatas.NotesData noteData = m_noteList[i];
-			noteData.scale = scale;
-			m_noteList[i] = noteData;
-		}
+		for (int i = 0; i < m_noteList.Count; ++i) m_noteList[i].m_scale = scale;
 
 		// 座標を設定された音階の位置に移動させる
 		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
@@ -116,8 +111,8 @@ public class ConnectNoteController : MonoBehaviour
 
 		// #の色を変化させる
 		m_glowImage.color = (scale.Contains("#"))
-			? new Color(m_noteList[0].color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_noteList[0].color;
+			? new Color(m_noteList[0].m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_noteList[0].m_color;
 	}
 	#endregion
 
@@ -187,7 +182,7 @@ public class ConnectNoteController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public void AddNoteData(PiarhythmDatas.NotesData noteData)
+	public void AddNoteData(PiarhythmDatas.NoteData noteData)
 	{
 		// 登録する
 		m_noteList.Add(noteData);
@@ -236,9 +231,9 @@ public class ConnectNoteController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public PiarhythmDatas.NotesData[] GetNoteData()
+	public PiarhythmDatas.NoteData GetNoteData()
 	{
-		return m_noteList.ToArray();
+		return m_noteList[0];
 	}
 	#endregion
 }

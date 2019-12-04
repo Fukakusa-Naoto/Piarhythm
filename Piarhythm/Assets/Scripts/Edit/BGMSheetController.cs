@@ -50,7 +50,7 @@ public class BGMSheetController : MonoBehaviour
 	private EditManager m_editManager = null;
 
 	// BGMデータ
-	private PiarhythmDatas.BGMData? m_BGMData = null;
+	private PiarhythmDatas.BGMData m_BGMData = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -88,9 +88,9 @@ public class BGMSheetController : MonoBehaviour
 
 					// UIへ反映させる
 					DisplayBGMData();
-					m_musicalScoreController.ChangeScoreLength(m_BGMData.Value.endTime);
-					m_menuController.UpdateDisplayWholeTimeText(m_BGMData.Value.endTime);
-					m_optionSheetController.SetWholeMeasure(m_BGMData.Value.endTime);
+					m_musicalScoreController.ChangeScoreLength(m_BGMData.m_endTime);
+					m_menuController.UpdateDisplayWholeTimeText(m_BGMData.m_endTime);
+					m_optionSheetController.SetWholeMeasure(m_BGMData.m_endTime);
 
 					// AudioSourceに設定する
 					m_editManager.SetAudioClip(m_audioClip);
@@ -141,15 +141,15 @@ public class BGMSheetController : MonoBehaviour
 
 		// 終了時間超えていれば処理を終了する
 		float startTime = float.Parse(m_startTimeInputField.text);
-		if (m_BGMData.Value.endTime <= startTime) return;
+		if (m_BGMData.m_endTime <= startTime) return;
 
 		// データを更新する
-		PiarhythmDatas.BGMData bgmData = m_BGMData.Value;
-		bgmData.startTime = startTime;
+		PiarhythmDatas.BGMData bgmData = m_BGMData;
+		bgmData.m_startTime = startTime;
 		m_BGMData = bgmData;
 
 		// スクロールバーのテクスチャの更新
-		m_notesEditScrollbarController.UpdateTexture(m_BGMData.Value, m_optionSheetController.GetWholeTime());
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_optionSheetController.GetWholeTime());
 	}
 	#endregion
 
@@ -168,15 +168,15 @@ public class BGMSheetController : MonoBehaviour
 
 		// 開始時間超えていれば処理を終了する
 		float endTime = float.Parse(m_endTimeInputField.text);
-		if (m_BGMData.Value.startTime >= endTime) return;
+		if (m_BGMData.m_startTime >= endTime) return;
 
 		// データを更新する
-		PiarhythmDatas.BGMData bgmData = m_BGMData.Value;
-		bgmData.endTime = endTime;
+		PiarhythmDatas.BGMData bgmData = m_BGMData;
+		bgmData.m_endTime = endTime;
 		m_BGMData = bgmData;
 
 		// スクロールバーのテクスチャの更新
-		m_notesEditScrollbarController.UpdateTexture(m_BGMData.Value, m_optionSheetController.GetWholeTime());
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_optionSheetController.GetWholeTime());
 	}
 	#endregion
 
@@ -208,7 +208,7 @@ public class BGMSheetController : MonoBehaviour
 
 		// オーディオクリップを設定し、スクロールバーのテクスチャを更新する
 		m_notesEditScrollbarController.SetAudioClip(m_audioClip);
-		m_notesEditScrollbarController.UpdateTexture(m_BGMData.Value, m_BGMData.Value.endTime);
+		m_notesEditScrollbarController.UpdateTexture(m_BGMData, m_BGMData.m_endTime);
 
 		// UIを初期化する
 		m_nameInputField.text = "None";
@@ -228,12 +228,12 @@ public class BGMSheetController : MonoBehaviour
 	private void DisplayBGMData()
 	{
 		// 曲名を取得する
-		string musicName = Path.GetFileNameWithoutExtension(m_BGMData.Value.path);
+		string musicName = Path.GetFileNameWithoutExtension(m_BGMData.m_path);
 
 		// UIへ反映する
 		m_nameInputField.text = musicName;
-		m_startTimeInputField.text = m_BGMData.Value.startTime.ToString();
-		m_endTimeInputField.text = m_BGMData.Value.endTime.ToString();
+		m_startTimeInputField.text = m_BGMData.m_startTime.ToString();
+		m_endTimeInputField.text = m_BGMData.m_endTime.ToString();
 	}
 	#endregion
 
@@ -250,11 +250,9 @@ public class BGMSheetController : MonoBehaviour
 		// ファイル名を切り取る
 		string fileName = Path.GetFileName(m_filePath);
 
-		PiarhythmDatas.BGMData bgmData = new PiarhythmDatas.BGMData();
-		bgmData.path = PiarhythmDatas.BGM_DIRECTORY_PATH + fileName;
-		bgmData.startTime = 0.0f;
-		bgmData.endTime = m_audioClip.length;
-		m_BGMData = bgmData;
+		m_BGMData.m_path = PiarhythmDatas.BGM_DIRECTORY_PATH + fileName;
+		m_BGMData.m_startTime = 0.0f;
+		m_BGMData.m_endTime = m_audioClip.length;
 	}
 	#endregion
 
@@ -264,7 +262,7 @@ public class BGMSheetController : MonoBehaviour
 	//!
 	//! @parameter [BGMData] 設定するBGMData
 	//-----------------------------------------------------------------
-	public void SetBGMData(PiarhythmDatas.BGMData? BGMData)
+	public void SetBGMData(PiarhythmDatas.BGMData BGMData)
 	{
 		// 設定するデータがない場合、処理を終了する
 		if (BGMData == null) return;
@@ -276,7 +274,7 @@ public class BGMSheetController : MonoBehaviour
 		m_loadFlag = true;
 
 		// コルーチンを設定する
-		m_coroutine = PiarhythmUtility.LoadAudioFile(m_BGMData.Value.path);
+		m_coroutine = PiarhythmUtility.LoadAudioFile(m_BGMData.m_path);
 	}
 	#endregion
 
@@ -289,7 +287,7 @@ public class BGMSheetController : MonoBehaviour
 	public PiarhythmDatas.BGMData GetBGMData()
 	{
 		if (m_BGMData == null) return new PiarhythmDatas.BGMData();
-		else return m_BGMData.Value;
+		else return m_BGMData;
 	}
 	#endregion
 

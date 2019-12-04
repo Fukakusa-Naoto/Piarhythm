@@ -223,27 +223,21 @@ public class ConnectNoteSheetController : MonoBehaviour
 	public void DisplayNotes(ConnectNoteController displayNotes)
 	{
 		// UIへ情報を反映させる
-		if (displayNotes == null)
-		{
-			m_musicalScaleInputField.text = "None";
-			m_startBeatInputField.text = "None";
-			m_colorDropdown.value = 0;
-		}
-		else
+		if (displayNotes != null)
 		{
 			// ノーツデータの取得
-			PiarhythmDatas.NotesData[] notesData = displayNotes.GetNoteData();
+			PiarhythmDatas.NoteData notesData = displayNotes.GetNoteData();
 
 			// 音階の更新
-			m_musicalScaleInputField.text = notesData[0].scale;
+			m_musicalScaleInputField.text = notesData.m_scale;
 
 			// 開始の拍数を更新
-			m_startBeatInputField.text = notesData[0].startBeat.ToString();
+			m_startBeatInputField.text = notesData.m_startBeat.ToString();
 
 			// 色の更新
-			if (notesData[0].color == Color.red) m_colorDropdown.value = 0;
-			else if (notesData[0].color == Color.green) m_colorDropdown.value = 1;
-			else if (notesData[0].color == Color.blue) m_colorDropdown.value = 2;
+			if (notesData.m_color == Color.red) m_colorDropdown.value = 0;
+			else if (notesData.m_color == Color.green) m_colorDropdown.value = 1;
+			else if (notesData.m_color == Color.blue) m_colorDropdown.value = 2;
 		}
 	}
 	#endregion

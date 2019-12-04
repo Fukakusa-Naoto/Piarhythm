@@ -80,9 +80,9 @@ public class MusicController : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	private void Create(PiarhythmDatas.NotesData[] noteDatas)
+	private void Create(PiarhythmDatas.NoteData[] noteDatas)
 	{
-		foreach(PiarhythmDatas.NotesData n in noteDatas)
+		foreach(PiarhythmDatas.NoteData n in noteDatas)
 		{
 			// オブジェクトを生成する
 			GameObject newNote = Instantiate(m_notePrefab);
@@ -95,18 +95,18 @@ public class MusicController : MonoBehaviour
 			// 座標を設定する
 			// 左下の座標
 			Vector2 offsetMin = rectTransform.offsetMin;
-			offsetMin.y = (m_speed * 100.0f) * n.startBeat;
+			offsetMin.y = (m_speed * 100.0f) * n.m_startBeat;
 			rectTransform.offsetMin = offsetMin;
 			// 右上の座標
 			Vector2 offsetMax = rectTransform.offsetMax;
-			offsetMax.y = (m_speed * 100.0f) * n.noteLength;
+			offsetMax.y = (m_speed * 100.0f) * n.m_noteLength;
 			rectTransform.offsetMax = offsetMax;
 
 			// 音階に合わせて配置
-			rectTransform.localPosition = new Vector3(m_keyPositionDictionary[n.scale], rectTransform.localPosition.y, rectTransform.localPosition.z);
+			rectTransform.localPosition = new Vector3(m_keyPositionDictionary[n.m_scale], rectTransform.localPosition.y, rectTransform.localPosition.z);
 
 			// ノーツの色と幅を設定する
-			if (n.scale.Contains("#"))
+			if (n.m_scale.Contains("#"))
 			{
 				rectTransform.localScale = new Vector3(0.1f, 1.0f, 1.0f);
 				newNote.GetComponent<Image>().color = new Color(64.0f / 256.0f, 103.0f / 256.0f, 38.0f / 256.0f);

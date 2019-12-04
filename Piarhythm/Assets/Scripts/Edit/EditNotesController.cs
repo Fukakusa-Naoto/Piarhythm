@@ -37,7 +37,7 @@ public class EditNotesController : MonoBehaviour
 	private NotesManager m_notesManager = null;
 
 	// ノーツ情報
-	private PiarhythmDatas.NotesData m_notesData;
+	private PiarhythmDatas.NoteData m_notesData;
 
 	// コントローラー
 	private NotesSheetController m_notesSheetController = null;
@@ -62,10 +62,10 @@ public class EditNotesController : MonoBehaviour
 		m_audioSource = GetComponent<AudioSource>();
 
 		// データの初期化
-		m_notesData = new PiarhythmDatas.NotesData();
+		m_notesData = new PiarhythmDatas.NoteData();
 
 		// 色の初期化
-		m_notesData.color = m_glowImage.color = m_glowImage.glowColor = Color.green;
+		m_notesData.m_color = m_glowImage.color = m_glowImage.glowColor = Color.green;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
@@ -80,14 +80,14 @@ public class EditNotesController : MonoBehaviour
 
 		// 開始時間と長さの初期化
 		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
-		positionData.position = m_transform.offsetMin.y;
-		positionData.lenght = m_transform.sizeDelta.y;
-		PiarhythmDatas.NotesData notesData = m_optionSheetController.ConvertToNotesData(positionData);
-		m_notesData.startBeat = notesData.startBeat;
-		m_notesData.noteLength = 2;
-		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
-		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		positionData.m_position = m_transform.offsetMin.y;
+		positionData.m_lenght = m_transform.sizeDelta.y;
+		PiarhythmDatas.NoteData notesData = m_optionSheetController.ConvertToNotesData(positionData);
+		m_notesData.m_startBeat = notesData.m_startBeat;
+		m_notesData.m_noteLength = 2;
+		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.m_startBeat, m_notesData.m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
@@ -109,7 +109,7 @@ public class EditNotesController : MonoBehaviour
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(m_musicalScoreTransform, Input.mousePosition, m_canvas.worldCamera, out localPoint);
 
 		float minDistance = float.MaxValue;
-		string scale = m_notesData.scale;
+		string scale = m_notesData.m_scale;
 		// ワールド座標のマウス座標を取得する
 		Vector3 mousePosition = Input.mousePosition;
 		mousePosition.z = 10.0f;
@@ -184,18 +184,18 @@ public class EditNotesController : MonoBehaviour
 
 		// 最新データの作成
 		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
-		positionData.position = m_transform.offsetMin.y;
-		positionData.lenght = m_transform.sizeDelta.y;
+		positionData.m_position = m_transform.offsetMin.y;
+		positionData.m_lenght = m_transform.sizeDelta.y;
 
 		// データの更新
-		PiarhythmDatas.NotesData notesData = m_optionSheetController.ConvertToNotesData(positionData);
-		m_notesData.startBeat = notesData.startBeat;
-		m_notesData.scale = scale;
+		PiarhythmDatas.NoteData notesData = m_optionSheetController.ConvertToNotesData(positionData);
+		m_notesData.m_startBeat = notesData.m_startBeat;
+		m_notesData.m_scale = scale;
 
 		// 位置調整
-		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
-		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		positionData = m_optionSheetController.ConvertToPositionData(m_notesData.m_startBeat, m_notesData.m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
 	}
 	#endregion
 
@@ -213,7 +213,7 @@ public class EditNotesController : MonoBehaviour
 		if(!m_playedFlag)
 		{
 			// 経過時間がノーツの開始時間を過ぎた
-			if (m_notesData.startBeat <= elapsedTime)
+			if (m_notesData.m_startBeat <= elapsedTime)
 			{
 				// 音を鳴らす
 				m_audioSource.Play();
@@ -255,7 +255,7 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @return    ノーツ情報
 	//-----------------------------------------------------------------
-	public PiarhythmDatas.NotesData GetNotesData()
+	public PiarhythmDatas.NoteData GetNotesData()
 	{
 		return m_notesData;
 	}
@@ -270,7 +270,7 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesScale(string scale)
 	{
 		// データの更新
-		m_notesData.scale = scale;
+		m_notesData.m_scale = scale;
 
 		// 座標を設定された音階の位置に移動させる
 		m_transform.position = new Vector3(m_keyDictionary[scale].position.x, m_transform.position.y, m_transform.position.z);
@@ -290,8 +290,8 @@ public class EditNotesController : MonoBehaviour
 
 		// #の色を変化させる
 		m_glowImage.color = (scale.Contains("#"))
-			? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_notesData.color;
+			? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_notesData.m_color;
 	}
 	#endregion
 
@@ -307,12 +307,12 @@ public class EditNotesController : MonoBehaviour
 		if (startTime < 0.0f) return;
 
 		// データを更新する
-		m_notesData.startBeat = PiarhythmUtility.MRound(startTime, 0.25f);
+		m_notesData.m_startBeat = PiarhythmUtility.MRound(startTime, 0.25f);
 
 		// 位置の更新
-		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
-		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.m_startBeat, m_notesData.m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
 
 		// UIを更新
 		m_notesSheetController.DisplayNotes(this);
@@ -328,12 +328,12 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesLengthTime(int  lengthTime)
 	{
 		// データを更新する
-		m_notesData.noteLength = lengthTime;
+		m_notesData.m_noteLength = lengthTime;
 
 		// 長さの更新
-		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
-		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.m_startBeat, m_notesData.m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
 	}
 	#endregion
 
@@ -346,13 +346,13 @@ public class EditNotesController : MonoBehaviour
 	public void SetNotesColor(Color color)
 	{
 		// 情報を更新する
-		m_notesData.color = color;
+		m_notesData.m_color = color;
 
 		// 色を反映させる
 		// #の色を変化させる
-		m_glowImage.color = (m_notesData.scale.Contains("#"))
-			? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_notesData.color;
+		m_glowImage.color = (m_notesData.m_scale.Contains("#"))
+			? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: m_notesData.m_color;
 
 		// 光彩の色を更新する
 		m_glowImage.glowColor = color;
@@ -437,15 +437,15 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @parameter [notesData] 設定するノーツデータ
 	//-----------------------------------------------------------------
-	public void SetNotesData(PiarhythmDatas.NotesData notesData)
+	public void SetNotesData(PiarhythmDatas.NoteData noteData)
 	{
 		// データを設定する
-		m_notesData = notesData;
+		m_notesData = noteData;
 
-		SetNotesScale(m_notesData.scale);
-		SetNotesStartTime(m_notesData.startBeat);
-		SetNotesLengthTime(m_notesData.noteLength);
-		SetNotesColor(m_notesData.color);
+		SetNotesScale(m_notesData.m_scale);
+		SetNotesStartTime(m_notesData.m_startBeat);
+		SetNotesLengthTime(m_notesData.m_noteLength);
+		SetNotesColor(m_notesData.m_color);
 	}
 	#endregion
 
@@ -480,22 +480,10 @@ public class EditNotesController : MonoBehaviour
 		if (collision.name == "LimitArea")
 		{
 			// 光彩の色を元に戻す
-			m_glowImage.glowColor = (m_notesData.scale.Contains("#"))
-				? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-				: m_notesData.color;
+			m_glowImage.glowColor = (m_notesData.m_scale.Contains("#"))
+				? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+				: m_notesData.m_color;
 		}
-	}
-	#endregion
-
-	#region 要素番号の設定
-	//-----------------------------------------------------------------
-	//! @summary   ノーツIDの設定
-	//!
-	//! @parameter [id] 設定するID
-	//-----------------------------------------------------------------
-	public void SetID(uint id)
-	{
-		m_notesData.id = id;
 	}
 	#endregion
 }
