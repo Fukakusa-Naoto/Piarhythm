@@ -606,10 +606,15 @@ public class NotesManager : MonoBehaviour
 				notesData = editNotesController.GetNotesData();
 
 				// 経過時間が既にノーツの開始時間を過ぎている
-				if (elapsedTime >= notesData.m_startBeat)
+				float startTime = m_optionSheetController.GetStartTime(notesData.m_startBeat);
+				if (elapsedTime > startTime)
 				{
 					// 音をならないようにする
 					editNotesController.SetPlayedFlag(true);
+				}
+				else
+				{
+					editNotesController.SetPlayedFlag(false);
 				}
 			}
 			else
@@ -620,10 +625,15 @@ public class NotesManager : MonoBehaviour
 				notesData = connectNoteController.GetNoteData();
 
 				// 経過時間が既にノーツの開始時間を過ぎている
-				if (elapsedTime >= notesData.m_startBeat)
+				float startTime = m_optionSheetController.GetStartTime(notesData.m_startBeat);
+				if (elapsedTime > startTime)
 				{
 					// 音をならないようにする
 					connectNoteController.SetPlayedFlag(true);
+				}
+				else
+				{
+					connectNoteController.SetPlayedFlag(false);
 				}
 			}
 		}

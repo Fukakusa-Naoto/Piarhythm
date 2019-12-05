@@ -24,7 +24,7 @@ public class PlayManager : MonoBehaviour
 	// <メンバ変数>
 	private AudioSource m_audioSource;
 	private AudioClip m_audioClip = null;
-	private PiarhythmDatas.MusicPieceData m_musicPieceData;
+	private PiarhythmDatas.MusicPieceData m_musicPieceData = null;
 	private float m_notesEndTime;
 	// 経過時間
 	private float m_elapsedTime = 0.0f;

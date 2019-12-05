@@ -581,6 +581,46 @@ public class OptionSheetController : MonoBehaviour
 	}
 	#endregion
 
+	#region ノーツの開始時間を取得する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始時間を取得する
+	//!
+	//! @parameter [startBeat] 開始拍数
+	//!
+	//! @return    開始時間
+	//-----------------------------------------------------------------
+	public float GetStartTime(float startBeat)
+	{
+		float elapsedBeat = 0.0f;
+
+		// 所属しているテンポデータを調べる
+		PiarhythmDatas.TempoData tempoData = m_tempoDataList[0];
+		for (int i = 1; i < m_tempoDataList.Count; ++i)
+		{
+			if (startBeat >= m_tempoDataList[i].m_startMeasure * 4)
+			{
+				// 一拍当たりの時間を求める
+				float beatPerTempo = 60.0f / tempoData.m_tempo;
+
+				// 経過拍数を増やす
+				elapsedBeat += (m_tempoDataList[i].m_startMeasure - tempoData.m_startMeasure) * 4;
+
+				tempoData = m_tempoDataList[i];
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		{
+			// 一拍当たりの時間を求める
+			float beatPerTempo = 60.0f / tempoData.m_tempo;
+			return (startBeat - elapsedBeat) * beatPerTempo;
+		}
+	}
+	#endregion
+
 	#region 設定データの取得
 	//-----------------------------------------------------------------
 	//! @summary   設定データの取得
