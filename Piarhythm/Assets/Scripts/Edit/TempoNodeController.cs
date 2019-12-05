@@ -45,7 +45,7 @@ public class TempoNodeController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Awake()
 	{
-		m_tempoData = new PiarhythmDatas.TempoData();
+		m_tempoData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		m_tempoData.m_startMeasure = 0;
 		m_tempoData.m_tempo = 60;
 	}

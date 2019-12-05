@@ -214,7 +214,7 @@ public class EditManager : MonoBehaviour
 		PiarhythmDatas.OptionData optionData = m_optionSheetController.GetOptionData();
 
 		// 楽曲データを作成する
-		PiarhythmDatas.MusicPieceData musicPieceData = new PiarhythmDatas.MusicPieceData();
+		PiarhythmDatas.MusicPieceData musicPieceData = ScriptableObject.CreateInstance<PiarhythmDatas.MusicPieceData>();
 		musicPieceData.m_bgmData = bgmData;
 		musicPieceData.m_noteDataList = notesDatas;
 		musicPieceData.m_optionData = optionData;

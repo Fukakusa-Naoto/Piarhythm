@@ -37,7 +37,7 @@ public class EditNotesController : MonoBehaviour
 	private NotesManager m_notesManager = null;
 
 	// ノーツ情報
-	private PiarhythmDatas.NoteData m_notesData;
+	private PiarhythmDatas.NoteData m_notesData = null;
 
 	// コントローラー
 	private NotesSheetController m_notesSheetController = null;
@@ -62,7 +62,7 @@ public class EditNotesController : MonoBehaviour
 		m_audioSource = GetComponent<AudioSource>();
 
 		// データの初期化
-		m_notesData = new PiarhythmDatas.NoteData();
+		m_notesData = ScriptableObject.CreateInstance<PiarhythmDatas.NoteData>();
 
 		// 色の初期化
 		PiarhythmDatas.Color colorData = new PiarhythmDatas.Color();

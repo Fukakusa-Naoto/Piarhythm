@@ -25,6 +25,8 @@ public class ConnectNoteController : MonoBehaviour
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	// 連結に使用したノーツデータのリスト
 	private List<PiarhythmDatas.NoteData> m_noteList = new List<PiarhythmDatas.NoteData>();
+	// 音を鳴らしたか判定するためのフラグ
+	private bool m_playedFlag = false;
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -385,6 +387,44 @@ public class ConnectNoteController : MonoBehaviour
 	public void SetCanvas(Canvas canvas)
 	{
 		m_canvas = canvas;
+	}
+	#endregion
+
+	#region 楽曲再生中の更新処理
+	//-----------------------------------------------------------------
+	//! @summary   楽曲再生中の更新処理
+	//!
+	//! @parameter [elapsedTime] 経過時間
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpdateEditNotes(float elapsedTime)
+	{
+		// まだ音を鳴らしていない
+		if (!m_playedFlag)
+		{
+			// 経過時間がノーツの開始時間を過ぎた
+			if (m_noteList[0].m_startBeat <= elapsedTime)
+			{
+				// 音を鳴らす
+				m_audioSource.Play();
+
+				// 音を鳴らしたからフラグを立てる
+				m_playedFlag = true;
+			}
+		}
+	}
+	#endregion
+
+	#region 音を鳴らしたか判定するためのフラグの設定
+	//-----------------------------------------------------------------
+	//! @summary   音を鳴らしたか判定するためのフラグの設定
+	//!
+	//! @parameter [playedFlag] 設定するフラグの値
+	//-----------------------------------------------------------------
+	public void SetPlayedFlag(bool playedFlag)
+	{
+		m_playedFlag = playedFlag;
 	}
 	#endregion
 }

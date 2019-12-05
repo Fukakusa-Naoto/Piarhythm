@@ -20,7 +20,7 @@ public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	private float m_wholeTime = 0.0f;
-	private List<PiarhythmDatas.TempoData> m_tempoDataList;
+	private List<PiarhythmDatas.TempoData> m_tempoDataList = null;
 	private int m_wholeMeasure = 0;
 
 	// UI
@@ -144,7 +144,7 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeTime = 0.0f;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
+		PiarhythmDatas.TempoData prevTempData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		prevTempData.m_tempo = 0;
 		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
 		{
@@ -356,7 +356,7 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeMeasure = 0;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
+		PiarhythmDatas.TempoData prevTempData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		prevTempData.m_tempo = 0;
 
 		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
@@ -507,7 +507,7 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.NoteData ConvertToNotesData(PiarhythmDatas.PositionData positionData)
 	{
-		PiarhythmDatas.NoteData notesData = new PiarhythmDatas.NoteData();
+		PiarhythmDatas.NoteData notesData = ScriptableObject.CreateInstance<PiarhythmDatas.NoteData>();
 		float elapsedBeat = 0.0f;
 		float elapsedPosition = 0.0f;
 
@@ -590,7 +590,7 @@ public class OptionSheetController : MonoBehaviour
 	public PiarhythmDatas.OptionData GetOptionData()
 	{
 		// データをまとめる
-		PiarhythmDatas.OptionData optionData = new PiarhythmDatas.OptionData();
+		PiarhythmDatas.OptionData optionData = ScriptableObject.CreateInstance<PiarhythmDatas.OptionData>();
 		optionData.m_tempDatas = m_tempoDataList.ToArray();
 		optionData.m_wholeMeasure = m_wholeMeasure;
 

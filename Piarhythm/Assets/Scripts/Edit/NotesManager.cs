@@ -577,7 +577,8 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach(GameObject notes in m_notesList)
 		{
-			notes.GetComponent<EditNotesController>().UpdateEditNotes(elapsedTime);
+			if(notes.GetComponent<EditNotesController>()) notes.GetComponent<EditNotesController>().UpdateEditNotes(elapsedTime);
+			else notes.GetComponent<ConnectNoteController>().UpdateEditNotes(elapsedTime);
 		}
 	}
 	#endregion
@@ -594,17 +595,36 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach (GameObject notes in m_notesList)
 		{
+			PiarhythmDatas.NoteData notesData = null;
+
 			// コンポーネントの取得
-			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
-
-			// データの取得
-			PiarhythmDatas.NoteData notesData = editNotesController.GetNotesData();
-
-			// 経過時間が既にノーツの開始時間を過ぎている
-			if (elapsedTime >= notesData.m_startBeat)
+			if (notes.GetComponent<EditNotesController>())
 			{
-				// 音をならないようにする
-				editNotesController.SetPlayedFlag(true);
+				EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+
+				// データの取得
+				notesData = editNotesController.GetNotesData();
+
+				// 経過時間が既にノーツの開始時間を過ぎている
+				if (elapsedTime >= notesData.m_startBeat)
+				{
+					// 音をならないようにする
+					editNotesController.SetPlayedFlag(true);
+				}
+			}
+			else
+			{
+				ConnectNoteController connectNoteController = notes.GetComponent<ConnectNoteController>();
+
+				// データの取得
+				notesData = connectNoteController.GetNoteData();
+
+				// 経過時間が既にノーツの開始時間を過ぎている
+				if (elapsedTime >= notesData.m_startBeat)
+				{
+					// 音をならないようにする
+					connectNoteController.SetPlayedFlag(true);
+				}
 			}
 		}
 	}
@@ -622,11 +642,23 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach (GameObject notes in m_notesList)
 		{
-			// コンポーネントの取得
-			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+			if(notes.GetComponent<EditNotesController>())
+			{
+				// コンポーネントの取得
+				EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
 
-			// 音を復活させる
-			editNotesController.SetPlayedFlag(false);
+				// 音を復活させる
+				editNotesController.SetPlayedFlag(false);
+			}
+			else
+			{
+				// コンポーネントの取得
+				ConnectNoteController connectNoteController = notes.GetComponent<ConnectNoteController>();
+
+				// 音を復活させる
+				connectNoteController.SetPlayedFlag(false);
+
+			}
 		}
 	}
 	#endregion
