@@ -9,10 +9,12 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 
 // クラスの定義 =============================================================
@@ -218,7 +220,7 @@ public class EditManager : MonoBehaviour
 		musicPieceData.m_optionData = optionData;
 
 		// json文字列に変換する
-		string jsonString = JsonUtility.ToJson(musicPieceData);
+		string jsonString = JsonConvert.SerializeObject(musicPieceData);
 
 		// 拡張子があるか調べる
 		if (Path.GetExtension(filePath) != ".json") filePath += ".json";
@@ -239,11 +241,11 @@ public class EditManager : MonoBehaviour
 	public void LoadMusicPiece(string filePath)
 	{
 		// ファイルを読み込む
-		string jsonString = "";
+		string jsonString = null;
 		PiarhythmUtility.ReadFileText(filePath, ref jsonString);
 
 		// オブジェクトに変換する
-		PiarhythmDatas.MusicPieceData musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonString);
+		PiarhythmDatas.MusicPieceData musicPieceData = JsonConvert.DeserializeObject<PiarhythmDatas.MusicPieceData>(jsonString);
 
 		// 設定データの設定と初期化
 		m_optionSheetController.Start(musicPieceData.m_optionData);

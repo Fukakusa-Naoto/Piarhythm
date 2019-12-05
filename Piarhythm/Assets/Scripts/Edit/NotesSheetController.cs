@@ -142,13 +142,24 @@ public class NotesSheetController : MonoBehaviour
 		switch (colorDropdown.value)
 		{
 			case 0:     // 赤
-				m_notesManager.SetSelectNotesColor(Color.magenta);
-				break;
+				{
+					PiarhythmDatas.Color color = new PiarhythmDatas.Color(Color.magenta.r, Color.magenta.g, Color.magenta.b, Color.magenta.a);
+					m_notesManager.SetSelectNotesColor(color);
+					break;
+				}
 			case 1:     // 緑
-				m_notesManager.SetSelectNotesColor(Color.green);
-				break;
+				{
+					PiarhythmDatas.Color color = new PiarhythmDatas.Color(Color.green.r, Color.green.g, Color.green.b, Color.green.a);
+					m_notesManager.SetSelectNotesColor(color);
+					break;
+				}
 			case 2:     // 青
-				m_notesManager.SetSelectNotesColor(Color.cyan);
+				{
+					PiarhythmDatas.Color color = new PiarhythmDatas.Color(Color.cyan.r, Color.cyan.g, Color.cyan.b, Color.cyan.a);
+					m_notesManager.SetSelectNotesColor(color);
+					break;
+				}
+			default:
 				break;
 		}
 	}
@@ -211,9 +222,9 @@ public class NotesSheetController : MonoBehaviour
 			m_noteLengthDropdown.value = notesData.m_noteLength;
 
 			// 色の更新
-			if (notesData.m_color == Color.red) m_colorDropdown.value = 0;
-			else if (notesData.m_color == Color.green) m_colorDropdown.value = 1;
-			else if (notesData.m_color == Color.blue) m_colorDropdown.value = 2;
+			if (Mathf.Approximately(notesData.m_color.r, Color.red.r)) m_colorDropdown.value = 0;
+			else if (Mathf.Approximately(notesData.m_color.g, Color.green.g)) m_colorDropdown.value = 1;
+			else if (Mathf.Approximately(notesData.m_color.b, Color.blue.b)) m_colorDropdown.value = 2;
 		}
 	}
 	#endregion

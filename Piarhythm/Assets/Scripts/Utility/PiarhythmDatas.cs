@@ -52,7 +52,7 @@ public class PiarhythmDatas
 
 
 	[System.Serializable]
-	public class BGMData
+	public class BGMData : ScriptableObject
 	{
 		// ファイルパス
 		public string m_path = null;
@@ -64,7 +64,7 @@ public class PiarhythmDatas
 
 
 	[System.Serializable]
-	public class MusicPieceData
+	public class MusicPieceData : ScriptableObject
 	{
 		// 楽曲の設定
 		public OptionData m_optionData = null;
@@ -76,7 +76,7 @@ public class PiarhythmDatas
 
 
 	[System.Serializable]
-	public class TempoData
+	public class TempoData : ScriptableObject
 	{
 		// テンポの開始小節
 		public int m_startMeasure = 0;
@@ -86,7 +86,7 @@ public class PiarhythmDatas
 
 
 	[System.Serializable]
-	public class OptionData
+	public class OptionData : ScriptableObject
 	{
 		// テンポデータのリスト
 		public TempoData[] m_tempDatas = null;
@@ -122,5 +122,22 @@ public class PiarhythmDatas
 		public static float QUARTER_DOTTED_NOTE_CROCHET = 1.5f;
 		// 付点8分音符
 		public static float EIGHTH_DOTTED_NOTE_QUAVER = 0.75f;
+	}
+
+	[System.Serializable]
+	public struct Color
+	{
+		public float r;
+		public float g;
+		public float b;
+		public float a;
+
+		public Color(float r, float g, float b, float a)
+		{
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.a = a;
+		}
 	}
 }

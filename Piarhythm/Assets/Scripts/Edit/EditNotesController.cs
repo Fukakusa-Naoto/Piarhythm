@@ -65,7 +65,13 @@ public class EditNotesController : MonoBehaviour
 		m_notesData = new PiarhythmDatas.NoteData();
 
 		// 色の初期化
-		m_notesData.m_color = m_glowImage.color = m_glowImage.glowColor = Color.green;
+		PiarhythmDatas.Color colorData = new PiarhythmDatas.Color();
+		colorData.r = Color.green.r;
+		colorData.g = Color.green.g;
+		colorData.b = Color.green.b;
+		colorData.a = Color.green.a;
+		m_notesData.m_color = colorData;
+		m_glowImage.color = m_glowImage.glowColor = Color.green;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
@@ -289,9 +295,9 @@ public class EditNotesController : MonoBehaviour
 		m_transform.localScale = localScale;
 
 		// #の色を変化させる
-		m_glowImage.color = (scale.Contains("#"))
-			? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_notesData.m_color;
+		m_glowImage.color = (m_notesData.m_scale.Contains("#"))
+			? new UnityEngine.Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: new UnityEngine.Color(m_notesData.m_color.r, m_notesData.m_color.g, m_notesData.m_color.b, 1.0f);
 	}
 	#endregion
 
@@ -343,7 +349,7 @@ public class EditNotesController : MonoBehaviour
 	//!
 	//! @parameter [color] 設定する色
 	//-----------------------------------------------------------------
-	public void SetNotesColor(Color color)
+	public void SetNotesColor(PiarhythmDatas.Color color)
 	{
 		// 情報を更新する
 		m_notesData.m_color = color;
@@ -351,11 +357,11 @@ public class EditNotesController : MonoBehaviour
 		// 色を反映させる
 		// #の色を変化させる
 		m_glowImage.color = (m_notesData.m_scale.Contains("#"))
-			? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_notesData.m_color;
+			? new UnityEngine.Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: new UnityEngine.Color(m_notesData.m_color.r, m_notesData.m_color.g, m_notesData.m_color.b, 1.0f);
 
 		// 光彩の色を更新する
-		m_glowImage.glowColor = color;
+		m_glowImage.glowColor = new UnityEngine.Color(color.r, color.g, color.b, 1.0f);
 	}
 	#endregion
 
@@ -480,9 +486,9 @@ public class EditNotesController : MonoBehaviour
 		if (collision.name == "LimitArea")
 		{
 			// 光彩の色を元に戻す
-			m_glowImage.glowColor = (m_notesData.m_scale.Contains("#"))
-				? new Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-				: m_notesData.m_color;
+			m_glowImage.color = (m_notesData.m_scale.Contains("#"))
+				? new UnityEngine.Color(m_notesData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+				: new UnityEngine.Color(m_notesData.m_color.r, m_notesData.m_color.g, m_notesData.m_color.b, 1.0f);
 		}
 	}
 	#endregion

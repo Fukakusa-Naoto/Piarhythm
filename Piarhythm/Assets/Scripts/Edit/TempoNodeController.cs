@@ -20,7 +20,7 @@ public class TempoNodeController : MonoBehaviour
 {
 	// <メンバ変数>
 	// テンポデータ
-	PiarhythmDatas.TempoData m_tempoData = new PiarhythmDatas.TempoData();
+	PiarhythmDatas.TempoData m_tempoData = null;
 	int m_index = -1;
 
 	// UI
@@ -45,6 +45,7 @@ public class TempoNodeController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Awake()
 	{
+		m_tempoData = new PiarhythmDatas.TempoData();
 		m_tempoData.m_startMeasure = 0;
 		m_tempoData.m_tempo = 60;
 	}

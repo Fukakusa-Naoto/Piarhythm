@@ -19,6 +19,8 @@ using UnityEngine.UI;
 public class ConnectNoteController : MonoBehaviour
 {
 	// <メンバ変数>
+	// キャンバス
+	private Canvas m_canvas = null;
 	// キー情報が保存された連想配列
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	// 連結に使用したノーツデータのリスト
@@ -32,6 +34,10 @@ public class ConnectNoteController : MonoBehaviour
 
 	// コントローラー
 	private OptionSheetController m_optionSheetController = null;
+	private ConnectNoteSheetController m_connectNoteSheetController = null;
+
+	// マネージャー
+	private NotesManager m_noteManager = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -52,7 +58,8 @@ public class ConnectNoteController : MonoBehaviour
 		m_audioSource = GetComponent<AudioSource>();
 
 		// 色の初期化
-		m_glowImage.color = m_glowImage.glowColor = m_noteList[0].m_color;
+		UnityEngine.Color color = new UnityEngine.Color(m_noteList[0].m_color.r, m_noteList[0].m_color.g, m_noteList[0].m_color.b, m_noteList[0].m_color.a);
+		m_glowImage.color = m_glowImage.glowColor = color;
 
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
@@ -79,6 +86,105 @@ public class ConnectNoteController : MonoBehaviour
 
 		// 光彩を切る
 		m_glowImage.glowSize = 0.0f;
+	}
+	#endregion
+
+	#region ドラッグ時の移動処理
+	//-----------------------------------------------------------------
+	//! @summary   ドラッグ時の移動処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnMouseDrag()
+	{
+		// マウス座標の取得
+		Vector2 localPoint = Vector2.zero;
+		RectTransformUtility.ScreenPointToLocalPointInRectangle(m_musicalScoreTransform, Input.mousePosition, m_canvas.worldCamera, out localPoint);
+
+		float minDistance = float.MaxValue;
+		string scale = m_noteList[0].m_scale;
+		// ワールド座標のマウス座標を取得する
+		Vector3 mousePosition = Input.mousePosition;
+		mousePosition.z = 10.0f;
+		Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+		// 最も近い音階を調べる
+		foreach (KeyValuePair<string, RectTransform> n in m_keyDictionary)
+		{
+			// コンポーネントの取得
+			RectTransform keyTransform = n.Value;
+
+			// 距離を求める
+			float distance = Mathf.Abs(worldPosition.x - keyTransform.position.x);
+
+			// 最も近いキーを調べる
+			if (minDistance >= distance)
+			{
+				// 最短距離を更新
+				minDistance = distance;
+				// 音階を更新する
+				scale = n.Key;
+			}
+		}
+
+		// ノーツの移動
+		MoveEditNotes(scale, localPoint.y);
+
+		// ノーツ情報をUIへ反映させる
+		m_connectNoteSheetController.DisplayNotes(this);
+	}
+	#endregion
+
+	#region ノーツが選択された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツが選択された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnPointerDown()
+	{
+		// 選択されたことをNotesManagerに伝える
+		m_noteManager.SetSelectNotes(gameObject);
+
+		// 光彩を起動する
+		float glowSize = PiarhythmDatas.MAX_GLOW_SIZE - (m_transform.sizeDelta.y * 0.1f);
+		glowSize = Mathf.Clamp(glowSize, PiarhythmDatas.MIN_GLOW_SIZE, PiarhythmDatas.MAX_GLOW_SIZE);
+		m_glowImage.glowSize = glowSize;
+	}
+	#endregion
+
+	#region ノーツの移動処理
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの移動処理
+	//!
+	//! @parameter [scale] 音階
+	//! @parameter [positionY] Y座標
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void MoveEditNotes(string scale, float positionY)
+	{
+		// ノーツの移動
+		m_transform.localPosition = new Vector3(m_transform.localPosition.x, positionY, 0.0f);
+		SetNotesScale(scale);
+
+		// 移動制限
+		Vector2 offsetMin = m_transform.offsetMin;
+		if (offsetMin.y <= 0.0) offsetMin.y = 0.0f;
+		m_transform.offsetMin = offsetMin;
+
+		// 最新データの作成
+		PiarhythmDatas.PositionData positionData = new PiarhythmDatas.PositionData();
+		positionData.m_position = m_transform.offsetMin.y;
+		positionData.m_lenght = m_transform.sizeDelta.y;
+
+		// データの更新
+		PiarhythmDatas.NoteData notesData = m_optionSheetController.ConvertToNotesData(positionData);
+		SetStartBeat(notesData.m_startBeat);
 	}
 	#endregion
 
@@ -110,9 +216,9 @@ public class ConnectNoteController : MonoBehaviour
 		m_transform.localScale = localScale;
 
 		// #の色を変化させる
-		m_glowImage.color = (scale.Contains("#"))
-			? new Color(m_noteList[0].m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-			: m_noteList[0].m_color;
+		m_glowImage.color = (m_noteList[0].m_scale.Contains("#"))
+			? new UnityEngine.Color(m_noteList[0].m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: new UnityEngine.Color(m_noteList[0].m_color.r, m_noteList[0].m_color.g, m_noteList[0].m_color.b, 1.0f);
 	}
 	#endregion
 
@@ -124,19 +230,29 @@ public class ConnectNoteController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetStartBeat(float startBeat)
 	{
-		//// 開始位置がマイナスだった場合は処理を終了する
-		//if (startTime < 0.0f) return;
+		// 開始位置がマイナスだった場合は処理を終了する
+		if (startBeat < 0.0f) return;
 
-		//// データを更新する
-		//m_notesData.startBeat = PiarhythmUtility.MRound(startTime, 0.25f);
+		// 差分を計算する
+		float difference = startBeat - m_noteList[0].m_startBeat;
 
-		//// 位置の更新
-		//PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_notesData.startBeat, m_notesData.noteLength);
-		//m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.position);
-		//m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.lenght);
+		// データを更新する
+		foreach (PiarhythmDatas.NoteData noteData in m_noteList) noteData.m_startBeat += difference;
 
-		//// UIを更新
-		//m_notesSheetController.DisplayNotes(this);
+		// 位置の更新
+		PiarhythmDatas.PositionData positionData = m_optionSheetController.ConvertToPositionData(m_noteList[0].m_startBeat, m_noteList[0].m_noteLength);
+		m_transform.offsetMin = new Vector2(m_transform.offsetMin.x, positionData.m_position);
+		m_transform.offsetMax = new Vector2(m_transform.offsetMax.x, m_transform.offsetMin.y + positionData.m_lenght);
+		for (int i = 1; i < m_noteList.Count; ++i)
+		{
+			positionData = m_optionSheetController.ConvertToPositionData(m_noteList[i].m_startBeat, m_noteList[i].m_noteLength);
+			Vector2 offsetMax = m_transform.offsetMax;
+			offsetMax.y += positionData.m_lenght;
+			m_transform.offsetMax = offsetMax;
+		}
+
+		// UIを更新
+		m_connectNoteSheetController.DisplayNotes(this);
 	}
 	#endregion
 
@@ -146,19 +262,18 @@ public class ConnectNoteController : MonoBehaviour
 	//!
 	//! @parameter [color] 設定する色
 	//-----------------------------------------------------------------
-	public void SetColor(Color color)
+	public void SetColor(PiarhythmDatas.Color color)
 	{
-		//// 情報を更新する
-		//m_notesData.color = color;
+		// 情報を更新する
+		foreach(PiarhythmDatas.NoteData noteData in m_noteList) noteData.m_color = color;
 
-		//// 色を反映させる
-		//// #の色を変化させる
-		//m_glowImage.color = (m_notesData.scale.Contains("#"))
-		//	? new Color(m_notesData.color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_notesData.color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
-		//	: m_notesData.color;
+		// #の色を変化させる
+		m_glowImage.color = (m_noteList[0].m_scale.Contains("#"))
+			? new UnityEngine.Color(m_noteList[0].m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteList[0].m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
+			: new UnityEngine.Color(m_noteList[0].m_color.r, m_noteList[0].m_color.g, m_noteList[0].m_color.b, 1.0f);
 
-		//// 光彩の色を更新する
-		//m_glowImage.glowColor = color;
+		// 光彩の色を更新する
+		m_glowImage.glowColor = new UnityEngine.Color(color.r, color.g, color.b, 1.0f);
 	}
 	#endregion
 
@@ -234,6 +349,42 @@ public class ConnectNoteController : MonoBehaviour
 	public PiarhythmDatas.NoteData GetNoteData()
 	{
 		return m_noteList[0];
+	}
+	#endregion
+
+	#region ConnectNoteSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   ConnectNoteSheetControllerを設定する
+	//!
+	//! @parameter [ConnectNoteSheetController] 設定するConnectNoteSheetController
+	//-----------------------------------------------------------------
+	public void SetConnectNoteSheetController(ConnectNoteSheetController connectNoteSheetController)
+	{
+		m_connectNoteSheetController = connectNoteSheetController;
+	}
+	#endregion
+
+	#region NoteManagerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   NoteManagerを設定する
+	//!
+	//! @parameter [noteManager] 設定するNoteManager
+	//-----------------------------------------------------------------
+	public void SetNoteManager(NotesManager noteManager)
+	{
+		m_noteManager = noteManager;
+	}
+	#endregion
+
+	#region キャンバスを設定する
+	//-----------------------------------------------------------------
+	//! @summary   キャンバスを設定する
+	//!
+	//! @parameter [canvas] 設定するキャンバス
+	//-----------------------------------------------------------------
+	public void SetCanvas(Canvas canvas)
+	{
+		m_canvas = canvas;
 	}
 	#endregion
 }
