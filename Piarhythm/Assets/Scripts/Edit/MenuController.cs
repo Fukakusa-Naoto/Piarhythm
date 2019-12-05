@@ -32,10 +32,14 @@ public class MenuController : MonoBehaviour
 	// コントローラー
 	[SerializeField]
 	private MusicalScoreController m_musicalScoreController = null;
+	[SerializeField]
+	private ConnectNoteSheetController m_connectNoteSheetController = null;
 
 	// マネージャー
 	[SerializeField]
 	private EditManager m_editManager = null;
+	[SerializeField]
+	private NotesManager m_noteManager = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -177,7 +181,21 @@ public class MenuController : MonoBehaviour
 	public void OnValueChangedSheetDropdown()
 	{
 		// 選択されているシートをヒエラルキーの一番最後に移動させる
-		m_sheets[m_sheetDropdown.value].SetAsLastSibling();
+		switch (m_sheetDropdown.value)
+		{
+			case 0:
+				m_sheets[m_sheetDropdown.value].SetAsLastSibling();
+
+				// 複数選択がされている
+				if (m_noteManager.GetMultipleSelectFlag()) m_connectNoteSheetController.SetAsLastSibling();
+				break;
+			case 1:
+				m_sheets[m_sheetDropdown.value].SetAsLastSibling();
+				break;
+			case 2:
+				m_sheets[m_sheetDropdown.value].SetAsLastSibling();
+				break;
+		}
 	}
 	#endregion
 

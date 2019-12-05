@@ -20,7 +20,7 @@ public class TempoNodeController : MonoBehaviour
 {
 	// <メンバ変数>
 	// テンポデータ
-	PiarhythmDatas.TempoData m_tempoData = new PiarhythmDatas.TempoData();
+	PiarhythmDatas.TempoData m_tempoData = null;
 	int m_index = -1;
 
 	// UI
@@ -45,8 +45,9 @@ public class TempoNodeController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Awake()
 	{
-		m_tempoData.startMeasure = 0;
-		m_tempoData.tempo = 60;
+		m_tempoData = new PiarhythmDatas.TempoData();
+		m_tempoData.m_startMeasure = 0;
+		m_tempoData.m_tempo = 60;
 	}
 	#endregion
 
@@ -67,14 +68,14 @@ public class TempoNodeController : MonoBehaviour
 		if(startMeasure < 0)
 		{
 			// 前回のデータを使用する
-			m_startMeasureInputField.text = m_tempoData.startMeasure.ToString();
+			m_startMeasureInputField.text = m_tempoData.m_startMeasure.ToString();
 
 			// 処理を終了する
 			return;
 		}
 
 		// 情報を更新する
-		m_tempoData.startMeasure = startMeasure;
+		m_tempoData.m_startMeasure = startMeasure;
 
 		// リスト内のデータを更新する
 		m_optionSheetController.UpdateTempoData(m_tempoData, m_index);
@@ -98,14 +99,14 @@ public class TempoNodeController : MonoBehaviour
 		if (tempo <= 0)
 		{
 			// 前回のデータを使用する
-			m_tempoInputField.text = m_tempoData.tempo.ToString();
+			m_tempoInputField.text = m_tempoData.m_tempo.ToString();
 
 			// 処理を終了する
 			return;
 		}
 
 		// 情報を更新する
-		m_tempoData.tempo = tempo;
+		m_tempoData.m_tempo = tempo;
 
 		// リスト内のデータを更新する
 		m_optionSheetController.UpdateTempoData(m_tempoData, m_index);
@@ -166,8 +167,8 @@ public class TempoNodeController : MonoBehaviour
 		m_tempoData = tempData;
 
 		// UIへ反映させる
-		m_startMeasureInputField.text = m_tempoData.startMeasure.ToString();
-		m_tempoInputField.text = m_tempoData.tempo.ToString();
+		m_startMeasureInputField.text = m_tempoData.m_startMeasure.ToString();
+		m_tempoInputField.text = m_tempoData.m_tempo.ToString();
 	}
 	#endregion
 

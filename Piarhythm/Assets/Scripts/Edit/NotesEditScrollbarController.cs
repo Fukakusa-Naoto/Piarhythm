@@ -110,11 +110,11 @@ public class NotesEditScrollbarController : MonoBehaviour
 
 		// サンプルを取得する
 		float[] allSamples = new float[m_audioClip.samples * m_audioClip.channels];
-		float offset = bgmData.startTime * m_audioClip.frequency * m_audioClip.channels;
+		float offset = bgmData.m_startTime * m_audioClip.frequency * m_audioClip.channels;
 		m_audioClip.GetData(allSamples, (int)offset);
 
 		// 使用するサンプル分だけ取り出す
-		float totalTime = bgmData.endTime - bgmData.startTime;
+		float totalTime = bgmData.m_endTime - bgmData.m_startTime;
 		int totalOffset = (int)(totalTime * m_audioClip.frequency * m_audioClip.channels);
 		float[] samples = new float[totalOffset];
 		for (int i = 0; i < totalOffset; ++i) samples[i] = allSamples[i];
