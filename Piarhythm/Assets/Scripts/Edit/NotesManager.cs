@@ -120,7 +120,7 @@ public class NotesManager : MonoBehaviour
 			else
 			{
 				// 選択されている全ての光彩を切る
-				if (m_selectNotes.Count == 0)
+				if (m_selectNotes.Count != 0)
 					foreach (GameObject note in m_selectNotes)
 						note.GetComponent<EditNotesController>().SwitchGlow(false);
 
