@@ -121,8 +121,19 @@ public class NotesManager : MonoBehaviour
 			{
 				// 選択されている全ての光彩を切る
 				if (m_selectNotes.Count != 0)
+				{
 					foreach (GameObject note in m_selectNotes)
-						note.GetComponent<EditNotesController>().SwitchGlow(false);
+					{
+						if(note.GetComponent<EditNotesController>())
+						{
+							note.GetComponent<EditNotesController>().SwitchGlow(false);
+						}
+						else
+						{
+							note.GetComponent<ConnectNoteController>().SwitchGlow(false);
+						}
+					}
+				}
 
 				// リストをクリアする
 				m_selectNotes.Clear();
@@ -190,6 +201,66 @@ public class NotesManager : MonoBehaviour
 			// UIへ情報を反映させる
 			m_notesSheetController.DisplayNotes(null);
 			m_connectNoteSheetController.DisplayNotes(null);
+		}
+
+		// ソートする
+		if (m_selectNotes.Count > 1)
+		{
+			m_selectNotes.Sort((a, b) =>
+			{
+				if (a.GetComponent<EditNotesController>())
+				{
+					if (b.GetComponent<EditNotesController>())
+					{
+						if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat > b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat < b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+					else
+					{
+						if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat > b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat < b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+				}
+				else
+				{
+					if (b.GetComponent<EditNotesController>())
+					{
+						if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat > b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat < b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+					else
+					{
+						if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat > b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat < b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+				}
+
+				return 0;
+			});
 		}
 	}
 	#endregion
