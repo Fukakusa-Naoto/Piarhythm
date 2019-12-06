@@ -187,8 +187,8 @@ public class NotesManager : MonoBehaviour
 			}
 
 			// UIへ情報を反映させる
-			m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
-			m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
+			if(selectNotes.GetComponent<EditNotesController>()) m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
+			else m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
 		}
 		else
 		{
@@ -545,6 +545,9 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private bool CheckConnectNote()
 	{
+		// 二つ以上ノーツが選択されていない
+		if (m_selectNotes.Count <= 1) return false;
+
 		PiarhythmDatas.NoteData notesData = m_selectNotes[0].GetComponent<EditNotesController>().GetNotesData();
 		string scale = notesData.m_scale;
 		PiarhythmDatas.Color color = notesData.m_color;

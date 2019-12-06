@@ -222,9 +222,9 @@ public class NotesSheetController : MonoBehaviour
 			m_noteLengthDropdown.value = notesData.m_noteLength;
 
 			// 色の更新
-			if (notesData.m_color == Color.red) m_colorDropdown.value = 0;
+			if (notesData.m_color == Color.magenta) m_colorDropdown.value = 0;
 			else if (notesData.m_color == Color.green) m_colorDropdown.value = 1;
-			else if (notesData.m_color == Color.blue) m_colorDropdown.value = 2;
+			else if (notesData.m_color == Color.cyan) m_colorDropdown.value = 2;
 		}
 	}
 	#endregion
