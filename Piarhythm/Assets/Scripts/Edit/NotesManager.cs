@@ -455,9 +455,6 @@ public class NotesManager : MonoBehaviour
 
 		// リストに登録する
 		m_notesList.Add(connectNote);
-
-		// 生成されたノーツを選択中にする
-		SetSelectNotes(connectNote);
 	}
 	#endregion
 
@@ -812,7 +809,7 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
+		if(m_selectNotes[0].GetComponent<EditNotesController>()) m_selectNotes[0].GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
 	}
 	#endregion
 

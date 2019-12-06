@@ -139,5 +139,30 @@ public class PiarhythmDatas
 			this.b = b;
 			this.a = a;
 		}
+
+		public static bool operator ==(Color color, UnityEngine.Color unityColor)
+		{
+			if (Mathf.Approximately(color.r, unityColor.r)
+				&& Mathf.Approximately(color.g, unityColor.g)
+				&& Mathf.Approximately(color.b, unityColor.b)
+				&& Mathf.Approximately(color.a, unityColor.a))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public static bool operator !=(Color color, UnityEngine.Color unityColor)
+		{
+			if (Mathf.Approximately(color.r, unityColor.r)) return true;
+			if (Mathf.Approximately(color.g, unityColor.g)) return true;
+			if (Mathf.Approximately(color.b, unityColor.b)) return true;
+			if (Mathf.Approximately(color.a, unityColor.a)) return true;
+
+			return false;
+		}
 	}
 }

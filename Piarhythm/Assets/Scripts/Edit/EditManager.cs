@@ -9,7 +9,6 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
-using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
