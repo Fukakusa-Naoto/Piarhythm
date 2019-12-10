@@ -592,6 +592,7 @@ public class OptionSheetController : MonoBehaviour
 	public float GetStartTime(float startBeat)
 	{
 		float elapsedBeat = 0.0f;
+		float elapsedTime = 0.0f;
 
 		// 所属しているテンポデータを調べる
 		PiarhythmDatas.TempoData tempoData = m_tempoDataList[0];
@@ -604,6 +605,7 @@ public class OptionSheetController : MonoBehaviour
 
 				// 経過拍数を増やす
 				elapsedBeat += (m_tempoDataList[i].m_startMeasure - tempoData.m_startMeasure) * 4;
+				elapsedTime += beatPerTempo * (m_tempoDataList[i].m_startMeasure * 4);
 
 				tempoData = m_tempoDataList[i];
 			}
@@ -616,7 +618,7 @@ public class OptionSheetController : MonoBehaviour
 		{
 			// 一拍当たりの時間を求める
 			float beatPerTempo = 60.0f / tempoData.m_tempo;
-			return (startBeat - elapsedBeat) * beatPerTempo;
+			return elapsedTime + (startBeat - elapsedBeat) * beatPerTempo;
 		}
 	}
 	#endregion
