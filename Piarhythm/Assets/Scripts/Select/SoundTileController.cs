@@ -26,6 +26,10 @@ public class SoundTileController : MonoBehaviour
 	private RectTransform m_transform = null;
 	private Text m_text = null;
 
+	// コントロール
+	private SelectManager m_selectManager = null;
+	private MusicSheetController m_musicSheetController = null;
+
 
 	// メンバ関数の定義 =====================================================
 	#region 初期化処理
@@ -64,6 +68,48 @@ public class SoundTileController : MonoBehaviour
 	public void SetMusicName(string musicName)
 	{
 		m_musicName = musicName;
+	}
+	#endregion
+
+	#region クリックされた時の処理
+	//-----------------------------------------------------------------
+	//! @summary   クリックされた時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnPointerClickSoundTile()
+	{
+		// UIの表示を更新する
+		m_musicSheetController.DisplaySelectMusicName(m_musicName);
+
+		// 選択されている楽曲を更新する
+		m_selectManager.SetSelectMusic(m_musicName);
+	}
+	#endregion
+
+	#region SelectManagerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   SelectManagerを設定する
+	//!
+	//! @parameter [selectManager] 設定するSelectManager
+	//-----------------------------------------------------------------
+	public void SetSelectManager(SelectManager selectManager)
+	{
+		m_selectManager = selectManager;
+	}
+	#endregion
+
+	#region MusicSheetControllerを設定する
+	//-----------------------------------------------------------------
+	//! @summary   MusicSheetControllerを設定する
+	//!
+	//! @parameter [musicSheetController] 設定するMusicSheetController
+	//-----------------------------------------------------------------
+	public void SetMusicSheetController(MusicSheetController musicSheetController)
+	{
+		m_musicSheetController = musicSheetController;
 	}
 	#endregion
 }

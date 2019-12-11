@@ -520,6 +520,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_soundTilePrefab: {fileID: 2157456999939270161, guid: 2238f898d6ab0234e978dc077d8bc249,
     type: 3}
+  m_selectManager: {fileID: 806853351}
+  m_musicSheetController: {fileID: 1023811614}
 --- !u!114 &192478298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,6 +1017,7 @@ GameObject:
   - component: {fileID: 1023811611}
   - component: {fileID: 1023811613}
   - component: {fileID: 1023811612}
+  - component: {fileID: 1023811614}
   m_Layer: 5
   m_Name: MusicSheet
   m_TagString: Untagged
@@ -1080,6 +1083,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1023811610}
   m_CullTransparentMesh: 0
+--- !u!114 &1023811614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023811610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ffca03b0a069ca40b74351c02911cc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_selectMusicText: {fileID: 1614610953}
 --- !u!1 &1036700614
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,7 +1650,7 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40
     m_Alignment: 4

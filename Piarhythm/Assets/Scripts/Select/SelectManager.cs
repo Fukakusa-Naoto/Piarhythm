@@ -20,6 +20,8 @@ using UnityEngine.SceneManagement;
 public class SelectManager : MonoBehaviour
 {
 	// <メンバ変数>
+	// 選択されている楽曲名
+	private string m_selectMusic = null;
 	private string[] m_musicPieceArray;
 
 
@@ -39,20 +41,6 @@ public class SelectManager : MonoBehaviour
 			"*.json",
 			System.IO.SearchOption.AllDirectories);
 	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   更新処理
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	void Update()
-    {
-
-    }
 
 
 
@@ -106,4 +94,19 @@ public class SelectManager : MonoBehaviour
 		// プレイシーンに遷移する
 		SceneManager.LoadScene(0);
 	}
+
+
+	#region 選択されている楽曲を設定する
+	//-----------------------------------------------------------------
+	//! @summary   選択されている楽曲を設定する
+	//!
+	//! @parameter [selectMusic] 設定する曲名
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void SetSelectMusic(string selectMusic)
+	{
+		m_selectMusic = selectMusic;
+	}
+	#endregion
 }
