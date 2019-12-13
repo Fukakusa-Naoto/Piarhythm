@@ -25,6 +25,8 @@ public class EditNotesController : MonoBehaviour
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	// 音を鳴らしたか判定するためのフラグ
 	private bool m_playedFlag = false;
+	// 音を鳴らす開始時間
+	private float m_startTime = 0.0f;
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -37,7 +39,7 @@ public class EditNotesController : MonoBehaviour
 	private NotesManager m_notesManager = null;
 
 	// ノーツ情報
-	private PiarhythmDatas.NoteData m_notesData;
+	private PiarhythmDatas.NoteData m_notesData = null;
 
 	// コントローラー
 	private NotesSheetController m_notesSheetController = null;
@@ -62,7 +64,7 @@ public class EditNotesController : MonoBehaviour
 		m_audioSource = GetComponent<AudioSource>();
 
 		// データの初期化
-		m_notesData = new PiarhythmDatas.NoteData();
+		m_notesData = ScriptableObject.CreateInstance<PiarhythmDatas.NoteData>();
 
 		// 色の初期化
 		PiarhythmDatas.Color colorData = new PiarhythmDatas.Color();
@@ -219,7 +221,7 @@ public class EditNotesController : MonoBehaviour
 		if(!m_playedFlag)
 		{
 			// 経過時間がノーツの開始時間を過ぎた
-			if (m_notesData.m_startBeat <= elapsedTime)
+			if (m_startTime <= elapsedTime)
 			{
 				// 音を鳴らす
 				m_audioSource.Play();
@@ -433,6 +435,8 @@ public class EditNotesController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void SetPlayedFlag(bool playedFlag)
 	{
+		// 開始時間を取得する
+		if (!playedFlag) m_startTime = m_optionSheetController.GetStartTime(m_notesData.m_startBeat);
 		m_playedFlag = playedFlag;
 	}
 	#endregion

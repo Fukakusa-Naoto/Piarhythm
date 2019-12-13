@@ -20,7 +20,7 @@ public class OptionSheetController : MonoBehaviour
 {
 	// <メンバ変数>
 	private float m_wholeTime = 0.0f;
-	private List<PiarhythmDatas.TempoData> m_tempoDataList;
+	private List<PiarhythmDatas.TempoData> m_tempoDataList = null;
 	private int m_wholeMeasure = 0;
 
 	// UI
@@ -144,7 +144,7 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeTime = 0.0f;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
+		PiarhythmDatas.TempoData prevTempData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		prevTempData.m_tempo = 0;
 		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
 		{
@@ -356,7 +356,7 @@ public class OptionSheetController : MonoBehaviour
 		m_wholeMeasure = 0;
 
 		// テンポデータ分計算する
-		PiarhythmDatas.TempoData prevTempData = new PiarhythmDatas.TempoData();
+		PiarhythmDatas.TempoData prevTempData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		prevTempData.m_tempo = 0;
 
 		foreach (PiarhythmDatas.TempoData tempData in m_tempoDataList)
@@ -507,7 +507,7 @@ public class OptionSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.NoteData ConvertToNotesData(PiarhythmDatas.PositionData positionData)
 	{
-		PiarhythmDatas.NoteData notesData = new PiarhythmDatas.NoteData();
+		PiarhythmDatas.NoteData notesData = ScriptableObject.CreateInstance<PiarhythmDatas.NoteData>();
 		float elapsedBeat = 0.0f;
 		float elapsedPosition = 0.0f;
 
@@ -581,6 +581,48 @@ public class OptionSheetController : MonoBehaviour
 	}
 	#endregion
 
+	#region ノーツの開始時間を取得する
+	//-----------------------------------------------------------------
+	//! @summary   ノーツの開始時間を取得する
+	//!
+	//! @parameter [startBeat] 開始拍数
+	//!
+	//! @return    開始時間
+	//-----------------------------------------------------------------
+	public float GetStartTime(float startBeat)
+	{
+		float elapsedBeat = 0.0f;
+		float elapsedTime = 0.0f;
+
+		// 所属しているテンポデータを調べる
+		PiarhythmDatas.TempoData tempoData = m_tempoDataList[0];
+		for (int i = 1; i < m_tempoDataList.Count; ++i)
+		{
+			if (startBeat >= m_tempoDataList[i].m_startMeasure * 4)
+			{
+				// 一拍当たりの時間を求める
+				float beatPerTempo = 60.0f / tempoData.m_tempo;
+
+				// 経過拍数を増やす
+				elapsedBeat += (m_tempoDataList[i].m_startMeasure - tempoData.m_startMeasure) * 4;
+				elapsedTime += beatPerTempo * (m_tempoDataList[i].m_startMeasure * 4);
+
+				tempoData = m_tempoDataList[i];
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		{
+			// 一拍当たりの時間を求める
+			float beatPerTempo = 60.0f / tempoData.m_tempo;
+			return elapsedTime + (startBeat - elapsedBeat) * beatPerTempo;
+		}
+	}
+	#endregion
+
 	#region 設定データの取得
 	//-----------------------------------------------------------------
 	//! @summary   設定データの取得
@@ -590,7 +632,7 @@ public class OptionSheetController : MonoBehaviour
 	public PiarhythmDatas.OptionData GetOptionData()
 	{
 		// データをまとめる
-		PiarhythmDatas.OptionData optionData = new PiarhythmDatas.OptionData();
+		PiarhythmDatas.OptionData optionData = ScriptableObject.CreateInstance<PiarhythmDatas.OptionData>();
 		optionData.m_tempDatas = m_tempoDataList.ToArray();
 		optionData.m_wholeMeasure = m_wholeMeasure;
 

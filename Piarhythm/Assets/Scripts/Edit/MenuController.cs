@@ -13,6 +13,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
@@ -72,12 +73,22 @@ public class MenuController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickRevertButton()
 	{
-		// 編集に変更がある
+		if(PiarhythmUtility.MessegeBoxYesOrNo("セーブをしますか？"))
+		{
+			// ダイアログを開いて、保存するファイルパスを決める
+			string filePath = PiarhythmUtility.OpenExistFileDialog(
+				PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH,
+				"JSONファイル(*.json)|*.json");
 
-		//　セーブするか選択する
+			// ファイルが選択されていなければ処理を終了する
+			if (filePath == "") return;
+
+			// 楽曲データの保存処理
+			m_editManager.SaveMusicPiece(filePath);
+		}
 
 		// タイトルシーンに遷移する
-
+		PiarhythmUtility.LoadScene(PiarhythmDatas.ScenenID.SCENE_TITLE);
 	}
 	#endregion
 

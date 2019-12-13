@@ -24,6 +24,12 @@ public class PiarhythmDatas
 	public static readonly string BGM_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "BGM/";
 	// 楽曲データを保存しているフォルダの階層パス
 	public static readonly string MUSIC_PIECE_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "Data/MusicPiece/";
+	// システムデータを保存しているフォルダの階層パス
+	public static readonly string SYSTEM_DIRECTORY_PATH = DATA_DIRECTORY_PATH + "Data/System/";
+
+	// 設定データを保存しているファイルのパス
+	public static readonly string SETTING_DATA_FILE_PATH = SYSTEM_DIRECTORY_PATH + "SettingData.json";
+
 	// #時の色の変化率
 	public static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;
 	// 光彩の最小サイズ
@@ -32,7 +38,17 @@ public class PiarhythmDatas
 	public static readonly float MAX_GLOW_SIZE = 10.0f;
 
 
-	// 構造体の定義 =========================================================
+	// 列挙型の定義 =============================================================
+	public enum ScenenID : int
+	{
+		SCENE_TITLE,        // タイトル
+		SCENE_PLAY,         // プレイ
+		SCENE_EDIT,         // エディット
+		SCENE_SELECT,       // セレクト
+		SCENE_SETTING,      // 設定
+	}
+
+	// クラスの定義 =========================================================
 	[System.Serializable]
 	public class NoteData : ScriptableObject
 	{
@@ -94,6 +110,15 @@ public class PiarhythmDatas
 		public int m_wholeMeasure = 0;
 	}
 
+	[System.Serializable]
+	public class SettingData : ScriptableObject
+	{
+		// ノーツの速度
+		public int m_noteSpeed = 0;
+		// 練習モード
+		public bool m_practiceFlag = false;
+	}
+
 	public class PositionData
 	{
 		// 開始座標
@@ -138,6 +163,46 @@ public class PiarhythmDatas
 			this.g = g;
 			this.b = b;
 			this.a = a;
+		}
+
+		public static bool operator ==(Color color, UnityEngine.Color unityColor)
+		{
+			if (!Mathf.Approximately(color.r, unityColor.r)) return false;
+			if (!Mathf.Approximately(color.g, unityColor.g)) return false;
+			if (!Mathf.Approximately(color.b, unityColor.b)) return false;
+			if (!Mathf.Approximately(color.a, unityColor.a)) return false;
+
+			return true;
+		}
+
+		public static bool operator ==(Color color1, Color color2)
+		{
+			if (!Mathf.Approximately(color1.r, color2.r)) return false;
+			if (!Mathf.Approximately(color1.g, color2.g)) return false;
+			if (!Mathf.Approximately(color1.b, color2.b)) return false;
+			if (!Mathf.Approximately(color1.a, color2.a)) return false;
+
+			return true;
+		}
+
+		public static bool operator !=(Color color, UnityEngine.Color unityColor)
+		{
+			if (Mathf.Approximately(color.r, unityColor.r)) return true;
+			if (Mathf.Approximately(color.g, unityColor.g)) return true;
+			if (Mathf.Approximately(color.b, unityColor.b)) return true;
+			if (Mathf.Approximately(color.a, unityColor.a)) return true;
+
+			return false;
+		}
+
+		public static bool operator !=(Color color1, Color color2)
+		{
+			if (Mathf.Approximately(color1.r, color2.r)) return true;
+			if (Mathf.Approximately(color1.g, color2.g)) return true;
+			if (Mathf.Approximately(color1.b, color2.b)) return true;
+			if (Mathf.Approximately(color1.a, color2.a)) return true;
+
+			return false;
 		}
 	}
 }

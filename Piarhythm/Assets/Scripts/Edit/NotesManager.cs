@@ -120,9 +120,20 @@ public class NotesManager : MonoBehaviour
 			else
 			{
 				// 選択されている全ての光彩を切る
-				if (m_selectNotes.Count == 0)
+				if (m_selectNotes.Count != 0)
+				{
 					foreach (GameObject note in m_selectNotes)
-						note.GetComponent<EditNotesController>().SwitchGlow(false);
+					{
+						if(note.GetComponent<EditNotesController>())
+						{
+							note.GetComponent<EditNotesController>().SwitchGlow(false);
+						}
+						else
+						{
+							note.GetComponent<ConnectNoteController>().SwitchGlow(false);
+						}
+					}
+				}
 
 				// リストをクリアする
 				m_selectNotes.Clear();
@@ -176,8 +187,8 @@ public class NotesManager : MonoBehaviour
 			}
 
 			// UIへ情報を反映させる
-			m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
-			m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
+			if(selectNotes.GetComponent<EditNotesController>()) m_notesSheetController.DisplayNotes(selectNotes.GetComponent<EditNotesController>());
+			else m_connectNoteSheetController.DisplayNotes(selectNotes.GetComponent<ConnectNoteController>());
 		}
 		else
 		{
@@ -190,6 +201,66 @@ public class NotesManager : MonoBehaviour
 			// UIへ情報を反映させる
 			m_notesSheetController.DisplayNotes(null);
 			m_connectNoteSheetController.DisplayNotes(null);
+		}
+
+		// ソートする
+		if (m_selectNotes.Count > 1)
+		{
+			m_selectNotes.Sort((a, b) =>
+			{
+				if (a.GetComponent<EditNotesController>())
+				{
+					if (b.GetComponent<EditNotesController>())
+					{
+						if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat > b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat < b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+					else
+					{
+						if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat > b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<EditNotesController>().GetNotesData().m_startBeat < b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+				}
+				else
+				{
+					if (b.GetComponent<EditNotesController>())
+					{
+						if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat > b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat < b.GetComponent<EditNotesController>().GetNotesData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+					else
+					{
+						if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat > b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return 1;
+						}
+						else if (a.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat < b.GetComponent<ConnectNoteController>().GetNoteData().m_startBeat)
+						{
+							return -1;
+						}
+					}
+				}
+
+				return 0;
+			});
 		}
 	}
 	#endregion
@@ -384,9 +455,6 @@ public class NotesManager : MonoBehaviour
 
 		// リストに登録する
 		m_notesList.Add(connectNote);
-
-		// 生成されたノーツを選択中にする
-		SetSelectNotes(connectNote);
 	}
 	#endregion
 
@@ -477,6 +545,9 @@ public class NotesManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private bool CheckConnectNote()
 	{
+		// 二つ以上ノーツが選択されていない
+		if (m_selectNotes.Count <= 1) return false;
+
 		PiarhythmDatas.NoteData notesData = m_selectNotes[0].GetComponent<EditNotesController>().GetNotesData();
 		string scale = notesData.m_scale;
 		PiarhythmDatas.Color color = notesData.m_color;
@@ -577,7 +648,8 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach(GameObject notes in m_notesList)
 		{
-			notes.GetComponent<EditNotesController>().UpdateEditNotes(elapsedTime);
+			if(notes.GetComponent<EditNotesController>()) notes.GetComponent<EditNotesController>().UpdateEditNotes(elapsedTime);
+			else notes.GetComponent<ConnectNoteController>().UpdateEditNotes(elapsedTime);
 		}
 	}
 	#endregion
@@ -594,17 +666,46 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach (GameObject notes in m_notesList)
 		{
+			PiarhythmDatas.NoteData notesData = null;
+
 			// コンポーネントの取得
-			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
-
-			// データの取得
-			PiarhythmDatas.NoteData notesData = editNotesController.GetNotesData();
-
-			// 経過時間が既にノーツの開始時間を過ぎている
-			if (elapsedTime >= notesData.m_startBeat)
+			if (notes.GetComponent<EditNotesController>())
 			{
-				// 音をならないようにする
-				editNotesController.SetPlayedFlag(true);
+				EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+
+				// データの取得
+				notesData = editNotesController.GetNotesData();
+
+				// 経過時間が既にノーツの開始時間を過ぎている
+				float startTime = m_optionSheetController.GetStartTime(notesData.m_startBeat);
+				if (elapsedTime > startTime)
+				{
+					// 音をならないようにする
+					editNotesController.SetPlayedFlag(true);
+				}
+				else
+				{
+					editNotesController.SetPlayedFlag(false);
+				}
+			}
+			else
+			{
+				ConnectNoteController connectNoteController = notes.GetComponent<ConnectNoteController>();
+
+				// データの取得
+				notesData = connectNoteController.GetNoteData();
+
+				// 経過時間が既にノーツの開始時間を過ぎている
+				float startTime = m_optionSheetController.GetStartTime(notesData.m_startBeat);
+				if (elapsedTime > startTime)
+				{
+					// 音をならないようにする
+					connectNoteController.SetPlayedFlag(true);
+				}
+				else
+				{
+					connectNoteController.SetPlayedFlag(false);
+				}
 			}
 		}
 	}
@@ -622,11 +723,23 @@ public class NotesManager : MonoBehaviour
 	{
 		foreach (GameObject notes in m_notesList)
 		{
-			// コンポーネントの取得
-			EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
+			if(notes.GetComponent<EditNotesController>())
+			{
+				// コンポーネントの取得
+				EditNotesController editNotesController = notes.GetComponent<EditNotesController>();
 
-			// 音を復活させる
-			editNotesController.SetPlayedFlag(false);
+				// 音を復活させる
+				editNotesController.SetPlayedFlag(false);
+			}
+			else
+			{
+				// コンポーネントの取得
+				ConnectNoteController connectNoteController = notes.GetComponent<ConnectNoteController>();
+
+				// 音を復活させる
+				connectNoteController.SetPlayedFlag(false);
+
+			}
 		}
 	}
 	#endregion
@@ -699,7 +812,7 @@ public class NotesManager : MonoBehaviour
 		if (m_selectNotes.Count != 1) return;
 
 		// ノーツへ設定する
-		m_selectNotes[0].GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
+		if(m_selectNotes[0].GetComponent<EditNotesController>()) m_selectNotes[0].GetComponent<EditNotesController>().SetNotesLengthTime(lengthTime);
 	}
 	#endregion
 

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 
 // クラスの定義 ============================================================
@@ -209,23 +210,27 @@ public class PiarhythmUtility
 	//!
 	//! @parameter [filePath] 保存する階層も含めたファイル名
 	//! @parameter [contents] ファイルに書き込む文字列
+	//! @parameter [confirmFlag] 上書き保存の確認を行うフラグ
 	//!
 	//! @return    true :書き込み成功
 	//! @return    false:書き込み失敗
 	//-----------------------------------------------------------------
-	public static bool WriteFileText(string filePath, string contents)
+	public static bool WriteFileText(string filePath, string contents, bool confirmFlag = true)
 	{
-		// 書き込み先にファイルがあるか調べる
-		if (File.Exists(filePath))
+		if(confirmFlag)
 		{
-			// メッセージテキストを作成
-			string messegeText = Path.GetFileName(filePath) + "を上書きしますか？";
-
-			// ファイルがある場合、メッセージボックスを表示する
-			if (!MessegeBoxYesOrNo(messegeText))
+			// 書き込み先にファイルがあるか調べる
+			if (File.Exists(filePath))
 			{
-				// 処理を終了する
-				return false;
+				// メッセージテキストを作成
+				string messegeText = Path.GetFileName(filePath) + "を上書きしますか？";
+
+				// ファイルがある場合、メッセージボックスを表示する
+				if (!MessegeBoxYesOrNo(messegeText))
+				{
+					// 処理を終了する
+					return false;
+				}
 			}
 		}
 
@@ -275,6 +280,20 @@ public class PiarhythmUtility
 		answer = n * multiple;
 
 		return answer;
+	}
+	#endregion
+
+	#region シーンを遷移する
+	//-----------------------------------------------------------------
+	//! @summary   シーンを遷移する
+	//!
+	//! @parameter [sceneID] 遷移するシーンID
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public static void LoadScene(PiarhythmDatas.ScenenID scenenID)
+	{
+		SceneManager.LoadScene((int)scenenID);
 	}
 	#endregion
 }

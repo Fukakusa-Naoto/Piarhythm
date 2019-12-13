@@ -247,6 +247,8 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void SetBGMData()
 	{
+		m_BGMData = ScriptableObject.CreateInstance<PiarhythmDatas.BGMData>();
+
 		// ファイル名を切り取る
 		string fileName = Path.GetFileName(m_filePath);
 
@@ -286,7 +288,7 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.BGMData GetBGMData()
 	{
-		if (m_BGMData == null) return new PiarhythmDatas.BGMData();
+		if (m_BGMData == null) return ScriptableObject.CreateInstance<PiarhythmDatas.BGMData>();
 		else return m_BGMData;
 	}
 	#endregion
