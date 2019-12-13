@@ -88,7 +88,7 @@ public class MenuController : MonoBehaviour
 		}
 
 		// タイトルシーンに遷移する
-		SceneManager.LoadScene((int)ScenenID.SCENE_TITLE);
+		PiarhythmUtility.LoadScene(PiarhythmDatas.ScenenID.SCENE_TITLE);
 	}
 	#endregion
 

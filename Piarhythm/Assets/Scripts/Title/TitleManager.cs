@@ -15,16 +15,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-// 列挙型の定義 =============================================================
-enum ScenenID : int
-{
-	SCENE_TITLE,		// タイトル
-	SCENE_PLAY,			// プレイ
-	SCENE_EDIT,			// エディット
-	SCENE_SELECT,		// セレクト
-	SCENE_SETTING,		// 設定
-}
-
 // クラスの定義 =============================================================
 public class TitleManager : MonoBehaviour
 {
@@ -38,7 +28,7 @@ public class TitleManager : MonoBehaviour
 	public void OnPlayButton()
 	{
 		// セレクトシーンに遷移する
-		SceneManager.LoadScene((int)ScenenID.SCENE_SELECT, LoadSceneMode.Single);
+		SceneManager.LoadScene((int)PiarhythmDatas.ScenenID.SCENE_SELECT, LoadSceneMode.Single);
 	}
 
 
@@ -53,7 +43,7 @@ public class TitleManager : MonoBehaviour
 	public void OnEditButton()
 	{
 		// エディットシーンに遷移する
-		SceneManager.LoadScene((int)ScenenID.SCENE_EDIT, LoadSceneMode.Single);
+		SceneManager.LoadScene((int)PiarhythmDatas.ScenenID.SCENE_EDIT, LoadSceneMode.Single);
 	}
 
 
@@ -68,6 +58,6 @@ public class TitleManager : MonoBehaviour
 	public void OnSettingButton()
 	{
 		// 設定シーンに遷移する
-		SceneManager.LoadScene((int)ScenenID.SCENE_SETTING, LoadSceneMode.Additive);
+		SceneManager.LoadScene((int)PiarhythmDatas.ScenenID.SCENE_SETTING, LoadSceneMode.Additive);
 	}
 }

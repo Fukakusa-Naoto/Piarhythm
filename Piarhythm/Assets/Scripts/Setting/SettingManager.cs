@@ -176,6 +176,6 @@ public class SettingManager : MonoBehaviour
 		File.WriteAllText(dataFilePath, json);
 
 		// 前のシーンに戻る
-		SceneManager.UnloadSceneAsync((int)ScenenID.SCENE_SETTING);
+		PiarhythmUtility.LoadScene(PiarhythmDatas.ScenenID.SCENE_SETTING);
 	}
 }

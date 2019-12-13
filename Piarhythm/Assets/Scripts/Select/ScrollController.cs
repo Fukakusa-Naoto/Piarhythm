@@ -34,40 +34,33 @@ public class ScrollController : MonoBehaviour
 
 
 	// メンバ関数の定義 =====================================================
-	#region 初期化処理
+	#region タイルを生成する
 	//-----------------------------------------------------------------
-	//! @summary   初期化処理
+	//! @summary   タイルを生成する
 	//!
-	//! @parameter [void] なし
+	//! @parameter [musicName] タイルに付ける曲名
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	void Start()
-    {
-		// 楽曲データを取得する
-		string[] musicPieceArray = Directory.GetFiles(PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH, "*.json", SearchOption.AllDirectories);
+	public void CreateSoundTile(string musicName)
+	{
+		// タイルを作成する
+		GameObject tile = Instantiate(m_soundTilePrefab);
 
-		foreach(string musicPiece in musicPieceArray)
-		{
-			// タイルを作成する
-			GameObject tile = Instantiate(m_soundTilePrefab);
+		// コンポーネントを取得する
+		SoundTileController soundTileController = tile.GetComponent<SoundTileController>();
 
-			// コンポーネントを取得する
-			SoundTileController soundTileController = tile.GetComponent<SoundTileController>();
+		// 曲名を設定する
+		soundTileController.SetMusicName(musicName);
 
-			// 曲名を設定する
-			string musicName = Path.GetFileNameWithoutExtension(musicPiece);
-			soundTileController.SetMusicName(musicName);
+		// SelectManagerを設定する
+		soundTileController.SetSelectManager(m_selectManager);
 
-			// SelectManagerを設定する
-			soundTileController.SetSelectManager(m_selectManager);
+		// MusicSheetControllerを設定する
+		soundTileController.SetMusicSheetController(m_musicSheetController);
 
-			// MusicSheetControllerを設定する
-			soundTileController.SetMusicSheetController(m_musicSheetController);
-
-			// 親子関係を組む
-			tile.transform.SetParent(transform);
-		}
+		// 親子関係を組む
+		tile.transform.SetParent(transform);
 	}
 	#endregion
 }

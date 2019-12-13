@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
 
 
 // クラスの定義 =============================================================
@@ -22,10 +23,19 @@ public class SelectManager : MonoBehaviour
 	// <メンバ変数>
 	// 選択されている楽曲名
 	private string m_selectMusic = null;
-	private string[] m_musicPieceArray;
+	private Dictionary<string, string> m_musicPathDictionary = null;
+
+	// UI
+	[SerializeField]
+	private SettingSheetController m_settingSheetController = null;
+
+	// コントローラー
+	[SerializeField]
+	private ScrollController m_scrollController = null;
 
 
 	// メンバ関数の定義 =====================================================
+	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
 	//!
@@ -33,80 +43,103 @@ public class SelectManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	void Start()
-    {
-		// フォルダ内の全てのjsonファイルを取得する
-		m_musicPieceArray = System.IO.Directory.GetFiles(
-			UnityEngine.Application.dataPath + "/StreamingAssets/Data/MusicPiece",
-			"*.json",
-			System.IO.SearchOption.AllDirectories);
+	private void Start()
+	{
+		// 設定データを読み込む
+		string jsonString = null;
+		PiarhythmUtility.ReadFileText(PiarhythmDatas.SETTING_DATA_FILE_PATH, ref jsonString);
+
+		// オブジェクトに変換する
+		PiarhythmDatas.SettingData settingData = JsonConvert.DeserializeObject<PiarhythmDatas.SettingData>(jsonString);
+
+		// 設定シートの値を渡す
+		m_settingSheetController.SetSettingData(settingData);
+
+		// UIに反映させる
+		m_settingSheetController.DispleySettingData();
+
+
+
+		// 楽曲データのファイルパスを取得する
+		m_musicPathDictionary = new Dictionary<string, string>();
+		string[] musicPieceArray = Directory.GetFiles(PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH, "*.json", SearchOption.AllDirectories);
+		foreach(string musicPath in musicPieceArray)
+		{
+			// ファイル名を取得する
+			string fileName = Path.GetFileNameWithoutExtension(musicPath);
+
+			// 登録する
+			m_musicPathDictionary[fileName] = musicPath;
+
+			// タイルを作成する
+			m_scrollController.CreateSoundTile(fileName);
+		}
 	}
+	#endregion
 
-
-
+	#region 設定データを保存する
 	//-----------------------------------------------------------------
-	//! @summary   楽曲名リストの取得
+	//! @summary   設定データを保存する
 	//!
-	//! @parameter [void] なし
+	//! @parameter [settingData] 保存する設定データ
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public string[] GetMusicPieceList()
+	public void SaveSettingData(PiarhythmDatas.SettingData settingData)
 	{
-		string[] musicPieceList = new string[m_musicPieceArray.Length];
+		// json文字列に変換する
+		string jsonString = JsonConvert.SerializeObject(settingData);
 
-		for (int i = 0; i < m_musicPieceArray.Length; ++i)
+		// ファイルに書き込んで保存する
+		PiarhythmUtility.WriteFileText(PiarhythmDatas.SETTING_DATA_FILE_PATH, jsonString, false);
+	}
+	#endregion
+
+	#region シーンを遷移させる
+	//-----------------------------------------------------------------
+	//! @summary   シーンを遷移させる
+	//!
+	//! @parameter [sceneID] 遷移させるシーンID
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void LoadScene(PiarhythmDatas.ScenenID scenenID)
+	{
+		if (scenenID == PiarhythmDatas.ScenenID.SCENE_PLAY)
 		{
-			// 文字列を分割する
-			string[] str = m_musicPieceArray[i].Split('\\');
-
-			// 拡張子を調べる
-			string extension = Path.GetExtension(str[str.Length - 1]);
-
-			// 拡張子が無し
-			if (string.IsNullOrEmpty(extension))
-			{
-				// そのまま代入
-				musicPieceList[i] = str[str.Length - 1];
-			}
-
-			// 曲名だけ取得する
-			musicPieceList[i] = str[str.Length - 1].Replace(extension, string.Empty);
+			// 選択されている曲のファイルパスを保存する
+			PlayerPrefs.SetString("selectMusicPath", m_musicPathDictionary[m_selectMusic]);
 		}
 
-		return musicPieceList;
+		// シーンを遷移する
+		PiarhythmUtility.LoadScene(scenenID);
 	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   楽曲が選択された時の処理
-	//!
-	//! @parameter [soundNumber] 選択された楽曲の数字
-	//!
-	//! @return    なし
-	//-----------------------------------------------------------------
-	public void OnSelectEnter(int soundNumber)
-	{
-		// プレイする楽曲のファイルを保存する
-		PlayerPrefs.SetString("Path", m_musicPieceArray[soundNumber]);
-
-		// プレイシーンに遷移する
-		SceneManager.LoadScene(0);
-	}
-
+	#endregion
 
 	#region 選択されている楽曲を設定する
 	//-----------------------------------------------------------------
 	//! @summary   選択されている楽曲を設定する
 	//!
 	//! @parameter [selectMusic] 設定する曲名
-	//!
-	//! @return    なし
 	//-----------------------------------------------------------------
 	public void SetSelectMusic(string selectMusic)
 	{
 		m_selectMusic = selectMusic;
+	}
+	#endregion
+
+	#region 戻るボタンが押された時の処理
+	//-----------------------------------------------------------------
+	//! @summary   戻るボタンが押された時の処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void OnClickRevertButton()
+	{
+		// シーンを遷移する
+		LoadScene(PiarhythmDatas.ScenenID.SCENE_TITLE);
 	}
 	#endregion
 }
