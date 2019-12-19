@@ -288,8 +288,7 @@ public class BGMSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public PiarhythmDatas.BGMData GetBGMData()
 	{
-		if (m_BGMData == null) return ScriptableObject.CreateInstance<PiarhythmDatas.BGMData>();
-		else return m_BGMData;
+		return m_BGMData;
 	}
 	#endregion
 

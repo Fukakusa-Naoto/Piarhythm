@@ -108,7 +108,7 @@ public class SelectManager : MonoBehaviour
 		if (scenenID == PiarhythmDatas.ScenenID.SCENE_PLAY)
 		{
 			// 選択されている曲のファイルパスを保存する
-			PlayerPrefs.SetString("selectMusicPath", m_musicPathDictionary[m_selectMusic]);
+			PlayerPrefs.SetString(PiarhythmDatas.PLAY_MUSIC_PIECE_FILE_PATH, m_musicPathDictionary[m_selectMusic]);
 		}
 
 		// シーンを遷移する

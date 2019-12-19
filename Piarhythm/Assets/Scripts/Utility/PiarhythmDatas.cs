@@ -29,6 +29,8 @@ public class PiarhythmDatas
 
 	// 設定データを保存しているファイルのパス
 	public static readonly string SETTING_DATA_FILE_PATH = SYSTEM_DIRECTORY_PATH + "SettingData.json";
+	// プレイする楽曲のファイルパス
+	public static readonly string PLAY_MUSIC_PIECE_FILE_PATH = "PlayMusicPieceFilePath";
 
 	// #時の色の変化率
 	public static readonly float SHARP_COLOR_PERCENTAGE = 0.7f;

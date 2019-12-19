@@ -12,26 +12,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Windows.Forms; //OpenFileDialog用に使う
-using System.IO;
+using Newtonsoft.Json;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 
 // クラスの定義 =============================================================
 public class PlayManager : MonoBehaviour
 {
 	// <メンバ変数>
-	private AudioSource m_audioSource;
-	private AudioClip m_audioClip = null;
+	private PiarhythmDatas.SettingData m_settingData = null;
+	private bool m_loadFlag = false;
+	private IEnumerator<UnityWebRequestAsyncOperation> m_coroutine = null;
 	private PiarhythmDatas.MusicPieceData m_musicPieceData = null;
-	private float m_notesEndTime;
-	// 経過時間
-	private float m_elapsedTime = 0.0f;
-	private SystemData m_systemData;
+
+	// コンポーネント
+	private AudioSource m_audioSource = null;
+
+	// コントローラー
+	[SerializeField]
+	private MusicController m_musicController = null;
 
 
 	// メンバ関数の定義 =====================================================
+	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
 	//!
@@ -41,55 +44,45 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
 	{
+		// コンポーネントの取得
 		m_audioSource = GetComponent<AudioSource>();
 
-		// セーブデータから読み込む楽曲ファイルパスを取得する
-		string filePath = PlayerPrefs.GetString("Path", "");
+		// 設定データを読み込む
+		string jsonString = null;
+		PiarhythmUtility.ReadFileText(PiarhythmDatas.SETTING_DATA_FILE_PATH, ref jsonString);
+
+		// インスタンスを作成する
+		m_settingData = JsonConvert.DeserializeObject<PiarhythmDatas.SettingData>(jsonString);
+
+		// プレイする楽曲データのファイルパスを取得する
+		string filePath = PlayerPrefs.GetString(PiarhythmDatas.PLAY_MUSIC_PIECE_FILE_PATH, null);
+		if (filePath == "") filePath = PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH + "YUBIKIRI-GENMAN -special edit-.json";
 
 		// 楽曲データを読み込む
-		string jsonStr = "";
-		StreamReader reader;
-		reader = new StreamReader(filePath);
-		jsonStr = reader.ReadToEnd();
-		reader.Close();
-		m_musicPieceData = JsonUtility.FromJson<PiarhythmDatas.MusicPieceData>(jsonStr);
+		PiarhythmUtility.ReadFileText(filePath, ref jsonString);
 
-		// BGMの読み込みコルーチンのスタート
-		if (m_audioClip == null)
-			StartCoroutine(LoadToAudioClip(m_musicPieceData.m_bgmData.m_path));
+		// インスタンスを作成する
+		m_musicPieceData = JsonConvert.DeserializeObject<PiarhythmDatas.MusicPieceData>(jsonString);
 
+		// 背景を作成する
+		m_musicController.CreateMusicScoreBackGround(m_musicPieceData.m_optionData);
 
-		// ノーツの終了時間の取得
-		m_notesEndTime = 0.0f;
-		foreach (PiarhythmDatas.NoteData n in m_musicPieceData.m_noteDataList)
+		// ノーツを生成する
+		m_musicController.CreateNoteList(m_musicPieceData.m_noteDataList);
+
+		// BGMを読み込む
+		if (m_musicPieceData.m_bgmData.m_path != null)
 		{
-			if (m_notesEndTime < n.m_noteLength)
-			{
-				m_notesEndTime = n.m_noteLength;
-			}
-		}
+			// 読み込み開始フラグをたてる
+			m_loadFlag = true;
 
-
-		string dataFilePath = UnityEngine.Application.dataPath + "/StreamingAssets/Data/System/SystemData.json";
-		m_systemData = new SystemData();
-
-		// ファイルの有無を調べる
-		if (File.Exists(dataFilePath))
-		{
-			// ファイルを読み込む
-			string json = File.ReadAllText(dataFilePath);
-			m_systemData = JsonUtility.FromJson<SystemData>(json); ;
-		}
-		else
-		{
-			// 初期化
-			m_systemData.speed = 1.0f;
-			m_systemData.keyNumber = 88;
+			// コルーチンを設定する
+			m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
 		}
 	}
+	#endregion
 
-
-
+	#region 更新処理
 	//-----------------------------------------------------------------
 	//! @summary   更新処理
 	//!
@@ -97,101 +90,44 @@ public class PlayManager : MonoBehaviour
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	void Update()
+	private void Update()
 	{
-		// 時間のカウント
-		m_elapsedTime += Time.deltaTime;
-
-		// BGMの再生
-		if ((m_audioClip != null) && (!m_audioSource.isPlaying)) m_audioSource.Play();
-
-		// BGMの停止
-		if (m_audioSource.time >= m_musicPieceData.m_bgmData.m_endTime) m_audioSource.Stop();
-
-		// 楽曲の終了
-		if ((!m_audioSource.isPlaying) && (m_notesEndTime <= m_elapsedTime)) SceneManager.LoadScene(2);
+		// AudioCripの読み込み
+		LoadAudioCrip();
 	}
+	#endregion
 
-
-
+	#region AudioCripの読み込み
 	//-----------------------------------------------------------------
-	//! @summary   読み込み処理
+	//! @summary   更新処理
 	//!
-	//! @parameter [path] ファイルパス
+	//! @parameter [void] なし
 	//!
 	//! @return    なし
 	//-----------------------------------------------------------------
-	public IEnumerator LoadToAudioClip(string path)
+	private void LoadAudioCrip()
 	{
-		if (m_audioSource == null || string.IsNullOrEmpty(path))
-			yield break;
-
-		if (!File.Exists(path))
+		if (m_loadFlag)
 		{
-			//ここにファイルが見つからない処理
-			Debug.Log("File not found.");
-			yield break;
-		}
+			// ファイルを読み込む
+			StartCoroutine(m_coroutine);
 
-		using (WWW www = new WWW("file://" + path))
-		{
-			while (!www.isDone)
-				yield return null;
-
-			AudioClip audioClip = www.GetAudioClip(false, true);
-			if (audioClip.loadState != AudioDataLoadState.Loaded)
+			// 読み込みが完了した
+			if (m_coroutine.Current.isDone)
 			{
-				//ここにロード失敗処理
-				Debug.Log("Failed to load AudioClip.");
-				yield break;
-			}
+				// AudioClipへ変換する
+				AudioClip audioClip = PiarhythmUtility.ConvertToAudioClip(m_coroutine.Current.webRequest);
 
-			//ここにロード成功処理
-			m_audioClip = m_audioSource.clip = audioClip;
-			string[] str = path.Split('\\');
-			m_audioClip.name = str[str.Length - 1];
-			m_audioSource.time = m_musicPieceData.m_bgmData.m_startTime;
+				// 読み込みフラグを倒す
+				m_loadFlag = false;
+
+				if (audioClip)
+				{
+					// AudioSourceに設定する
+					m_audioSource.clip = audioClip;
+				}
+			}
 		}
 	}
-
-
-	//-----------------------------------------------------------------
-	//! @summary   経過時間の取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    楽曲が再生されてからの経過時間
-	//-----------------------------------------------------------------
-	public float GetElapsedTime()
-	{
-		return m_elapsedTime;
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   ノーツの取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    ノーツの配列
-	//-----------------------------------------------------------------
-	public PiarhythmDatas.NoteData[] GetNoteDatas()
-	{
-		return m_musicPieceData.m_noteDataList;
-	}
-
-
-
-	//-----------------------------------------------------------------
-	//! @summary   再生速度の取得
-	//!
-	//! @parameter [void] なし
-	//!
-	//! @return    再生速度
-	//-----------------------------------------------------------------
-	public float GetPlaySpeed()
-	{
-		return m_systemData.speed;
-	}
+	#endregion
 }
