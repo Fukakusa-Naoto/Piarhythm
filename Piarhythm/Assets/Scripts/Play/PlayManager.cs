@@ -24,6 +24,9 @@ public class PlayManager : MonoBehaviour
 	private bool m_loadFlag = false;
 	private IEnumerator<UnityWebRequestAsyncOperation> m_coroutine = null;
 	private PiarhythmDatas.MusicPieceData m_musicPieceData = null;
+	private float m_elapsedTime = 0.0f;
+	private bool m_playedFlag = false;
+	private float m_wholeTime = 0.0f;
 
 	// コンポーネント
 	private AudioSource m_audioSource = null;
@@ -44,9 +47,6 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	void Start()
 	{
-		// コンポーネントの取得
-		m_audioSource = GetComponent<AudioSource>();
-
 		// 設定データを読み込む
 		string jsonString = null;
 		PiarhythmUtility.ReadFileText(PiarhythmDatas.SETTING_DATA_FILE_PATH, ref jsonString);
@@ -66,6 +66,9 @@ public class PlayManager : MonoBehaviour
 
 		// 背景を作成する
 		m_musicController.CreateMusicScoreBackGround(m_musicPieceData.m_optionData);
+
+		// 楽曲全体の時間を取得する
+		m_wholeTime = m_musicController.GetWholeTime();
 
 		// ノーツを生成する
 		m_musicController.CreateNoteList(m_musicPieceData.m_noteDataList);
@@ -92,8 +95,33 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Update()
 	{
-		// AudioCripの読み込み
-		LoadAudioCrip();
+		if (m_loadFlag)
+		{
+			// AudioCripの読み込み
+			LoadAudioCrip();
+		}
+		else
+		{
+			if (m_playedFlag)
+			{
+				// 再生中の更新処理
+				UpdatePlay();
+			}
+			else
+			{
+				// BGMを再生する
+				if (m_audioSource != null)
+				{
+					// 再生位置を設定する
+					m_audioSource.time = m_musicPieceData.m_bgmData.m_startTime;
+
+					// 再生させる
+					m_audioSource.Play();
+				}
+
+				m_playedFlag = true;
+			}
+		}
 	}
 	#endregion
 
@@ -107,26 +135,53 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void LoadAudioCrip()
 	{
-		if (m_loadFlag)
+		// ファイルを読み込む
+		StartCoroutine(m_coroutine);
+
+		// 読み込みが完了した
+		if (m_coroutine.Current.isDone)
 		{
-			// ファイルを読み込む
-			StartCoroutine(m_coroutine);
+			// AudioClipへ変換する
+			AudioClip audioClip = PiarhythmUtility.ConvertToAudioClip(m_coroutine.Current.webRequest);
 
-			// 読み込みが完了した
-			if (m_coroutine.Current.isDone)
+			// 読み込みフラグを倒す
+			m_loadFlag = false;
+
+			if (audioClip)
 			{
-				// AudioClipへ変換する
-				AudioClip audioClip = PiarhythmUtility.ConvertToAudioClip(m_coroutine.Current.webRequest);
+				// コンポーネントの取得
+				m_audioSource = GetComponent<AudioSource>();
 
-				// 読み込みフラグを倒す
-				m_loadFlag = false;
-
-				if (audioClip)
-				{
-					// AudioSourceに設定する
-					m_audioSource.clip = audioClip;
-				}
+				// AudioSourceに設定する
+				m_audioSource.clip = audioClip;
 			}
+		}
+	}
+	#endregion
+
+	#region 再生中の更新処理
+	//-----------------------------------------------------------------
+	//! @summary   再生中の更新処理
+	//!
+	//! @parameter [void] なし
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	private void UpdatePlay()
+	{
+		// 経過時間を更新する
+		m_elapsedTime += Time.deltaTime;
+
+		// 譜面の更新処理
+		m_musicController.UpdatePlay(m_elapsedTime, m_settingData.m_noteSpeed);
+
+		// BGMの更新処理
+		if (m_musicPieceData.m_bgmData.m_endTime <= m_elapsedTime) m_audioSource.Stop();
+
+		// 楽曲の終了処理
+		if (m_elapsedTime >= m_wholeTime)
+		{
+			PiarhythmUtility.LoadScene(PiarhythmDatas.ScenenID.SCENE_SELECT);
 		}
 	}
 	#endregion

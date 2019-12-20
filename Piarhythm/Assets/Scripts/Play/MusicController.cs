@@ -22,6 +22,7 @@ public class MusicController : MonoBehaviour
 	private PiarhythmDatas.TempoData[] m_tempoDataList = null;
 	// キーボード情報
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
+	private float m_wholeTime = 0.0f;
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -56,6 +57,23 @@ public class MusicController : MonoBehaviour
 			RectTransform keyTransform = rectTransform.GetChild(i).GetComponent<RectTransform>();
 			m_keyDictionary[keyTransform.name] = keyTransform;
 		}
+	}
+	#endregion
+
+	#region 再生中の更新処理
+	//-----------------------------------------------------------------
+	//! @summary   再生中の更新処理
+	//!
+	//! @parameter [elapsedTime] 経過時間
+	//! @parameter [noteSpeed] ノーツ速度
+	//!
+	//! @return    なし
+	//-----------------------------------------------------------------
+	public void UpdatePlay(float elapsedTime, float noteSpeed)
+	{
+		Vector3 position = m_transform.localPosition;
+		position.y = -PiarhythmUtility.ConvertTimeToPosition(elapsedTime, noteSpeed * 20.0f);
+		m_transform.anchoredPosition = position;
 	}
 	#endregion
 
@@ -108,32 +126,32 @@ public class MusicController : MonoBehaviour
 		m_tempoDataList = optionData.m_tempDatas;
 
 		// 時間を初期化
-		float wholeTime = 0.0f;
+		m_wholeTime = 0.0f;
 
 		// テンポデータ分計算する
 		PiarhythmDatas.TempoData prevTempData = ScriptableObject.CreateInstance<PiarhythmDatas.TempoData>();
 		prevTempData.m_tempo = 0;
-		foreach (PiarhythmDatas.TempoData tempData in optionData.m_tempDatas)
+		foreach (PiarhythmDatas.TempoData tempoData in optionData.m_tempDatas)
 		{
 			if (prevTempData.m_tempo != 0)
 			{
 				// 一拍当たりの時間を求める
 				float beatPerTempo = 60.0f / prevTempData.m_tempo;
 
-				for (int i = prevTempData.m_startMeasure; i < tempData.m_startMeasure; ++i)
+				for (int i = prevTempData.m_startMeasure; i < tempoData.m_startMeasure; ++i)
 				{
 					// 開始時間を保存する
-					float startTime = wholeTime;
+					float startTime = m_wholeTime;
 
 					// 1小節分加算する
-					wholeTime += beatPerTempo * 4.0f;
+					m_wholeTime += beatPerTempo * 4.0f;
 
 					// 背景を生成する
-					CreateMusicScoreBackGround(startTime, wholeTime);
+					CreateMusicScoreBackGround(startTime, m_wholeTime);
 				}
 			}
 
-			prevTempData = tempData;
+			prevTempData = tempoData;
 		}
 
 		// 最後に残りの小節分加算する
@@ -144,13 +162,13 @@ public class MusicController : MonoBehaviour
 			for (int i = prevTempData.m_startMeasure; i < optionData.m_wholeMeasure; ++i)
 			{
 				// 開始時間を保存する
-				float startTime = wholeTime;
+				float startTime = m_wholeTime;
 
 				// 1小節分加算する
-				wholeTime += beatPerTempo * 4.0f;
+				m_wholeTime += beatPerTempo * 4.0f;
 
 				// 背景を生成する
-				CreateMusicScoreBackGround(startTime, wholeTime);
+				CreateMusicScoreBackGround(startTime, m_wholeTime);
 			}
 		}
 	}
@@ -267,6 +285,18 @@ public class MusicController : MonoBehaviour
 		}
 
 		return positionData;
+	}
+	#endregion
+
+	#region 全体の時間を取得する
+	//-----------------------------------------------------------------
+	//! @summary   全体の時間を取得する
+	//!
+	//! @return    全体の時間
+	//-----------------------------------------------------------------
+	public float GetWholeTime()
+	{
+		return m_wholeTime;
 	}
 	#endregion
 }
