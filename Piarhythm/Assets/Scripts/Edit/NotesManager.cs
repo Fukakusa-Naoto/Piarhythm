@@ -106,7 +106,8 @@ public class NotesManager : MonoBehaviour
 					m_selectNotes.Add(selectNotes);
 
 					// 光彩を付ける
-					selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
+					if(selectNotes.GetComponent<EditNotesController>())
+						selectNotes.GetComponent<EditNotesController>().SwitchGlow(true);
 				}
 				else
 				{
@@ -346,7 +347,6 @@ public class NotesManager : MonoBehaviour
 			PiarhythmDatas.NoteData notesData = m_selectNotes[i].GetComponent<EditNotesController>().GetNotesData();
 
 			// ノーツデータの連結先を更新する
-			if (i - 1 > 0) notesData.m_prevNoteData = m_selectNotes[i - 1].GetComponent<EditNotesController>().GetNotesData();
 			if (i + 1 < m_selectNotes.Count) notesData.m_nextNoteData = m_selectNotes[i + 1].GetComponent<EditNotesController>().GetNotesData();
 
 			// 登録する
@@ -511,7 +511,7 @@ public class NotesManager : MonoBehaviour
 			PiarhythmDatas.NoteData nextNoteData = noteData.m_nextNoteData;
 
 			// 連結を切る
-			noteData.m_prevNoteData = noteData.m_nextNoteData = null;
+			noteData.m_nextNoteData = null;
 
 			// ノーツを生成する
 			CreateNotes(noteData);

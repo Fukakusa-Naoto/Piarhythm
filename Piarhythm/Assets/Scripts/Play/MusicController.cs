@@ -23,6 +23,7 @@ public class MusicController : MonoBehaviour
 	// キーボード情報
 	private Dictionary<string, RectTransform> m_keyDictionary = null;
 	private float m_wholeTime = 0.0f;
+	private PiarhythmDatas.SettingData m_settingData = null;
 
 	// コンポーネント
 	private RectTransform m_transform = null;
@@ -103,8 +104,8 @@ public class MusicController : MonoBehaviour
 		// 開始時間と終了時間を座標に変換する
 		Vector2 offsetMin = rectTransform.offsetMin;
 		Vector2 offsetMax = rectTransform.offsetMax;
-		offsetMin.y = PiarhythmUtility.ConvertTimeToPosition(startTime, NotesManager.NOTES_SPEED);
-		offsetMax.y = PiarhythmUtility.ConvertTimeToPosition(endTime, NotesManager.NOTES_SPEED);
+		offsetMin.y = PiarhythmUtility.ConvertTimeToPosition(startTime, m_settingData.m_noteSpeed * 20.0f);
+		offsetMax.y = PiarhythmUtility.ConvertTimeToPosition(endTime, m_settingData.m_noteSpeed * 20.0f);
 
 		// 設定する
 		rectTransform.offsetMin = offsetMin;
@@ -227,7 +228,7 @@ public class MusicController : MonoBehaviour
 				// 一拍当たりの時間を求める
 				float beatPerTempo = 60.0f / tempoData.m_tempo;
 				// 時間を座標に変換する
-				float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+				float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, m_settingData.m_noteSpeed * 20.0f);
 
 				// テンポデータの終了座標を求める
 				elapsedPosition += beatPosition * ((m_tempoDataList[i].m_startMeasure - tempoData.m_startMeasure) * 4);
@@ -247,7 +248,7 @@ public class MusicController : MonoBehaviour
 			// 一拍当たりの時間を求める
 			float beatPerTempo = 60.0f / tempoData.m_tempo;
 			// 時間を座標に変換する
-			float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, NotesManager.NOTES_SPEED);
+			float beatPosition = PiarhythmUtility.ConvertTimeToPosition(beatPerTempo, m_settingData.m_noteSpeed * 20.0f);
 
 			// テンポデータを元に座標と長さを決める
 			positionData.m_position = elapsedPosition + (startBeat - elapsedBeat) * beatPosition;
@@ -297,6 +298,18 @@ public class MusicController : MonoBehaviour
 	public float GetWholeTime()
 	{
 		return m_wholeTime;
+	}
+	#endregion
+
+	#region 設定データを設定する
+	//-----------------------------------------------------------------
+	//! @summary   設定データを設定する
+	//!
+	//! @parameter [settingData] 設定する設定データ
+	//-----------------------------------------------------------------
+	public void SetSettingData(PiarhythmDatas.SettingData settingData)
+	{
+		m_settingData = settingData;
 	}
 	#endregion
 }

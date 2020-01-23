@@ -27,6 +27,8 @@ public class PlayManager : MonoBehaviour
 	private float m_elapsedTime = 0.0f;
 	private bool m_playedFlag = false;
 	private float m_wholeTime = 0.0f;
+	private float m_bgmStartTime = 0.0f;
+	private bool m_bgmPlayedFlag = false;
 
 	// コンポーネント
 	private AudioSource m_audioSource = null;
@@ -34,6 +36,8 @@ public class PlayManager : MonoBehaviour
 	// コントローラー
 	[SerializeField]
 	private MusicController m_musicController = null;
+	[SerializeField]
+	private KeyboardController m_keyboardController = null;
 
 
 	// メンバ関数の定義 =====================================================
@@ -54,6 +58,9 @@ public class PlayManager : MonoBehaviour
 		// インスタンスを作成する
 		m_settingData = JsonConvert.DeserializeObject<PiarhythmDatas.SettingData>(jsonString);
 
+		// 設定データを設定する
+		m_musicController.SetSettingData(m_settingData);
+
 		// プレイする楽曲データのファイルパスを取得する
 		string filePath = PlayerPrefs.GetString(PiarhythmDatas.PLAY_MUSIC_PIECE_FILE_PATH, null);
 		if (filePath == "") filePath = PiarhythmDatas.MUSIC_PIECE_DIRECTORY_PATH + "YUBIKIRI-GENMAN -special edit-.json";
@@ -65,12 +72,24 @@ public class PlayManager : MonoBehaviour
 		m_musicPieceData = JsonConvert.DeserializeObject<PiarhythmDatas.MusicPieceData>(jsonString);
 
 		// 背景を作成する
+		if (m_musicPieceData.m_optionData.m_tempDatas.Length != 0)
+		{
+			for (int i = 1; i < m_musicPieceData.m_optionData.m_tempDatas.Length; ++i)
+			{
+				m_musicPieceData.m_optionData.m_tempDatas[i].m_startMeasure += 2;
+			}
+		}
+		m_musicPieceData.m_optionData.m_wholeMeasure += 5;
 		m_musicController.CreateMusicScoreBackGround(m_musicPieceData.m_optionData);
 
 		// 楽曲全体の時間を取得する
 		m_wholeTime = m_musicController.GetWholeTime();
 
 		// ノーツを生成する
+		for (int i = 0; i < m_musicPieceData.m_noteDataList.Length; ++i)
+		{
+			m_musicPieceData.m_noteDataList[i].m_startBeat += 8;
+		}
 		m_musicController.CreateNoteList(m_musicPieceData.m_noteDataList);
 
 		// BGMを読み込む
@@ -82,6 +101,16 @@ public class PlayManager : MonoBehaviour
 			// コルーチンを設定する
 			m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
 		}
+		else
+		{
+			// アニメーションを開始する
+			m_keyboardController.PlayAnimation();
+		}
+
+		// BGMの開始時間を計算する
+		// 一拍当たりの時間を求める
+		float beatPerTempo = 60.0f / m_musicPieceData.m_optionData.m_tempDatas[0].m_tempo;
+		m_bgmStartTime = beatPerTempo * 8.0f;
 	}
 	#endregion
 
@@ -104,22 +133,28 @@ public class PlayManager : MonoBehaviour
 		{
 			if (m_playedFlag)
 			{
+				// BGMを再生させる
+				if ((m_elapsedTime >= m_bgmStartTime)
+					&& (m_audioSource != null)
+					&& (!m_bgmPlayedFlag))
+				{
+					m_audioSource.Play();
+					m_bgmPlayedFlag = true;
+				}
+
 				// 再生中の更新処理
 				UpdatePlay();
 			}
 			else
 			{
-				// BGMを再生する
-				if (m_audioSource != null)
+				// アニメーションの終了
+				if(!m_keyboardController.GetPlayFlag())
 				{
 					// 再生位置を設定する
-					m_audioSource.time = m_musicPieceData.m_bgmData.m_startTime;
+					if (m_audioSource != null) m_audioSource.time = m_musicPieceData.m_bgmData.m_startTime;
 
-					// 再生させる
-					m_audioSource.Play();
+					m_playedFlag = true;
 				}
-
-				m_playedFlag = true;
 			}
 		}
 	}
@@ -154,6 +189,9 @@ public class PlayManager : MonoBehaviour
 
 				// AudioSourceに設定する
 				m_audioSource.clip = audioClip;
+
+				// アニメーションを開始する
+				m_keyboardController.PlayAnimation();
 			}
 		}
 	}
@@ -176,7 +214,9 @@ public class PlayManager : MonoBehaviour
 		m_musicController.UpdatePlay(m_elapsedTime, m_settingData.m_noteSpeed);
 
 		// BGMの更新処理
-		if (m_musicPieceData.m_bgmData.m_endTime <= m_elapsedTime) m_audioSource.Stop();
+		if (m_audioSource)
+			if (m_musicPieceData.m_bgmData.m_endTime <= m_elapsedTime)
+				m_audioSource.Stop();
 
 		// 楽曲の終了処理
 		if (m_elapsedTime >= m_wholeTime)

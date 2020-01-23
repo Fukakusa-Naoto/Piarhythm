@@ -137,7 +137,7 @@ public class ConnectNoteController : MonoBehaviour
 		MoveEditNotes(scale, localPoint.y);
 
 		// ノーツ情報をUIへ反映させる
-		m_connectNoteSheetController.DisplayNotes(this);
+		if (m_connectNoteSheetController != null) m_connectNoteSheetController.DisplayNotes(this);
 	}
 	#endregion
 
@@ -256,7 +256,7 @@ public class ConnectNoteController : MonoBehaviour
 		}
 
 		// UIを更新
-		m_connectNoteSheetController.DisplayNotes(this);
+		if(m_connectNoteSheetController) m_connectNoteSheetController.DisplayNotes(this);
 	}
 	#endregion
 

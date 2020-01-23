@@ -59,7 +59,7 @@ public class SettingSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickSpeedDownButton()
 	{
-		m_settingData.m_noteSpeed = (m_settingData.m_noteSpeed <= 0) ? 1 : m_settingData.m_noteSpeed - 1;
+		m_settingData.m_noteSpeed = (m_settingData.m_noteSpeed <= 1) ? 1 : m_settingData.m_noteSpeed - 1;
 		DispleySettingData();
 	}
 	#endregion
@@ -74,7 +74,7 @@ public class SettingSheetController : MonoBehaviour
 	//-----------------------------------------------------------------
 	public void OnClickSpeedUpButton()
 	{
-		m_settingData.m_noteSpeed = (m_settingData.m_noteSpeed > 10) ? 10 : m_settingData.m_noteSpeed + 1;
+		m_settingData.m_noteSpeed = (m_settingData.m_noteSpeed >= 10) ? 10 : m_settingData.m_noteSpeed + 1;
 		DispleySettingData();
 	}
 	#endregion

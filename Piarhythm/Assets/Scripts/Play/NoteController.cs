@@ -52,9 +52,6 @@ public class NoteController : MonoBehaviour
 			? new UnityEngine.Color(m_noteData.m_color.r * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteData.m_color.g * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, m_noteData.m_color.b * PiarhythmDatas.SHARP_COLOR_PERCENTAGE, 1.0f)
 			: new UnityEngine.Color(m_noteData.m_color.r, m_noteData.m_color.g, m_noteData.m_color.b, 1.0f);
 
-		UnityEngine.Color color = new UnityEngine.Color(m_noteData.m_color.r, m_noteData.m_color.g, m_noteData.m_color.b, m_noteData.m_color.a);
-		m_image.color = color;
-
 		// スケールの初期化
 		m_transform.localScale = Vector3.one;
 
@@ -62,9 +59,9 @@ public class NoteController : MonoBehaviour
 		// 座標を設定された音階の位置に移動させる
 		m_transform.position = new Vector3(m_keyDictionary[m_noteData.m_scale].position.x, m_transform.position.y, m_transform.position.z);
 
-		Vector3 localScale = m_transform.localScale;
-		localScale.x = (m_noteData.m_scale.Contains("#")) ? 0.6f : 0.8f;
-		m_transform.localScale = localScale;
+		float width = m_keyDictionary[m_noteData.m_scale].sizeDelta.x
+			* m_keyDictionary[m_noteData.m_scale].parent.GetComponent<RectTransform>().localScale.x;
+		m_transform.sizeDelta = new Vector2(width, m_transform.sizeDelta.y);
 
 		// 手前に持ってくる
 		Vector3 position = m_transform.localPosition;

@@ -62,8 +62,6 @@ public class PiarhythmDatas
 		public int m_noteLength = 0;
 		// 色
 		public Color m_color;
-		// 連結されている前のノーツデータ
-		public NoteData m_prevNoteData = null;
 		// 連結されている次のノーツデータ
 		public NoteData m_nextNoteData = null;
 	}
