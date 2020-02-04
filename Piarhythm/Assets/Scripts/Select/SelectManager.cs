@@ -35,6 +35,12 @@ public class SelectManager : MonoBehaviour
 
 
 	// メンバ関数の定義 =====================================================
+	private void Awake()
+	{
+		Screen.fullScreen = true;
+	}
+
+
 	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理

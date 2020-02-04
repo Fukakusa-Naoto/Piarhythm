@@ -41,6 +41,12 @@ public class PlayManager : MonoBehaviour
 
 
 	// メンバ関数の定義 =====================================================
+
+	private void Awake()
+	{
+		Screen.fullScreen = true;
+	}
+
 	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
@@ -93,19 +99,28 @@ public class PlayManager : MonoBehaviour
 		m_musicController.CreateNoteList(m_musicPieceData.m_noteDataList);
 
 		// BGMを読み込む
-		if (m_musicPieceData.m_bgmData.m_path != null)
+		if(m_musicPieceData.m_bgmData!=null)
 		{
-			// 読み込み開始フラグをたてる
-			m_loadFlag = true;
+			if (m_musicPieceData.m_bgmData.m_path != null)
+			{
+				// 読み込み開始フラグをたてる
+				m_loadFlag = true;
 
-			// コルーチンを設定する
-			m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
+				// コルーチンを設定する
+				m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
+			}
+			else
+			{
+				// アニメーションを開始する
+				m_keyboardController.PlayAnimation();
+			}
 		}
 		else
 		{
 			// アニメーションを開始する
 			m_keyboardController.PlayAnimation();
 		}
+
 
 		// BGMの開始時間を計算する
 		// 一拍当たりの時間を求める

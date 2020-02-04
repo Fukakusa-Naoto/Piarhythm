@@ -18,6 +18,12 @@ using UnityEngine.SceneManagement;
 // クラスの定義 =============================================================
 public class TitleManager : MonoBehaviour
 {
+	private void Awake()
+	{
+		Screen.fullScreen = true;
+	}
+
+
 	//-----------------------------------------------------------------
 	//! @summary   プレイボタンが押された時の処理
 	//!
