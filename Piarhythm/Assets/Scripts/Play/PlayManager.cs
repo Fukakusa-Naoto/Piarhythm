@@ -139,6 +139,8 @@ public class PlayManager : MonoBehaviour
 	//-----------------------------------------------------------------
 	private void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Space)) PiarhythmUtility.LoadScene(PiarhythmDatas.ScenenID.SCENE_SELECT);
+
 		if (m_loadFlag)
 		{
 			// AudioCripの読み込み
