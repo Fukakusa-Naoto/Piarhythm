@@ -557,9 +557,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.2
+    y: 0
     width: 1
-    height: 0.82
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -601,7 +601,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 047147e630bc82a4a998f8cc232e97cf, type: 3}
   m_Name: 
@@ -632,7 +632,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913428485}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 047147e630bc82a4a998f8cc232e97cf, type: 3}
   m_Name: 
@@ -664,9 +664,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: -0.24
+    y: 0
     width: 1
-    height: 0.64
+    height: 1
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -771,12 +771,12 @@ PrefabInstance:
     - target: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -180.2
+      value: -168
       objectReference: {fileID: 0}
     - target: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -87.56
+      value: -212.27
       objectReference: {fileID: 0}
     - target: {fileID: 3230625646095676712, guid: 00f932d0442e68c4a8e43200d97d4a1a,
         type: 3}

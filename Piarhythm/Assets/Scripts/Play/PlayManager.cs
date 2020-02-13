@@ -9,6 +9,7 @@
 //__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/__/
 
 // 名前空間の省略 ===========================================================
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -103,11 +104,19 @@ public class PlayManager : MonoBehaviour
 		{
 			if (m_musicPieceData.m_bgmData.m_path != null)
 			{
-				// 読み込み開始フラグをたてる
-				m_loadFlag = true;
+				if (File.Exists(m_musicPieceData.m_bgmData.m_path))
+				{
+					// 読み込み開始フラグをたてる
+					m_loadFlag = true;
 
-				// コルーチンを設定する
-				m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
+					// コルーチンを設定する
+					m_coroutine = PiarhythmUtility.LoadAudioFile(m_musicPieceData.m_bgmData.m_path);
+				}
+				else
+				{
+					// アニメーションを開始する
+					m_keyboardController.PlayAnimation();
+				}
 			}
 			else
 			{

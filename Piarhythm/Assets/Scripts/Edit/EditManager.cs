@@ -258,7 +258,13 @@ public class EditManager : MonoBehaviour
 		// BGMデータの設定
 		if (musicPieceData.m_bgmData != null)
 			if (musicPieceData.m_bgmData.m_path == "") m_bgmSheetController.SetBGMData(null);
-			else m_bgmSheetController.SetBGMData(musicPieceData.m_bgmData);
+			else
+			{
+				if (File.Exists(musicPieceData.m_bgmData.m_path))
+				{
+					m_bgmSheetController.SetBGMData(musicPieceData.m_bgmData);
+				}
+			}
 
 		// 通常ノーツの生成
 		foreach (PiarhythmDatas.NoteData noteData in musicPieceData.m_noteDataList)
