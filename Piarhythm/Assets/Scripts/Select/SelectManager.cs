@@ -32,9 +32,18 @@ public class SelectManager : MonoBehaviour
 	// コントローラー
 	[SerializeField]
 	private ScrollController m_scrollController = null;
+	[SerializeField]
+	private MusicSheetController m_musicSheetController = null;
+
 
 
 	// メンバ関数の定義 =====================================================
+	private void Awake()
+	{
+		Screen.fullScreen = true;
+	}
+
+
 	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
@@ -74,6 +83,10 @@ public class SelectManager : MonoBehaviour
 			// タイルを作成する
 			m_scrollController.CreateSoundTile(fileName);
 		}
+
+		// 前回選択された曲を設定する
+		string filePath = PlayerPrefs.GetString(PiarhythmDatas.PLAY_MUSIC_PIECE_FILE_PATH, "None");
+		m_musicSheetController.DisplaySelectMusicName(m_selectMusic = Path.GetFileNameWithoutExtension(filePath));
 	}
 	#endregion
 
@@ -108,7 +121,7 @@ public class SelectManager : MonoBehaviour
 		if (scenenID == PiarhythmDatas.ScenenID.SCENE_PLAY)
 		{
 			// 選択されている曲のファイルパスを保存する
-			PlayerPrefs.SetString("selectMusicPath", m_musicPathDictionary[m_selectMusic]);
+			PlayerPrefs.SetString(PiarhythmDatas.PLAY_MUSIC_PIECE_FILE_PATH, m_musicPathDictionary[m_selectMusic]);
 		}
 
 		// シーンを遷移する

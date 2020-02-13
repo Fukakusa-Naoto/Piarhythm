@@ -43,6 +43,11 @@ public class EditManager : MonoBehaviour
 
 
 	// メンバ関数の定義 =====================================================
+	private void Awake()
+	{
+		Screen.fullScreen = false;
+	}
+
 	#region 初期化処理
 	//-----------------------------------------------------------------
 	//! @summary   初期化処理
@@ -85,7 +90,8 @@ public class EditManager : MonoBehaviour
 
 			// BGMを止める
 			PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
-			if (m_audioSource.time >= bgmData.m_endTime) m_audioSource.Stop();
+			if (bgmData != null)
+				if (m_audioSource.time >= bgmData.m_endTime) m_audioSource.Stop();
 
 			// 楽曲が終了した
 			if (m_elapsedTime >= m_optionSheetController.GetWholeTime()) FinishedMusic();
@@ -116,7 +122,7 @@ public class EditManager : MonoBehaviour
 		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
 
 		// 再生位置を調節する
-		m_audioSource.time = m_elapsedTime + bgmData.m_startTime;
+		if (bgmData != null) m_audioSource.time = m_elapsedTime + bgmData.m_startTime;
 
 		// BGMを再生させる
 		if (m_audioSource.clip) m_audioSource.Play();
@@ -201,10 +207,10 @@ public class EditManager : MonoBehaviour
 		// BGMデータを取得する
 		PiarhythmDatas.BGMData bgmData = m_bgmSheetController.GetBGMData();
 
-		if (audioFilePath == null) audioFilePath = bgmData.m_path;
+		if ((audioFilePath == null) && (bgmData != null)) audioFilePath = bgmData.m_path;
 
 		// BGMをコピーする
-		PiarhythmUtility.CopyFile(audioFilePath, bgmData.m_path);
+		if ((audioFilePath != null) && (bgmData != null)) PiarhythmUtility.CopyFile(audioFilePath, bgmData.m_path);
 
 		// ノーツデータを取得する
 		PiarhythmDatas.NoteData[] notesDatas = m_notesManager.GetNotesDatas();
@@ -219,7 +225,7 @@ public class EditManager : MonoBehaviour
 		musicPieceData.m_optionData = optionData;
 
 		// json文字列に変換する
-		string jsonString = JsonConvert.SerializeObject(musicPieceData);
+		string jsonString = JsonConvert.SerializeObject(musicPieceData, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Serialize });
 
 		// 拡張子があるか調べる
 		if (Path.GetExtension(filePath) != ".json") filePath += ".json";
@@ -250,8 +256,9 @@ public class EditManager : MonoBehaviour
 		m_optionSheetController.Start(musicPieceData.m_optionData);
 
 		// BGMデータの設定
-		if (musicPieceData.m_bgmData.m_path == "") m_bgmSheetController.SetBGMData(null);
-		else m_bgmSheetController.SetBGMData(musicPieceData.m_bgmData);
+		if (musicPieceData.m_bgmData != null)
+			if (musicPieceData.m_bgmData.m_path == "") m_bgmSheetController.SetBGMData(null);
+			else m_bgmSheetController.SetBGMData(musicPieceData.m_bgmData);
 
 		// 通常ノーツの生成
 		foreach (PiarhythmDatas.NoteData noteData in musicPieceData.m_noteDataList)
